@@ -253,6 +253,18 @@ export interface Page {
         blockType: 'aboutUs';
       }
     | NosServicesBlock
+    | {
+        heading?: string | null;
+        limit?: number | null;
+        ctaText?: string | null;
+        displayLink?: boolean | null;
+        linkText?: string | null;
+        linkUrl?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'recentAdoptions';
+      }
+    | TestimonialsBlock
   )[];
   meta?: {
     title?: string | null;
@@ -843,6 +855,37 @@ export interface Service {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsBlock".
+ */
+export interface TestimonialsBlock {
+  heading: string;
+  testimonials: {
+    quote: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    author: string;
+    role?: string | null;
+    image?: (string | null) | Media;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'testimonials';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "dogs".
  */
 export interface Dog {
@@ -1241,6 +1284,19 @@ export interface PagesSelect<T extends boolean = true> {
               blockName?: T;
             };
         nosServices?: T | NosServicesBlockSelect<T>;
+        recentAdoptions?:
+          | T
+          | {
+              heading?: T;
+              limit?: T;
+              ctaText?: T;
+              displayLink?: T;
+              linkText?: T;
+              linkUrl?: T;
+              id?: T;
+              blockName?: T;
+            };
+        testimonials?: T | TestimonialsBlockSelect<T>;
       };
   meta?:
     | T
@@ -1348,6 +1404,24 @@ export interface NosServicesBlockSelect<T extends boolean = true> {
   heading?: T;
   subheading?: T;
   services?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsBlock_select".
+ */
+export interface TestimonialsBlockSelect<T extends boolean = true> {
+  heading?: T;
+  testimonials?:
+    | T
+    | {
+        quote?: T;
+        author?: T;
+        role?: T;
+        image?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }

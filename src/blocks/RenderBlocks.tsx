@@ -10,6 +10,8 @@ import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { Component as NosServicesBlock } from '@/blocks/NosServices/Component'
+import { Component as RecentAdoptionsBlock } from '@/blocks/RecentAdoptions/Component'
+import { TestimonialsBlock } from '@/blocks/Testimonials/Component'
 
 const blockComponents = {
   aboutUs: AboutUsBlock,
@@ -20,6 +22,8 @@ const blockComponents = {
   formBlock: FormBlock,
   mediaBlock: MediaBlock,
   nosServices: NosServicesBlock,
+  recentAdoptions: RecentAdoptionsBlock,
+  testimonials: TestimonialsBlock,
 }
 
 export const RenderBlocks: React.FC<{
