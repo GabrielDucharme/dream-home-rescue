@@ -9,7 +9,7 @@ const config = {
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
   ],
-  darkMode: ['selector', '[data-theme="dark"]'],
+  // Removed darkMode configuration - using light mode only
   plugins: [tailwindcssAnimate, typography],
   prefix: '',
   safelist: [
@@ -25,6 +25,10 @@ const config = {
     'bg-success/30',
     'border-warning',
     'bg-warning/30',
+    'animation-delay-300',
+    'animation-delay-600',
+    'animate-bounce',
+    'animate-float',
   ],
   theme: {
     container: {
@@ -49,6 +53,8 @@ const config = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'bounce': 'bounce 2s infinite',
+        'float': 'float 3s ease-in-out infinite',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -105,6 +111,14 @@ const config = {
         'accordion-up': {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
+        },
+        'bounce': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-5px)' }
+        },
+        'float': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' }
         },
       },
       typography: () => ({

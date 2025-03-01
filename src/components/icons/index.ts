@@ -1,0 +1,4 @@
+export * from './DogBoneIcon'
+export * from './DogHouseIcon'
+export * from './PawIcon'
+export * from './PlayIcon'

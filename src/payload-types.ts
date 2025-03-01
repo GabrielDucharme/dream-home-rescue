@@ -6,15 +6,72 @@
  * and re-run `payload generate:types` to regenerate this file.
  */
 
+/**
+ * Supported timezones in IANA format.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "supportedTimezones".
+ */
+export type SupportedTimezones =
+  | 'Pacific/Midway'
+  | 'Pacific/Niue'
+  | 'Pacific/Honolulu'
+  | 'Pacific/Rarotonga'
+  | 'America/Anchorage'
+  | 'Pacific/Gambier'
+  | 'America/Los_Angeles'
+  | 'America/Tijuana'
+  | 'America/Denver'
+  | 'America/Phoenix'
+  | 'America/Chicago'
+  | 'America/Guatemala'
+  | 'America/New_York'
+  | 'America/Bogota'
+  | 'America/Caracas'
+  | 'America/Santiago'
+  | 'America/Buenos_Aires'
+  | 'America/Sao_Paulo'
+  | 'Atlantic/South_Georgia'
+  | 'Atlantic/Azores'
+  | 'Atlantic/Cape_Verde'
+  | 'Europe/London'
+  | 'Europe/Berlin'
+  | 'Africa/Lagos'
+  | 'Europe/Athens'
+  | 'Africa/Cairo'
+  | 'Europe/Moscow'
+  | 'Asia/Riyadh'
+  | 'Asia/Dubai'
+  | 'Asia/Baku'
+  | 'Asia/Karachi'
+  | 'Asia/Tashkent'
+  | 'Asia/Calcutta'
+  | 'Asia/Dhaka'
+  | 'Asia/Almaty'
+  | 'Asia/Jakarta'
+  | 'Asia/Bangkok'
+  | 'Asia/Shanghai'
+  | 'Asia/Singapore'
+  | 'Asia/Tokyo'
+  | 'Asia/Seoul'
+  | 'Australia/Sydney'
+  | 'Pacific/Guam'
+  | 'Pacific/Noumea'
+  | 'Pacific/Auckland'
+  | 'Pacific/Fiji';
+
 export interface Config {
   auth: {
     users: UserAuthOperations;
   };
+  blocks: {};
   collections: {
     pages: Page;
     posts: Post;
+    dogs: Dog;
     media: Media;
     categories: Category;
+    'team-members': TeamMember;
     users: User;
     redirects: Redirect;
     forms: Form;
@@ -29,8 +86,10 @@ export interface Config {
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
+    dogs: DogsSelect<false> | DogsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    'team-members': TeamMembersSelect<false> | TeamMembersSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
@@ -135,7 +194,63 @@ export interface Page {
       | null;
     media?: (string | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (
+    | CallToActionBlock
+    | ContentBlock
+    | MediaBlock
+    | ArchiveBlock
+    | FormBlock
+    | {
+        title?: string | null;
+        showStatus?: ('all' | 'available' | 'pending' | 'adopted' | 'foster' | 'medical') | null;
+        limit?: number | null;
+        displayLink?: boolean | null;
+        linkText?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'availableDogs';
+      }
+    | {
+        textAlignment?: ('left' | 'center') | null;
+        mainHeading?: string | null;
+        supportingStatement?: string | null;
+        detailedDescription?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        /**
+         * Ajouter des membres de l'équipe qui apparaîtront comme portraits circulaires
+         */
+        teamMembers?:
+          | {
+              member: string | TeamMember;
+              id?: string | null;
+            }[]
+          | null;
+        coreValuesStatement?: string | null;
+        mediaType?: ('image' | 'video') | null;
+        image?: (string | null) | Media;
+        videoUrl?: string | null;
+        videoThumbnail?: (string | null) | Media;
+        displayButton?: boolean | null;
+        buttonText?: string | null;
+        buttonLink?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'aboutUs';
+      }
+  )[];
   meta?: {
     title?: string | null;
     /**
@@ -672,6 +787,95 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team-members".
+ */
+export interface TeamMember {
+  id: string;
+  name: string;
+  title?: string | null;
+  bio?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  photo?: (string | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dogs".
+ */
+export interface Dog {
+  id: string;
+  name: string;
+  breed: string;
+  sex: 'male' | 'female';
+  age: {
+    /**
+     * Âge en années (utilisez 0 pour les chiens de moins d'un an)
+     */
+    years: number;
+    /**
+     * Mois additionnels (0-11)
+     */
+    months: number;
+  };
+  status: 'available' | 'pending' | 'adopted' | 'foster' | 'medical';
+  mainImage: string | Media;
+  galleryImages?:
+    | {
+        image: string | Media;
+        id?: string | null;
+      }[]
+    | null;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  weight?: number | null;
+  goodWith?: {
+    kids?: ('yes' | 'no' | 'unknown') | null;
+    dogs?: ('yes' | 'no' | 'unknown') | null;
+    cats?: ('yes' | 'no' | 'unknown') | null;
+  };
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -851,12 +1055,20 @@ export interface PayloadLockedDocument {
         value: string | Post;
       } | null)
     | ({
+        relationTo: 'dogs';
+        value: string | Dog;
+      } | null)
+    | ({
         relationTo: 'media';
         value: string | Media;
       } | null)
     | ({
         relationTo: 'categories';
         value: string | Category;
+      } | null)
+    | ({
+        relationTo: 'team-members';
+        value: string | TeamMember;
       } | null)
     | ({
         relationTo: 'users';
@@ -960,6 +1172,41 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
+        availableDogs?:
+          | T
+          | {
+              title?: T;
+              showStatus?: T;
+              limit?: T;
+              displayLink?: T;
+              linkText?: T;
+              id?: T;
+              blockName?: T;
+            };
+        aboutUs?:
+          | T
+          | {
+              textAlignment?: T;
+              mainHeading?: T;
+              supportingStatement?: T;
+              detailedDescription?: T;
+              teamMembers?:
+                | T
+                | {
+                    member?: T;
+                    id?: T;
+                  };
+              coreValuesStatement?: T;
+              mediaType?: T;
+              image?: T;
+              videoUrl?: T;
+              videoThumbnail?: T;
+              displayButton?: T;
+              buttonText?: T;
+              buttonLink?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   meta?:
     | T
@@ -1092,6 +1339,50 @@ export interface PostsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dogs_select".
+ */
+export interface DogsSelect<T extends boolean = true> {
+  name?: T;
+  breed?: T;
+  sex?: T;
+  age?:
+    | T
+    | {
+        years?: T;
+        months?: T;
+      };
+  status?: T;
+  mainImage?: T;
+  galleryImages?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  description?: T;
+  weight?: T;
+  goodWith?:
+    | T
+    | {
+        kids?: T;
+        dogs?: T;
+        cats?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
@@ -1200,6 +1491,18 @@ export interface CategoriesSelect<T extends boolean = true> {
         label?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team-members_select".
+ */
+export interface TeamMembersSelect<T extends boolean = true> {
+  name?: T;
+  title?: T;
+  bio?: T;
+  photo?: T;
   updatedAt?: T;
   createdAt?: T;
 }
