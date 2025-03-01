@@ -5,6 +5,7 @@ import { cn } from '@/utilities/ui'
 import RichText from '@/components/RichText'
 import { VideoPlayer } from './VideoPlayer.client'
 import { DogHouseIcon, DogBoneIcon, PawIcon } from '@/components/icons'
+import { WaveDivider } from '@/components/Divider'
 
 
 import type { AboutUsBlock } from '@/payload-types'
@@ -26,7 +27,14 @@ export const AboutUsBlock: React.FC<AboutUsBlock> = (props) => {
   } = props
 
   return (
-    <div className="py-20" style={{ background: 'linear-gradient(180deg, #ECE0CE 0%, rgba(236, 224, 206, 0) 100%)' }}>
+    <div className="pt-20 pb-28 relative mt-16" style={{ background: 'linear-gradient(180deg, #ECE0CE 0%, rgba(236, 224, 206, 0) 100%)' }}>
+      <WaveDivider 
+        fillColor="#ECE0CE" 
+        position="top" 
+        height={70}
+        className="-mt-16"
+      />
+      
       <div className="container">
         <div className="flex flex-col items-center">
           <div className="text-center mb-8 max-w-3xl mx-auto relative">

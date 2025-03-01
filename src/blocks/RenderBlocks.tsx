@@ -9,6 +9,7 @@ import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
+import { Component as NosServicesBlock } from '@/blocks/NosServices/Component'
 
 const blockComponents = {
   aboutUs: AboutUsBlock,
@@ -18,6 +19,7 @@ const blockComponents = {
   cta: CallToActionBlock,
   formBlock: FormBlock,
   mediaBlock: MediaBlock,
+  nosServices: NosServicesBlock,
 }
 
 export const RenderBlocks: React.FC<{

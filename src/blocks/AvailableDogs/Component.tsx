@@ -63,7 +63,7 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
 
   if (!dogs || dogs.length === 0) {
     return (
-      <div className="container my-12">
+      <div className="container mt-12 mb-28">
         <h2 className="text-2xl font-semibold mb-6">{title}</h2>
         <div className="text-center p-6 bg-card rounded-lg border border-border">
           <p>Aucun chien n'est disponible pour le moment.</p>
@@ -73,7 +73,7 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
   }
 
   return (
-    <div className="container my-12">
+    <div className="container mt-12 mb-28">
       <h2 className="text-2xl font-semibold mb-6">{title}</h2>
       
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
