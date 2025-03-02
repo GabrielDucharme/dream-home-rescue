@@ -1,4 +1,4 @@
-import { Block } from 'payload/types';
+import { Block } from 'payload';
 
 export const WhereToFindUs: Block = {
   slug: 'whereToFindUs',
@@ -79,6 +79,27 @@ export const WhereToFindUs: Block = {
       },
       type: 'checkbox',
       defaultValue: true,
+    },
+    {
+      name: 'contactFormEnabled',
+      label: {
+        en: 'Enable Contact Form',
+        fr: 'Activer le formulaire de contact',
+      },
+      type: 'checkbox',
+      defaultValue: true,
+    },
+    {
+      name: 'contactFormTitle',
+      label: {
+        en: 'Contact Form Title',
+        fr: 'Titre du formulaire de contact',
+      },
+      type: 'text',
+      defaultValue: 'Nous contacter',
+      admin: {
+        condition: (data) => Boolean(data?.contactFormEnabled),
+      },
     },
     {
       name: 'photos',

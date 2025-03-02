@@ -297,6 +297,7 @@ export interface Page {
         blockName?: string | null;
         blockType: 'donationGoalDisplay';
       }
+    | WhereToFindUsBlock
   )[];
   meta?: {
     title?: string | null;
@@ -996,6 +997,34 @@ export interface DonationGoal {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WhereToFindUsBlock".
+ */
+export interface WhereToFindUsBlock {
+  title: string;
+  address: string;
+  phone?: string | null;
+  email?: string | null;
+  hours?: string | null;
+  /**
+   * Paste the embed code from Google Maps
+   */
+  mapEmbed?: string | null;
+  displayMap?: boolean | null;
+  contactFormEnabled?: boolean | null;
+  contactFormTitle?: string | null;
+  photos?:
+    | {
+        photo: string | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'whereToFindUs';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "dogs".
  */
 export interface Dog {
@@ -1494,6 +1523,7 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        whereToFindUs?: T | WhereToFindUsBlockSelect<T>;
       };
   meta?:
     | T
@@ -1633,6 +1663,30 @@ export interface NewsletterBlockSelect<T extends boolean = true> {
   emailPlaceholder?: T;
   richText?: T;
   useWaveDivider?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WhereToFindUsBlock_select".
+ */
+export interface WhereToFindUsBlockSelect<T extends boolean = true> {
+  title?: T;
+  address?: T;
+  phone?: T;
+  email?: T;
+  hours?: T;
+  mapEmbed?: T;
+  displayMap?: T;
+  contactFormEnabled?: T;
+  contactFormTitle?: T;
+  photos?:
+    | T
+    | {
+        photo?: T;
+        caption?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }
