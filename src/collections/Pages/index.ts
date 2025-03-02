@@ -7,6 +7,7 @@ import { Archive } from '../../blocks/ArchiveBlock/config'
 import { AvailableDogs } from '../../blocks/AvailableDogs/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
 import { Content } from '../../blocks/Content/config'
+import { DonationGoalDisplayBlock } from '../../blocks/DonationGoalDisplay/config'
 import { FormBlock } from '../../blocks/Form/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { Newsletter } from '../../blocks/Newsletter/config'
@@ -87,7 +88,7 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, AvailableDogs, AboutUs, NosServices, RecentAdoptions, Testimonials, Newsletter],
+              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, AvailableDogs, AboutUs, NosServices, RecentAdoptions, Testimonials, Newsletter, DonationGoalDisplayBlock],
               required: true,
               label: 'Mise en page',
               admin: {

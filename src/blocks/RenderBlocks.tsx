@@ -13,6 +13,7 @@ import { Component as NosServicesBlock } from '@/blocks/NosServices/Component'
 import { Component as RecentAdoptionsBlock } from '@/blocks/RecentAdoptions/Component'
 import { TestimonialsBlock } from '@/blocks/Testimonials/Component'
 import { NewsletterBlock } from '@/blocks/Newsletter/Component'
+import { Component as DonationGoalDisplayBlock } from '@/blocks/DonationGoalDisplay/Component'
 
 const blockComponents = {
   aboutUs: AboutUsBlock,
@@ -20,6 +21,7 @@ const blockComponents = {
   availableDogs: AvailableDogsBlock,
   content: ContentBlock,
   cta: CallToActionBlock,
+  donationGoalDisplay: DonationGoalDisplayBlock,
   formBlock: FormBlock,
   mediaBlock: MediaBlock,
   nosServices: NosServicesBlock,

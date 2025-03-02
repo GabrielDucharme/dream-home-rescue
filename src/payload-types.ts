@@ -75,6 +75,7 @@ export interface Config {
     'team-members': TeamMember;
     users: User;
     services: Service;
+    'donation-goals': DonationGoal;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -95,6 +96,7 @@ export interface Config {
     'team-members': TeamMembersSelect<false> | TeamMembersSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
+    'donation-goals': DonationGoalsSelect<false> | DonationGoalsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -268,6 +270,33 @@ export interface Page {
       }
     | TestimonialsBlock
     | NewsletterBlock
+    | {
+        heading?: string | null;
+        description?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        goalID: string | DonationGoal;
+        showMilestones?: boolean | null;
+        showNextGoals?: boolean | null;
+        showDonationButton?: boolean | null;
+        donationButtonText?: string | null;
+        layout?: ('standard' | 'compact' | 'wide') | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'donationGoalDisplay';
+      }
   )[];
   meta?: {
     title?: string | null;
@@ -918,6 +947,55 @@ export interface NewsletterBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "donation-goals".
+ */
+export interface DonationGoal {
+  id: string;
+  title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  currentAmount: number;
+  targetAmount: number;
+  startDate: string;
+  endDate?: string | null;
+  isActive?: boolean | null;
+  isHighlighted?: boolean | null;
+  color?: ('primary' | 'secondary' | 'success' | 'danger' | 'warning') | null;
+  milestones?:
+    | {
+        amount: number;
+        description: string;
+        isReached?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  nextGoals?:
+    | {
+        title: string;
+        amount: number;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  image?: (string | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "dogs".
  */
 export interface Dog {
@@ -1251,6 +1329,10 @@ export interface PayloadLockedDocument {
         value: string | Service;
       } | null)
     | ({
+        relationTo: 'donation-goals';
+        value: string | DonationGoal;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: string | Redirect;
       } | null)
@@ -1398,6 +1480,20 @@ export interface PagesSelect<T extends boolean = true> {
             };
         testimonials?: T | TestimonialsBlockSelect<T>;
         newsletter?: T | NewsletterBlockSelect<T>;
+        donationGoalDisplay?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              goalID?: T;
+              showMilestones?: T;
+              showNextGoals?: T;
+              showDonationButton?: T;
+              donationButtonText?: T;
+              layout?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   meta?:
     | T
@@ -1799,6 +1895,40 @@ export interface ServicesSelect<T extends boolean = true> {
   image?: T;
   slug?: T;
   slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "donation-goals_select".
+ */
+export interface DonationGoalsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  currentAmount?: T;
+  targetAmount?: T;
+  startDate?: T;
+  endDate?: T;
+  isActive?: T;
+  isHighlighted?: T;
+  color?: T;
+  milestones?:
+    | T
+    | {
+        amount?: T;
+        description?: T;
+        isReached?: T;
+        id?: T;
+      };
+  nextGoals?:
+    | T
+    | {
+        title?: T;
+        amount?: T;
+        description?: T;
+        id?: T;
+      };
+  image?: T;
   updatedAt?: T;
   createdAt?: T;
 }
