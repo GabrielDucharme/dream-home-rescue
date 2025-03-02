@@ -15,12 +15,14 @@ export const Testimonials: Block = {
       name: 'heading',
       type: 'text',
       required: true,
+      label: 'Titre',
     },
     {
       name: 'testimonials',
       type: 'array',
       required: true,
       min: 1,
+      label: 'Témoignages',
       fields: [
         {
           name: 'quote',
@@ -36,26 +38,30 @@ export const Testimonials: Block = {
             },
           }),
           required: true,
+          label: 'Citation',
         },
         {
           name: 'author',
           type: 'text',
           required: true,
+          label: 'Auteur',
         },
         {
           name: 'role',
           type: 'text',
+          label: 'Rôle',
         },
         {
           name: 'image',
           type: 'upload',
           relationTo: 'media',
+          label: 'Image',
         },
       ],
     },
   ],
   labels: {
-    plural: 'Testimonials',
-    singular: 'Testimonial',
+    plural: 'Témoignages',
+    singular: 'Témoignage',
   },
 }

@@ -2,6 +2,7 @@ import { Button, type ButtonProps } from '@/components/ui/button'
 import { cn } from '@/utilities/ui'
 import Link from 'next/link'
 import React from 'react'
+import { SmoothScrollLink } from '@/components/SmoothScrollLink'
 
 import type { Page, Post } from '@/payload-types'
 
@@ -47,11 +48,33 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
 
   /* Ensure we don't break any styles set by richText */
   if (appearance === 'inline' || appearance === 'custom') {
+    // Use SmoothScrollLink for hash links
+    if (href?.startsWith('#')) {
+      return (
+        <SmoothScrollLink className={cn(className)} href={href}>
+          {label && label}
+          {children && children}
+        </SmoothScrollLink>
+      )
+    }
+    
     return (
       <Link className={cn(className)} href={href || url || ''} {...newTabProps}>
         {label && label}
         {children && children}
       </Link>
+    )
+  }
+
+  // Use SmoothScrollLink for hash links in buttons
+  if (href?.startsWith('#')) {
+    return (
+      <Button asChild className={className} size={size} variant={appearance}>
+        <SmoothScrollLink href={href}>
+          {label && label}
+          {children && children}
+        </SmoothScrollLink>
+      </Button>
     )
   }
 

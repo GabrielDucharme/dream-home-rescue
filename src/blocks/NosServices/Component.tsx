@@ -22,7 +22,7 @@ export const Component: React.FC<{
   }>
 }> = ({ heading, subheading, services }) => {
   return (
-    <div className="w-full bg-[#26483B] pt-0 pb-24 relative">
+    <div id="services" className="w-full bg-[#26483B] pt-0 pb-24 relative mb-16">
       <WaveDivider fillColor="#26483B" position="top" height={70} className="-mt-16" />
       
       <div className="container mx-auto px-4 relative z-10 pt-16">

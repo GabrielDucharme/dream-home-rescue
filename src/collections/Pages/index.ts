@@ -9,6 +9,7 @@ import { CallToAction } from '../../blocks/CallToAction/config'
 import { Content } from '../../blocks/Content/config'
 import { FormBlock } from '../../blocks/Form/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { Newsletter } from '../../blocks/Newsletter/config'
 import { NosServices } from '../../blocks/NosServices/config'
 import { RecentAdoptions } from '../../blocks/RecentAdoptions/config'
 import { Testimonials } from '../../blocks/Testimonials/config'
@@ -28,6 +29,10 @@ import {
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
+  labels: {
+    singular: 'Page',
+    plural: 'Pages',
+  },
   access: {
     create: authenticated,
     delete: authenticated,
@@ -61,33 +66,36 @@ export const Pages: CollectionConfig<'pages'> = {
         req,
       }),
     useAsTitle: 'title',
+    group: 'Contenu',
   },
   fields: [
     {
       name: 'title',
       type: 'text',
       required: true,
+      label: 'Titre',
     },
     {
       type: 'tabs',
       tabs: [
         {
           fields: [hero],
-          label: 'Hero',
+          label: 'Héro',
         },
         {
           fields: [
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, AvailableDogs, AboutUs, NosServices, RecentAdoptions, Testimonials],
+              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, AvailableDogs, AboutUs, NosServices, RecentAdoptions, Testimonials, Newsletter],
               required: true,
+              label: 'Mise en page',
               admin: {
                 initCollapsed: true,
               },
             },
           ],
-          label: 'Content',
+          label: 'Contenu',
         },
         {
           name: 'meta',
@@ -100,12 +108,16 @@ export const Pages: CollectionConfig<'pages'> = {
             }),
             MetaTitleField({
               hasGenerateFn: true,
+              label: 'Titre SEO',
             }),
             MetaImageField({
               relationTo: 'media',
+              label: 'Image SEO',
             }),
 
-            MetaDescriptionField({}),
+            MetaDescriptionField({
+              label: 'Description SEO',
+            }),
             PreviewField({
               // if the `generateUrl` function is configured
               hasGenerateFn: true,
@@ -113,6 +125,7 @@ export const Pages: CollectionConfig<'pages'> = {
               // field paths to match the target field for data
               titlePath: 'meta.title',
               descriptionPath: 'meta.description',
+              label: 'Aperçu',
             }),
           ],
         },
@@ -121,6 +134,7 @@ export const Pages: CollectionConfig<'pages'> = {
     {
       name: 'publishedAt',
       type: 'date',
+      label: 'Date de publication',
       admin: {
         position: 'sidebar',
       },

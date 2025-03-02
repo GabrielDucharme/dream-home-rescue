@@ -69,6 +69,7 @@ export interface Config {
     pages: Page;
     posts: Post;
     dogs: Dog;
+    'success-stories': SuccessStory;
     media: Media;
     categories: Category;
     'team-members': TeamMember;
@@ -88,6 +89,7 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     dogs: DogsSelect<false> | DogsSelect<true>;
+    'success-stories': SuccessStoriesSelect<false> | SuccessStoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     'team-members': TeamMembersSelect<false> | TeamMembersSelect<true>;
@@ -265,6 +267,7 @@ export interface Page {
         blockType: 'recentAdoptions';
       }
     | TestimonialsBlock
+    | NewsletterBlock
   )[];
   meta?: {
     title?: string | null;
@@ -886,6 +889,35 @@ export interface TestimonialsBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NewsletterBlock".
+ */
+export interface NewsletterBlock {
+  heading: string;
+  subheading?: string | null;
+  buttonText: string;
+  emailPlaceholder?: string | null;
+  richText?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  useWaveDivider?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'newsletter';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "dogs".
  */
 export interface Dog {
@@ -932,6 +964,70 @@ export interface Dog {
     dogs?: ('yes' | 'no' | 'unknown') | null;
     cats?: ('yes' | 'no' | 'unknown') | null;
   };
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "success-stories".
+ */
+export interface SuccessStory {
+  id: string;
+  title: string;
+  dog: string | Dog;
+  adoptionDate: string;
+  /**
+   * Nom de la famille qui a adopté le chien (ex: "Famille Dupont")
+   */
+  family: string;
+  /**
+   * Photo du chien avec sa nouvelle famille
+   */
+  mainImage: string | Media;
+  galleryImages?:
+    | {
+        image: string | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Partagez l'histoire de cette adoption et comment le chien s'adapte à sa nouvelle vie
+   */
+  story: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Citation de la famille adoptive
+   */
+  testimonial?: string | null;
+  /**
+   * Mettre cette histoire en avant sur la page d'accueil
+   */
+  featured?: boolean | null;
   meta?: {
     title?: string | null;
     /**
@@ -1131,6 +1227,10 @@ export interface PayloadLockedDocument {
         value: string | Dog;
       } | null)
     | ({
+        relationTo: 'success-stories';
+        value: string | SuccessStory;
+      } | null)
+    | ({
         relationTo: 'media';
         value: string | Media;
       } | null)
@@ -1297,6 +1397,7 @@ export interface PagesSelect<T extends boolean = true> {
               blockName?: T;
             };
         testimonials?: T | TestimonialsBlockSelect<T>;
+        newsletter?: T | NewsletterBlockSelect<T>;
       };
   meta?:
     | T
@@ -1427,6 +1528,20 @@ export interface TestimonialsBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NewsletterBlock_select".
+ */
+export interface NewsletterBlockSelect<T extends boolean = true> {
+  heading?: T;
+  subheading?: T;
+  buttonText?: T;
+  emailPlaceholder?: T;
+  richText?: T;
+  useWaveDivider?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts_select".
  */
 export interface PostsSelect<T extends boolean = true> {
@@ -1487,6 +1602,39 @@ export interface DogsSelect<T extends boolean = true> {
         dogs?: T;
         cats?: T;
       };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "success-stories_select".
+ */
+export interface SuccessStoriesSelect<T extends boolean = true> {
+  title?: T;
+  dog?: T;
+  adoptionDate?: T;
+  family?: T;
+  mainImage?: T;
+  galleryImages?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  story?: T;
+  testimonial?: T;
+  featured?: T;
   meta?:
     | T
     | {

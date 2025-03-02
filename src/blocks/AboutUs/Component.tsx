@@ -27,7 +27,7 @@ export const AboutUsBlock: React.FC<AboutUsBlock> = (props) => {
   } = props
 
   return (
-    <div className="pt-20 pb-28 relative mt-16" style={{ background: 'linear-gradient(180deg, #ECE0CE 0%, rgba(236, 224, 206, 0) 100%)' }}>
+    <div id="about-us" className="pt-20 pb-28 relative mt-16" style={{ background: 'linear-gradient(180deg, #ECE0CE 0%, rgba(236, 224, 206, 0) 100%)' }}>
       <WaveDivider 
         fillColor="#ECE0CE" 
         position="top" 

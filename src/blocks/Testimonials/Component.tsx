@@ -8,8 +8,8 @@ export const TestimonialsBlock: React.FC<TestimonialsBlockProps> = ({
   testimonials 
 }) => {
   return (
-    <div className="container py-16">
-      <div className="text-center mb-12">
+    <div className="container py-12">
+      <div className="text-center mb-8">
         <h2 className="text-3xl md:text-4xl font-bold mb-6">{heading}</h2>
       </div>
       <TestimonialsCarousel testimonials={testimonials} />

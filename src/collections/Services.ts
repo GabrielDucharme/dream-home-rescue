@@ -5,10 +5,14 @@ import { slugField } from '../fields/slug'
 
 export const Services: CollectionConfig = {
   slug: 'services',
+  labels: {
+    singular: 'Service',
+    plural: 'Services',
+  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'updatedAt'],
-    group: 'Content',
+    group: 'Contenu',
   },
   access: {
     create: authenticated,
@@ -21,7 +25,7 @@ export const Services: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
-      label: 'Title',
+      label: 'Titre',
     },
     {
       name: 'description',

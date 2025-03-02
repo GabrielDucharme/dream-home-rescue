@@ -14,21 +14,22 @@ const columnFields: Field[] = [
     name: 'size',
     type: 'select',
     defaultValue: 'oneThird',
+    label: 'Taille',
     options: [
       {
-        label: 'One Third',
+        label: 'Un tiers',
         value: 'oneThird',
       },
       {
-        label: 'Half',
+        label: 'Moitié',
         value: 'half',
       },
       {
-        label: 'Two Thirds',
+        label: 'Deux tiers',
         value: 'twoThirds',
       },
       {
-        label: 'Full',
+        label: 'Pleine largeur',
         value: 'full',
       },
     ],
@@ -46,11 +47,12 @@ const columnFields: Field[] = [
         ]
       },
     }),
-    label: false,
+    label: 'Contenu',
   },
   {
     name: 'enableLink',
     type: 'checkbox',
+    label: 'Activer le lien',
   },
   link({
     overrides: {
@@ -64,10 +66,15 @@ const columnFields: Field[] = [
 export const Content: Block = {
   slug: 'content',
   interfaceName: 'ContentBlock',
+  labels: {
+    singular: 'Bloc de contenu',
+    plural: 'Blocs de contenu',
+  },
   fields: [
     {
       name: 'columns',
       type: 'array',
+      label: 'Colonnes',
       admin: {
         initCollapsed: true,
       },

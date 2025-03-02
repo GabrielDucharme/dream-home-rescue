@@ -12,6 +12,7 @@ import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { Component as NosServicesBlock } from '@/blocks/NosServices/Component'
 import { Component as RecentAdoptionsBlock } from '@/blocks/RecentAdoptions/Component'
 import { TestimonialsBlock } from '@/blocks/Testimonials/Component'
+import { NewsletterBlock } from '@/blocks/Newsletter/Component'
 
 const blockComponents = {
   aboutUs: AboutUsBlock,
@@ -24,6 +25,7 @@ const blockComponents = {
   nosServices: NosServicesBlock,
   recentAdoptions: RecentAdoptionsBlock,
   testimonials: TestimonialsBlock,
+  newsletter: NewsletterBlock,
 }
 
 export const RenderBlocks: React.FC<{
@@ -44,7 +46,7 @@ export const RenderBlocks: React.FC<{
 
             if (Block) {
               return (
-                <div className="my-16" key={index}>
+                <div className="my-0" key={index}>
                   {/* @ts-expect-error there may be some mismatch between the expected types here */}
                   <Block {...block} disableInnerContainer />
                 </div>

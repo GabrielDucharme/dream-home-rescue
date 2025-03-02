@@ -3,8 +3,8 @@ import type { Block } from 'payload/types'
 export const RecentAdoptions: Block = {
   slug: 'recentAdoptions',
   labels: {
-    singular: 'Chiens Récemment Adoptés',
-    plural: 'Blocs de Chiens Récemment Adoptés',
+    singular: 'Adoptions Récentes',
+    plural: 'Blocs d\'Adoptions Récentes',
   },
   fields: [
     {
@@ -15,7 +15,7 @@ export const RecentAdoptions: Block = {
     },
     {
       name: 'limit',
-      label: 'Nombre de chiens à afficher',
+      label: 'Nombre d\'histoires à afficher',
       type: 'number',
       defaultValue: 6,
       min: 1,
@@ -29,7 +29,7 @@ export const RecentAdoptions: Block = {
     },
     {
       name: 'displayLink',
-      label: 'Afficher un lien',
+      label: 'Afficher un lien vers toutes les histoires',
       type: 'checkbox',
       defaultValue: true,
     },
@@ -37,7 +37,7 @@ export const RecentAdoptions: Block = {
       name: 'linkText',
       label: 'Texte du lien',
       type: 'text',
-      defaultValue: 'Voir toutes nos adoptions',
+      defaultValue: 'Voir toutes nos histoires',
       admin: {
         condition: (data, siblingData) => siblingData.displayLink,
       },
@@ -46,7 +46,7 @@ export const RecentAdoptions: Block = {
       name: 'linkUrl',
       label: 'URL du lien',
       type: 'text',
-      defaultValue: '/dogs',
+      defaultValue: '/success-stories',
       admin: {
         condition: (data, siblingData) => siblingData.displayLink,
       },

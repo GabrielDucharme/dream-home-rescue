@@ -102,6 +102,8 @@ const config = {
       fontFamily: {
         mono: ['var(--font-geist-mono)'],
         sans: ['var(--font-geist-sans)'],
+        serif: ['var(--font-fraunces)', 'serif'],
+        fraunces: ['var(--font-fraunces)', 'serif'],
       },
       keyframes: {
         'accordion-down': {
@@ -128,8 +130,21 @@ const config = {
               '--tw-prose-body': 'var(--text)',
               '--tw-prose-headings': 'var(--text)',
               h1: {
-                fontWeight: 'normal',
+                fontWeight: '500',
+                fontFamily: 'var(--font-fraunces)',
                 marginBottom: '0.25em',
+              },
+              h2: {
+                fontWeight: '500',
+                fontFamily: 'var(--font-fraunces)',
+              },
+              h3: {
+                fontWeight: '500',
+                fontFamily: 'var(--font-fraunces)',
+              },
+              h4: {
+                fontWeight: '500',
+                fontFamily: 'var(--font-fraunces)',
               },
             },
           ],

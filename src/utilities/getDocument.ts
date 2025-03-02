@@ -6,26 +6,53 @@ import { unstable_cache } from 'next/cache'
 
 type Collection = keyof Config['collections']
 
-async function getDocument(collection: Collection, slug: string, depth = 0) {
+type GetDocumentArgs = {
+  collection: Collection;
+  slug?: string;
+  query?: Record<string, any>;
+  depth?: number;
+}
+
+export async function getDocument<T = any>({ 
+  collection, 
+  slug, 
+  query = {}, 
+  depth = 0 
+}: GetDocumentArgs): Promise<T> {
   const payload = await getPayload({ config: configPromise })
 
-  const page = await payload.find({
-    collection,
-    depth,
-    where: {
-      slug: {
-        equals: slug,
+  if (slug) {
+    const result = await payload.find({
+      collection,
+      depth,
+      where: {
+        slug: {
+          equals: slug,
+        },
       },
-    },
-  })
+    })
 
-  return page.docs[0]
+    return result.docs[0] as T
+  } else {
+    // For fetching multiple documents or with custom query
+    const result = await payload.find({
+      collection,
+      depth,
+      ...query,
+    })
+
+    return result as unknown as T
+  }
 }
 
 /**
  * Returns a unstable_cache function mapped with the cache tag for the slug
  */
 export const getCachedDocument = (collection: Collection, slug: string) =>
-  unstable_cache(async () => getDocument(collection, slug), [collection, slug], {
-    tags: [`${collection}_${slug}`],
-  })
+  unstable_cache(
+    async () => getDocument({ collection, slug }), 
+    [collection, slug], 
+    {
+      tags: [`${collection}_${slug}`],
+    }
+  )

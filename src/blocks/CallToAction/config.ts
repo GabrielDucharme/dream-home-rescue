@@ -26,7 +26,7 @@ export const CallToAction: Block = {
           ]
         },
       }),
-      label: false,
+      label: 'Contenu',
     },
     linkGroup({
       appearances: ['default', 'outline'],
@@ -36,7 +36,7 @@ export const CallToAction: Block = {
     }),
   ],
   labels: {
-    plural: 'Calls to Action',
-    singular: 'Call to Action',
+    plural: 'Appels à l\'action',
+    singular: 'Appel à l\'action',
   },
 }

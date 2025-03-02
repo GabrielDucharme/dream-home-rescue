@@ -29,6 +29,10 @@ import { slugField } from '@/fields/slug'
 
 export const Posts: CollectionConfig<'posts'> = {
   slug: 'posts',
+  labels: {
+    singular: 'Article',
+    plural: 'Articles',
+  },
   access: {
     create: authenticated,
     delete: authenticated,
@@ -67,12 +71,14 @@ export const Posts: CollectionConfig<'posts'> = {
         req,
       }),
     useAsTitle: 'title',
+    group: 'Contenu',
   },
   fields: [
     {
       name: 'title',
       type: 'text',
       required: true,
+      label: 'Titre',
     },
     {
       type: 'tabs',
@@ -83,6 +89,7 @@ export const Posts: CollectionConfig<'posts'> = {
               name: 'heroImage',
               type: 'upload',
               relationTo: 'media',
+              label: 'Image principale',
             },
             {
               name: 'content',
@@ -99,17 +106,18 @@ export const Posts: CollectionConfig<'posts'> = {
                   ]
                 },
               }),
-              label: false,
+              label: 'Contenu',
               required: true,
             },
           ],
-          label: 'Content',
+          label: 'Contenu',
         },
         {
           fields: [
             {
               name: 'relatedPosts',
               type: 'relationship',
+              label: 'Articles liés',
               admin: {
                 position: 'sidebar',
               },
@@ -126,6 +134,7 @@ export const Posts: CollectionConfig<'posts'> = {
             {
               name: 'categories',
               type: 'relationship',
+              label: 'Catégories',
               admin: {
                 position: 'sidebar',
               },
@@ -133,7 +142,7 @@ export const Posts: CollectionConfig<'posts'> = {
               relationTo: 'categories',
             },
           ],
-          label: 'Meta',
+          label: 'Méta',
         },
         {
           name: 'meta',
@@ -146,12 +155,16 @@ export const Posts: CollectionConfig<'posts'> = {
             }),
             MetaTitleField({
               hasGenerateFn: true,
+              label: 'Titre SEO',
             }),
             MetaImageField({
               relationTo: 'media',
+              label: 'Image SEO',
             }),
 
-            MetaDescriptionField({}),
+            MetaDescriptionField({
+              label: 'Description SEO',
+            }),
             PreviewField({
               // if the `generateUrl` function is configured
               hasGenerateFn: true,
@@ -159,6 +172,7 @@ export const Posts: CollectionConfig<'posts'> = {
               // field paths to match the target field for data
               titlePath: 'meta.title',
               descriptionPath: 'meta.description',
+              label: 'Aperçu',
             }),
           ],
         },

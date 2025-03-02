@@ -19,6 +19,7 @@
   h6 {
     font-size: unset;
     font-weight: unset;
+    font-family: theme('fontFamily.fraunces');
   }
 
   :root {
@@ -71,4 +72,25 @@
 
 html {
   opacity: initial;
+}
+
+/* Custom utility classes for Fraunces font */
+.font-fraunces {
+  font-family: var(--font-fraunces);
+}
+
+.font-serif {
+  font-family: var(--font-fraunces);
+}
+
+/* Add alternate styles for certain elements */
+.heading-serif {
+  font-family: var(--font-fraunces);
+  font-weight: 500;
+}
+
+.heading-display {
+  font-family: var(--font-fraunces);
+  font-weight: 900;
+  font-variation-settings: 'SOFT' 100, 'WONK' 1;
 }

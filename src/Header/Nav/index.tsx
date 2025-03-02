@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 import type { Header as HeaderType } from '@/payload-types'
 
@@ -12,17 +12,40 @@ import { usePathname } from 'next/navigation'
 export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
   const navItems = data?.navItems || []
   const pathname = usePathname()
+  const [currentHash, setCurrentHash] = useState<string>('')
+
+  // Get the initial hash and set up an event listener for hash changes
+  useEffect(() => {
+    const updateHash = () => setCurrentHash(window.location.hash)
+    
+    // Set initial hash
+    updateHash()
+    
+    // Update hash when it changes
+    window.addEventListener('hashchange', updateHash)
+    
+    return () => {
+      window.removeEventListener('hashchange', updateHash)
+    }
+  }, [])
 
   return (
     <nav className="flex gap-6 items-center h-full px-4">
       {navItems.map(({ link }, i) => {
+        // Check if this is a hash link (one-page navigation)
+        const isHashLink = link.type === 'custom' && link.url?.startsWith('#');
+        
+        // For hash links, check if the hash in the URL matches
+        // For regular links, check if the path matches
         const isActive = 
-          (link.type === 'reference' && 
-           typeof link.reference?.value === 'object' && 
-           link.reference.value.slug && 
-           pathname === `${link.reference?.relationTo !== 'pages' ? `/${link.reference?.relationTo}` : ''}/${link.reference.value.slug}`) ||
-          (link.type === 'custom' && 
-           pathname === link.url);
+          isHashLink ? 
+            currentHash === link.url :
+            (link.type === 'reference' && 
+             typeof link.reference?.value === 'object' && 
+             link.reference.value.slug && 
+             pathname === `${link.reference?.relationTo !== 'pages' ? `/${link.reference?.relationTo}` : ''}/${link.reference.value.slug}`) ||
+            (link.type === 'custom' && !isHashLink && 
+             pathname === link.url);
            
         return (
           <CMSLink 
