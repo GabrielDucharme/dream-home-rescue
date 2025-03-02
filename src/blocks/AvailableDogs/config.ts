@@ -14,6 +14,14 @@ export const AvailableDogs: Block = {
       defaultValue: 'Nos chiens disponibles pour l\'adoption',
     },
     {
+      name: 'subtitle',
+      label: 'Texte secondaire',
+      type: 'text',
+      admin: {
+        description: 'Texte qui apparaîtra à droite du titre sur les écrans larges',
+      },
+    },
+    {
       name: 'showStatus',
       label: 'Filtrer par statut',
       type: 'select',
@@ -49,9 +57,12 @@ export const AvailableDogs: Block = {
       name: 'limit',
       label: 'Nombre de chiens à afficher',
       type: 'number',
-      defaultValue: 6,
-      min: 1,
+      defaultValue: 8,
+      min: 3,
       max: 24,
+      admin: {
+        description: 'Nombre recommandé: entre 6 et 12 pour une expérience carousel optimale',
+      },
     },
     {
       name: 'displayLink',

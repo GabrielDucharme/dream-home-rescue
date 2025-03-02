@@ -208,7 +208,14 @@ export interface Page {
     | FormBlock
     | {
         title?: string | null;
+        /**
+         * Texte qui apparaîtra à droite du titre sur les écrans larges
+         */
+        subtitle?: string | null;
         showStatus?: ('all' | 'available' | 'pending' | 'adopted' | 'foster' | 'medical') | null;
+        /**
+         * Nombre recommandé: entre 6 et 12 pour une expérience carousel optimale
+         */
         limit?: number | null;
         displayLink?: boolean | null;
         linkText?: string | null;
@@ -1467,6 +1474,7 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               title?: T;
+              subtitle?: T;
               showStatus?: T;
               limit?: T;
               displayLink?: T;

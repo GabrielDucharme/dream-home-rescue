@@ -32,7 +32,7 @@
   }
   
   h2 {
-    @apply text-3xl font-medium md:text-4xl;
+    @apply text-3xl md:text-4xl mb-8;
     font-variation-settings: 'SOFT' 25, 'WONK' 1;
   }
   
