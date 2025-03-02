@@ -1045,7 +1045,7 @@ export interface Dog {
   sex: 'male' | 'female';
   age: {
     /**
-     * Âge en années (utilisez 0 pour les chiens de moins d'un an)
+     * Âge en années (utilisez 0 pour les chiens de moins d&apos;un an)
      */
     years: number;
     /**
@@ -1121,7 +1121,7 @@ export interface SuccessStory {
       }[]
     | null;
   /**
-   * Partagez l'histoire de cette adoption et comment le chien s'adapte à sa nouvelle vie
+   * Partagez l&apos;histoire de cette adoption et comment le chien s&apos;adapte à sa nouvelle vie
    */
   story: {
     root: {
@@ -1143,7 +1143,7 @@ export interface SuccessStory {
    */
   testimonial?: string | null;
   /**
-   * Mettre cette histoire en avant sur la page d'accueil
+   * Mettre cette histoire en avant sur la page d&apos;accueil
    */
   featured?: boolean | null;
   meta?: {

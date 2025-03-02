@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
+import { Media } from '@/components/Media'
 
 export const dynamic = 'force-static'
 export const revalidate = 600
@@ -45,10 +46,11 @@ export default async function DogsPage() {
             >
               {dog.mainImage && typeof dog.mainImage !== 'string' && (
                 <div className="relative aspect-video overflow-hidden">
-                  <img 
-                    src={`${dog.mainImage.url}?w=600&h=400&fit=crop`} 
-                    alt={dog.name} 
-                    className="w-full h-full object-cover"
+                  <Media 
+                    resource={dog.mainImage}
+                    alt={dog.name}
+                    imgClassName="w-full h-full object-cover"
+                    fill
                   />
                   <div 
                     className={`absolute top-2 right-2 px-2 py-1 text-xs rounded ${

@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/carousel'
 import { WaveDivider } from '@/components/Divider'
 import { formatDateTime } from '@/utilities/formatDateTime'
+import { Media } from '@/components/Media'
 
 interface SuccessStory {
   id: string
@@ -175,10 +176,10 @@ export const Component: React.FC<{
 
                   {/* Image with fixed height that can handle both portrait and landscape */}
                   <div className="relative w-full h-72 bg-gray-100 flex items-center justify-center">
-                    <img 
-                      src={story.mainImage?.url} 
+                    <Media
+                      resource={story.mainImage}
                       alt={story.mainImage?.alt || story.title}
-                      className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                      imgClassName="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
                   
