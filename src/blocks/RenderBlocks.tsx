@@ -14,6 +14,7 @@ import { Component as RecentAdoptionsBlock } from '@/blocks/RecentAdoptions/Comp
 import { TestimonialsBlock } from '@/blocks/Testimonials/Component'
 import { NewsletterBlock } from '@/blocks/Newsletter/Component'
 import { Component as DonationGoalDisplayBlock } from '@/blocks/DonationGoalDisplay/Component'
+import { WhereToFindUs } from '@/blocks/WhereToFindUs/Component'
 
 const blockComponents = {
   aboutUs: AboutUsBlock,
@@ -28,6 +29,7 @@ const blockComponents = {
   recentAdoptions: RecentAdoptionsBlock,
   testimonials: TestimonialsBlock,
   newsletter: NewsletterBlock,
+  whereToFindUs: WhereToFindUs,
 }
 
 export const RenderBlocks: React.FC<{
