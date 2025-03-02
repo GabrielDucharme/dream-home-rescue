@@ -1,7 +1,10 @@
+'use client'
+
 import { cn } from '@/utilities/ui'
 import { Slot } from '@radix-ui/react-slot'
 import { type VariantProps, cva } from 'class-variance-authority'
 import * as React from 'react'
+import { ArrowRight } from 'lucide-react'
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center whitespace-nowrap rounded text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
@@ -26,6 +29,7 @@ const buttonVariants = cva(
         link: 'text-primary items-start justify-start underline-offset-4 hover:underline',
         outline: 'border border-border bg-background hover:bg-card hover:text-accent-foreground',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+        arrow: 'bg-flame text-flame-foreground hover:bg-flame/90 group',
       },
     },
   },
@@ -36,6 +40,7 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
   ref?: React.Ref<HTMLButtonElement>
+  withArrow?: boolean
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -44,10 +49,26 @@ const Button: React.FC<ButtonProps> = ({
   size,
   variant,
   ref,
+  withArrow = false,
+  children,
   ...props
 }) => {
   const Comp = asChild ? Slot : 'button'
-  return <Comp className={cn(buttonVariants({ className, size, variant }))} ref={ref} {...props} />
+  
+  if (withArrow) {
+    return (
+      <Comp className={cn(buttonVariants({ className, size, variant: 'arrow' }))} ref={ref} {...props}>
+        <span className="flex items-center gap-2">
+          {children}
+          <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+        </span>
+      </Comp>
+    )
+  }
+  
+  return <Comp className={cn(buttonVariants({ className, size, variant }))} ref={ref} {...props}>
+    {children}
+  </Comp>
 }
 
 export { Button, buttonVariants }

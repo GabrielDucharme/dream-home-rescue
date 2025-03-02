@@ -77,7 +77,7 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
 
   return (
     <div id="carousel" className="container relative">
-      {/* Decorative background image */}
+      {/* Decorative background images */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <Image 
           src="/twistie.png" 
@@ -87,12 +87,20 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
           className="absolute -right-20 -bottom-20 select-none"
           aria-hidden="true"
         />
+        <Image 
+          src="/love.png" 
+          alt="" 
+          width={280} 
+          height={280} 
+          className="absolute -left-10 -bottom-48 select-none"
+          aria-hidden="true"
+        />
       </div>
       
-      <div className="relative  z-10 flex flex-col items-center text-center md:text-left md:flex-row md:items-end md:justify-between mb-6 md:mb-20">
-        <h2 className=" md:max-w-xl md:text-balance mb-0 mt-0">{title}</h2>
+      <div className="relative z-10 flex flex-col items-center text-center md:text-left md:flex-row md:items-end md:justify-between mb-6 md:mb-20">
+        <h2 className="md:max-w-xl md:text-balance mb-0 mt-0">{title}</h2>
         {subtitle && (
-          <p className=" mt-2 md:mt-0 md:mb-1 max-w-md text-pretty">{subtitle}</p>
+          <p className="mt-2 md:mt-0 md:mb-1 max-w-md text-pretty">{subtitle}</p>
         )}
       </div>
       
@@ -102,8 +110,8 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
       
       {displayLink && (
         <div className="relative z-10 flex justify-center">
-          <Button asChild className="font-medium">
-            <Link href="/dogs">
+          <Button asChild withArrow className="font-medium bg-[#051436] text-white">
+            <Link href="/dogs" className='text-white'>
               {linkText}
             </Link>
           </Button>

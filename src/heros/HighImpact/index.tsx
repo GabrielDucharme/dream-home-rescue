@@ -30,10 +30,10 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
     >
       <div className="container mb-8 z-10 relative flex flex-col md:flex-row items-center md:items-end justify-between">
         {/* Left Column with Heading */}
-        <div className="md:max-w-[45%] mb-8 md:mb-0 md:text-left bg-black/30 p-6 rounded-lg backdrop-blur-sm">
-          {richText && <RichText className="mb-6 [&>h1]:text-3xl md:[&>h1]:text-4xl lg:[&>h1]:text-5xl [&>h1]:font-bold [&>h1]:mb-4" data={richText} enableGutter={false} />}
+        <div className="w-full md:max-w-[45%] mb-8 md:mb-0 text-center md:text-left bg-black/30 p-4 md:p-6 rounded-lg backdrop-blur-sm">
+          {richText && <RichText className="mb-4 md:mb-6 [&>h1]:text-2xl sm:[&>h1]:text-3xl md:[&>h1]:text-4xl lg:[&>h1]:text-5xl [&>h1]:font-bold [&>h1]:mb-2 md:[&>h1]:mb-4" data={richText} enableGutter={false} />}
           {Array.isArray(links) && links.length > 0 && (
-            <ul className="flex md:justify-start gap-4">
+            <ul className="flex justify-center md:justify-start gap-2 md:gap-4">
               {links.map(({ link }, i) => {
                 return (
                   <li key={i}>
@@ -46,8 +46,8 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
         </div>
         
         {/* Right Column with Donation Card */}
-        <div className="md:max-w-[45%]">
-          <Card className="w-full bg-white text-gray-800 rounded-t-3xl">
+        <div className="w-full md:max-w-[45%]">
+          <Card className="w-full bg-white text-gray-800 rounded-xl md:rounded-t-3xl shadow-md md:shadow-none">
             <CardHeader>
               <CardTitle className="text-center text-primary">Faire un don</CardTitle>
               <CardDescription className="text-center">Votre don aide à sauver des chiens dans le besoin</CardDescription>
@@ -71,12 +71,12 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
                   </Button>
                 </div>
                 
-                <div className="grid grid-cols-3 md:grid-cols-5 gap-2 mb-4">
+                <div className="grid grid-cols-5 gap-1 md:gap-2 mb-4">
                   {amounts.map((amt) => (
                     <Button 
                       key={amt} 
                       variant={amount === amt ? 'default' : 'outline'} 
-                      className="w-full"
+                      className="w-full text-xs md:text-base px-1 md:px-4"
                       onClick={() => setAmount(amt)}
                     >
                       {amt === 'Autre' ? amt : `${amt}$`}
@@ -115,7 +115,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
           </Card>
         </div>
       </div>
-      <div className="min-h-[80vh] select-none">
+      <div className="min-h-[85vh] md:min-h-[80vh] select-none">
         {media && typeof media === 'object' && (
           <Media fill imgClassName="-z-10 object-cover" priority resource={media} />
         )}
