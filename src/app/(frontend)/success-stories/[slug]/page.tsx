@@ -48,7 +48,7 @@ export default async function SuccessStoryPage({ params: { slug } }) {
           <div className="flex flex-wrap gap-4 items-center">
             <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg">
               <p className="text-white font-medium">
-                Date d'adoption: {formatDateTime({
+                Date d&apos;adoption: {formatDateTime({
                   date: new Date(successStory.adoptionDate),
                   options: {
                     year: 'numeric',
