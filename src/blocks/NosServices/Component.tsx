@@ -2,13 +2,16 @@
 
 import React from 'react'
 import { getDocumentSlug } from '@/utilities/getDocument'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { Media } from '@/components/Media'
 import { WaveDivider } from '@/components/Divider'
+import Link from 'next/link'
 
 export const Component: React.FC<{
   heading: string
   subheading?: string
+  buttonLabel?: string
   services: Array<{
     id: string
     title: string
@@ -20,7 +23,7 @@ export const Component: React.FC<{
     }
     slug: string
   }>
-}> = ({ heading, subheading, services }) => {
+}> = ({ heading, subheading, buttonLabel = 'En savoir plus', services }) => {
   return (
     <div id="services" className="w-full bg-[#26483B] pt-0 pb-24 relative mb-16">
       <WaveDivider fillColor="#26483B" position="top" height={70} className="-mt-16" />
@@ -33,18 +36,25 @@ export const Component: React.FC<{
           )}
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services?.map((service) => (
-            <Card key={service.id} className="bg-white h-full flex flex-col">
-              <CardHeader>
-                <div className="relative w-full aspect-video overflow-hidden rounded-t-lg">
+            <Card key={service.id} className="bg-[#EDEBE0] h-full flex flex-col max-w-xs mx-auto rounded-b-xl rounded-t-3xl overflow-hidden">
+              <CardHeader className="px-6 pt-8 pb-4">
+                <CardTitle className="text-center mb-6">{service.title}</CardTitle>
+                <div className="relative w-full aspect-[4/3] overflow-hidden rounded-lg mx-auto">
                   <Media resource={service.image} fill className="object-cover" />
                 </div>
-                <CardTitle className="mt-4">{service.title}</CardTitle>
               </CardHeader>
-              <CardContent className="flex-grow">
-                <p className="text-gray-600">{service.description}</p>
+              <CardContent className="flex-grow px-6 pb-4 pt-6">
+                <p className="text-gray-600 text-center">{service.description}</p>
               </CardContent>
+              <CardFooter className="px-6 pb-8 pt-2 flex justify-center">
+                <Link href={`/services/${service.slug}`}>
+                  <Button variant="link" className="text-[#26483B] hover:text-[#1a3229] font-medium underline-offset-4 transition-colors">
+                    {buttonLabel}
+                  </Button>
+                </Link>
+              </CardFooter>
             </Card>
           ))}
         </div>

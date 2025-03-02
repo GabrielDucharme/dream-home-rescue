@@ -28,7 +28,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
       className="relative -mt-[10.4rem] pt-20 flex items-center justify-center text-white"
       data-theme="dark"
     >
-      <div className="container mb-8 z-10 relative flex flex-col md:flex-row items-center justify-between">
+      <div className="container mb-8 z-10 relative flex flex-col md:flex-row items-center md:items-end justify-between">
         {/* Left Column with Heading */}
         <div className="md:max-w-[45%] mb-8 md:mb-0 md:text-left bg-black/30 p-6 rounded-lg backdrop-blur-sm">
           {richText && <RichText className="mb-6 [&>h1]:text-3xl md:[&>h1]:text-4xl lg:[&>h1]:text-5xl [&>h1]:font-bold [&>h1]:mb-4" data={richText} enableGutter={false} />}
@@ -47,7 +47,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
         
         {/* Right Column with Donation Card */}
         <div className="md:max-w-[45%]">
-          <Card className="w-full bg-white text-gray-800">
+          <Card className="w-full bg-white text-gray-800 rounded-t-3xl">
             <CardHeader>
               <CardTitle className="text-center text-primary">Faire un don</CardTitle>
               <CardDescription className="text-center">Votre don aide à sauver des chiens dans le besoin</CardDescription>
@@ -102,7 +102,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
               </div>
             </CardContent>
             <CardFooter className="flex-col gap-4">
-              <Button className="w-full" size="lg">
+              <Button className="w-full font-medium" variant="flame" size="lg">
                 {donationType === 'onetime' ? 'Faire un don maintenant' : 'Commencer un don mensuel'}
               </Button>
               <div className="flex items-center space-x-2">

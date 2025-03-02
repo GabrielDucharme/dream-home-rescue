@@ -209,7 +209,8 @@ export const Component: React.FC<WhereToFindUsBlockProps> = ({
                   <Button 
                     type="submit" 
                     disabled={isSubmitting}
-                    className="w-full bg-[#26483B] hover:bg-[#1c3a30] text-white"
+                    variant="flame"
+                    className="w-full font-medium"
                   >
                     {isSubmitting ? 'Envoi en cours...' : 'Envoyer'}
                   </Button>

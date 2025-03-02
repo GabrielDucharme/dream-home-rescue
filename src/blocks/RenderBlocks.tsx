@@ -50,10 +50,14 @@ export const RenderBlocks: React.FC<{
 
             if (Block) {
               return (
-                <div className="my-0" key={index}>
+                <section 
+                  className="section-spacing" 
+                  key={index}
+                  id={`block-${blockType}-${index}`}
+                >
                   {/* @ts-expect-error there may be some mismatch between the expected types here */}
                   <Block {...block} disableInnerContainer />
-                </div>
+                </section>
               )
             }
           }

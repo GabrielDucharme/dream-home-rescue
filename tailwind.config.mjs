@@ -76,6 +76,10 @@ const config = {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
         },
+        flame: {
+          DEFAULT: 'hsl(var(--flame))',
+          foreground: 'hsl(var(--flame-foreground))',
+        },
         foreground: 'hsl(var(--foreground))',
         input: 'hsl(var(--input))',
         muted: {
@@ -127,41 +131,119 @@ const config = {
         DEFAULT: {
           css: [
             {
-              '--tw-prose-body': 'var(--text)',
-              '--tw-prose-headings': 'var(--text)',
+              '--tw-prose-body': 'var(--foreground)',
+              '--tw-prose-headings': 'var(--foreground)',
+              '--tw-prose-links': 'hsl(var(--primary))',
+              '--tw-prose-bold': 'hsl(var(--foreground))',
+              '--tw-prose-counters': 'hsl(var(--muted-foreground))',
+              '--tw-prose-bullets': 'hsl(var(--muted-foreground))',
+              '--tw-prose-quotes': 'hsl(var(--foreground))',
+              '--tw-prose-code': 'hsl(var(--foreground))',
+              '--tw-prose-hr': 'hsl(var(--border))',
+              '--tw-prose-th-borders': 'hsl(var(--border))',
+              '--tw-prose-td-borders': 'hsl(var(--border))',
+              
+              // Base heading styles
               h1: {
                 fontWeight: '500',
                 fontFamily: 'var(--font-fraunces)',
-                marginBottom: '0.25em',
+                marginBottom: '0.5em',
+                letterSpacing: '-0.025em',
+                fontVariationSettings: "'SOFT' 25, 'WONK' 1",
               },
               h2: {
                 fontWeight: '500',
                 fontFamily: 'var(--font-fraunces)',
+                marginTop: '1.5em',
+                marginBottom: '0.5em',
+                letterSpacing: '-0.025em',
+                fontVariationSettings: "'SOFT' 25, 'WONK' 1",
               },
               h3: {
                 fontWeight: '500',
                 fontFamily: 'var(--font-fraunces)',
+                marginTop: '1.5em',
+                marginBottom: '0.5em',
+                fontVariationSettings: "'SOFT' 0, 'WONK' 1",
               },
               h4: {
                 fontWeight: '500',
                 fontFamily: 'var(--font-fraunces)',
+                marginTop: '1.25em',
+                marginBottom: '0.5em',
+              },
+              
+              // Text and link styling
+              p: {
+                lineHeight: '1.75',
+                marginTop: '1.25em',
+                marginBottom: '1.25em',
+              },
+              a: {
+                fontWeight: '500',
+                textDecoration: 'none',
+                transition: 'color 0.2s ease',
+                '&:hover': {
+                  color: 'hsl(var(--primary) / 0.8)',
+                },
+              },
+              
+              // List styling
+              ul: {
+                marginTop: '1.25em',
+                marginBottom: '1.25em',
+              },
+              ol: {
+                marginTop: '1.25em',
+                marginBottom: '1.25em',
+              },
+              li: {
+                marginTop: '0.375em',
+                marginBottom: '0.375em',
+              },
+              
+              // Code and blockquote styling
+              code: {
+                fontWeight: '400',
+              },
+              blockquote: {
+                fontStyle: 'italic',
+                fontFamily: 'var(--font-fraunces)',
+                fontWeight: '400',
+                borderLeftWidth: '4px',
+                borderLeftColor: 'hsl(var(--primary) / 0.3)',
+                paddingLeft: '1rem',
               },
             },
           ],
         },
+        
+        // Base typography size variant
         base: {
           css: [
             {
+              fontSize: '1rem',
               h1: {
                 fontSize: '2.5rem',
+                lineHeight: '1.1',
               },
               h2: {
+                fontSize: '1.75rem',
+                lineHeight: '1.2',
+              },
+              h3: {
+                fontSize: '1.5rem',
+                lineHeight: '1.3',
+              },
+              h4: {
                 fontSize: '1.25rem',
-                fontWeight: 600,
+                lineHeight: '1.4',
               },
             },
           ],
         },
+        
+        // Medium breakpoint typography adjustments
         md: {
           css: [
             {
@@ -169,7 +251,30 @@ const config = {
                 fontSize: '3.5rem',
               },
               h2: {
+                fontSize: '2rem',
+              },
+              h3: {
+                fontSize: '1.75rem',
+              },
+              h4: {
                 fontSize: '1.5rem',
+              },
+            },
+          ],
+        },
+        
+        // Large breakpoint typography adjustments
+        lg: {
+          css: [
+            {
+              h1: {
+                fontSize: '4rem',
+              },
+              h2: {
+                fontSize: '2.5rem',
+              },
+              h3: {
+                fontSize: '2rem',
               },
             },
           ],

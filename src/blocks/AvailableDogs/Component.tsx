@@ -81,16 +81,7 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
           <Link
             key={dog.slug}
             href={`/dogs/${dog.slug}`}
-            className={cn(
-              "block rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow border",
-              {
-                'border-green-300': dog.status === 'available',
-                'border-yellow-300': dog.status === 'pending',
-                'border-blue-300': dog.status === 'foster',
-                'border-red-300': dog.status === 'medical',
-                'border-gray-300': dog.status === 'adopted',
-              }
-            )}
+            className="block overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow rounded-t-3xl rounded-b-lg"
           >
             {dog.mainImage && typeof dog.mainImage !== 'string' && (
               <div className="relative aspect-square w-full overflow-hidden">
@@ -117,7 +108,7 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
       
       {displayLink && (
         <div className="flex justify-center">
-          <Button asChild>
+          <Button asChild variant="flame" className="font-medium">
             <Link href="/dogs">
               {linkText}
             </Link>

@@ -867,6 +867,10 @@ export interface TeamMember {
 export interface NosServicesBlock {
   heading: string;
   subheading?: string | null;
+  /**
+   * Text for the "Learn More" button (default: "En savoir plus")
+   */
+  buttonLabel?: string | null;
   services: (string | Service)[];
   id?: string | null;
   blockName?: string | null;
@@ -1630,6 +1634,7 @@ export interface FormBlockSelect<T extends boolean = true> {
 export interface NosServicesBlockSelect<T extends boolean = true> {
   heading?: T;
   subheading?: T;
+  buttonLabel?: T;
   services?: T;
   id?: T;
   blockName?: T;

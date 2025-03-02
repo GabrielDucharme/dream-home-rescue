@@ -14,6 +14,14 @@ export const NosServices: Block = {
       type: 'text',
     },
     {
+      name: 'buttonLabel',
+      type: 'text',
+      defaultValue: 'En savoir plus',
+      admin: {
+        description: 'Text for the "Learn More" button (default: "En savoir plus")',
+      },
+    },
+    {
       name: 'services',
       type: 'relationship',
       relationTo: 'services',

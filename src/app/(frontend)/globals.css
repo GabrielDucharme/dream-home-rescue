@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * Base animations
+ */
 .animation-delay-300 {
   animation-delay: 300ms;
 }
@@ -10,18 +13,65 @@
   animation-delay: 600ms;
 }
 
+/**
+ * Base styles - these are automatically applied to elements
+ */
 @layer base {
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-size: unset;
-    font-weight: unset;
-    font-family: theme('fontFamily.fraunces');
+  /* Core heading styles with consistent spacing and line heights */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-fraunces tracking-tight;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    line-height: 1.1;
   }
 
+  /* Default heading styles that can be overridden when needed */
+  h1 {
+    @apply text-4xl font-medium md:text-5xl xl:text-6xl;
+    font-variation-settings: 'SOFT' 25, 'WONK' 1;
+  }
+  
+  h2 {
+    @apply text-3xl font-medium md:text-4xl;
+    font-variation-settings: 'SOFT' 25, 'WONK' 1;
+  }
+  
+  h3 {
+    @apply text-2xl font-medium md:text-3xl;
+    font-variation-settings: 'SOFT' 0, 'WONK' 1;
+  }
+  
+  h4 {
+    @apply text-xl font-medium md:text-2xl;
+  }
+  
+  h5 {
+    @apply text-lg font-medium;
+  }
+  
+  h6 {
+    @apply text-base font-medium;
+  }
+
+  /* Paragraph styles */
+  p {
+    @apply font-sans leading-relaxed mb-4;
+  }
+
+  /* List styles */
+  ul, ol {
+    @apply pl-5 mb-4 space-y-2;
+  }
+
+  a {
+    @apply text-primary hover:text-primary/80 transition-colors;
+  }
+
+  blockquote {
+    @apply pl-4 border-l-4 border-primary/30 italic font-serif;
+  }
+
+  /* Color system and CSS variables */
   :root {
     --background: 210 20% 96%;
     --foreground: 222.2 84% 4.9%;
@@ -47,6 +97,9 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
+    --flame: 13 98% 55%;
+    --flame-foreground: 210 40% 98%;
+
     --border: 240 6% 80%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
@@ -57,40 +110,165 @@
     --warning: 34 89% 85%;
     --error: 10 100% 86%;
   }
-
-  /* Dark mode removed - using light mode only */
-}
-
-@layer base {
+  
   * {
     @apply border-border;
   }
+  
   body {
     @apply bg-background text-foreground min-h-[100vh] flex flex-col;
   }
+
+  html {
+    opacity: initial;
+  }
 }
 
-html {
-  opacity: initial;
+/**
+ * Component styles - these represent reusable component patterns
+ */
+@layer components {
+  /* Typography components */
+  .heading-display {
+    @apply font-fraunces font-black tracking-tight;
+    font-variation-settings: 'SOFT' 100, 'WONK' 1;
+  }
+  
+  .heading-serif {
+    @apply font-fraunces font-medium tracking-tight;
+    font-variation-settings: 'SOFT' 25, 'WONK' 1;
+  }
+  
+  /* 
+   * Section spacing system
+   * This creates a consistent vertical rhythm throughout the site
+   */
+  
+  /* Default section spacing between blocks */
+  .section-spacing {
+    @apply py-16 md:py-24 lg:py-24;
+  }
+  
+  /* For stacked sections with the same background color */
+  .section-spacing-compact {
+    @apply py-12 md:py-16 lg:py-24;
+  }
+  
+  /* For sections that need extra breathing room */
+  .section-spacing-large {
+    @apply py-20 md:py-28 lg:py-36;
+  }
+  
+  /* For minor sections or nested sections */
+  .section-spacing-small {
+    @apply py-8 md:py-12 lg:py-16;
+  }
+  
+  /* For internal section components */
+  .content-spacing {
+    @apply space-y-8 md:space-y-12;
+  }
+  
+  /* Content spacing variations */
+  .content-spacing-small {
+    @apply space-y-4 md:space-y-6;
+  }
+  
+  .content-spacing-large {
+    @apply space-y-12 md:space-y-16;
+  }
+  
+  /* Internal padding for contained sections */
+  .section-padding {
+    @apply px-4 md:px-6 lg:px-8;
+  }
+  
+  /* Card components */
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-md hover:-translate-y-1;
+  }
+  
+  /* Rich text content components */
+  .rich-text {
+    @apply prose max-w-none;
+  }
+  
+  .rich-text-sm {
+    @apply prose-sm max-w-none;
+  }
+  
+  .rich-text-lg {
+    @apply prose-lg max-w-none;
+  }
 }
 
-/* Custom utility classes for Fraunces font */
-.font-fraunces {
-  font-family: var(--font-fraunces);
-}
+/**
+ * Utility classes - these are single-purpose utility classes
+ */
+@layer utilities {
+  /* Font family utilities */
+  .font-fraunces {
+    font-family: var(--font-fraunces);
+  }
+  
+  .font-serif {
+    font-family: var(--font-fraunces);
+  }
 
-.font-serif {
-  font-family: var(--font-fraunces);
-}
-
-/* Add alternate styles for certain elements */
-.heading-serif {
-  font-family: var(--font-fraunces);
-  font-weight: 500;
-}
-
-.heading-display {
-  font-family: var(--font-fraunces);
-  font-weight: 900;
-  font-variation-settings: 'SOFT' 100, 'WONK' 1;
+  /* Font variation settings utilities */
+  .font-soft {
+    font-variation-settings: 'SOFT' 100;
+  }
+  
+  .font-crisp {
+    font-variation-settings: 'SOFT' 0;
+  }
+  
+  .font-wonky {
+    font-variation-settings: 'WONK' 1;
+  }
+  
+  .font-not-wonky {
+    font-variation-settings: 'WONK' 0;
+  }
+  
+  /* Combined variation settings */
+  .heading-soft {
+    font-variation-settings: 'SOFT' 100, 'WONK' 0;
+  }
+  
+  .heading-crisp {
+    font-variation-settings: 'SOFT' 0, 'WONK' 1;
+  }
+  
+  /* Text size and spacing utilities */
+  .prose-sm {
+    @apply text-sm leading-relaxed;
+  }
+  
+  .prose-lg {
+    @apply text-lg leading-relaxed;
+  }
+  
+  .prose-xl {
+    @apply text-xl leading-relaxed;
+  }
+  
+  /* Text wrapping utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  
+  /* Content spacing utilities */
+  .content-spacing > * + * {
+    @apply mt-4;
+  }
+  
+  .content-spacing-lg > * + * {
+    @apply mt-6;
+  }
 }

@@ -27,7 +27,7 @@ export const AboutUsBlock: React.FC<AboutUsBlock> = (props) => {
   } = props
 
   return (
-    <div id="about-us" className="pt-20 pb-28 relative mt-16" style={{ background: 'linear-gradient(180deg, #ECE0CE 0%, rgba(236, 224, 206, 0) 100%)' }}>
+    <div id="about-us" className="relative bg-gradient-to-b from-[#ECE0CE] to-transparent">
       <WaveDivider 
         fillColor="#ECE0CE" 
         position="top" 
@@ -35,23 +35,23 @@ export const AboutUsBlock: React.FC<AboutUsBlock> = (props) => {
         className="-mt-16"
       />
       
-      <div className="container">
-        <div className="flex flex-col items-center">
-          <div className="text-center mb-8 max-w-3xl mx-auto relative">
+      <div className="container section-spacing-compact">
+        <div className="content-spacing flex flex-col items-center">
+          <div className="text-center max-w-3xl mx-auto relative content-spacing-small">
             <div className="flex justify-center gap-6 mb-2">
               <DogHouseIcon width={20} height={20} className="text-amber-500 opacity-70 hover:opacity-100 transition-all hover:scale-110 animate-float animation-delay-300" />
               <PawIcon width={18} height={18} className="text-amber-500 opacity-70 hover:opacity-100 transition-all hover:scale-110 animate-bounce" />
               <DogBoneIcon width={20} height={18} className="text-amber-500 opacity-70 hover:opacity-100 transition-all hover:scale-110 animate-float animation-delay-600" />
             </div>
             <p className="text-sm font-medium uppercase tracking-wider text-amber-700 mb-2">À Propos de nous</p>
-            <h2 className="text-3xl font-bold mb-4">{mainHeading}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">{mainHeading}</h2>
             
             {supportingStatement && (
-              <p className="text-lg mb-6 text-gray-700">{supportingStatement}</p>
+              <p className="text-lg text-gray-700">{supportingStatement}</p>
             )}
           </div>
           
-          <div className="relative rounded-xl overflow-hidden shadow-lg max-w-3xl w-full">
+          <div className="relative rounded-xl overflow-hidden shadow-lg max-w-3xl w-full mt-8">
             {mediaType === 'image' && image && typeof image !== 'string' && (
               <img 
                 src={`${image.url}?w=800&h=600&fit=crop`} 
@@ -70,52 +70,51 @@ export const AboutUsBlock: React.FC<AboutUsBlock> = (props) => {
           </div>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-black relative">
-          {teamMembers?.length > 0 && (
-            <div className="absolute left-1/2 transform -translate-x-1/2 -top-6">
-              <div className="flex items-center">
-                {teamMembers
-                  .filter(tm => tm?.member && typeof tm.member !== 'string' && tm.member.photo)
-                  .map((teamMember, index) => {
-                    const member = teamMember.member;
-                    
-                    return (
-                      <div
-                        key={`team-member-${index}`}
-                        className="relative rounded-full overflow-hidden border-2 border-white shadow-lg hover:scale-110 hover:z-10 transition-transform"
-                        style={{
-                          width: '50px',
-                          height: '50px',
-                          marginLeft: index === 0 ? 0 : '-12px',
-                          zIndex: 10 - index,
-                        }}
-                      >
-                        <img
-                          src={`${member.photo.url}?w=100&h=100&fit=crop`}
-                          alt={member.name || 'Team member'}
-                          className="w-full h-full object-cover"
-                          title={`${member.name || ''}${member.title ? ` - ${member.title}` : ''}`}
-                        />
-                      </div>
-                    );
-                  })}
-              </div>
-            </div>
-          )}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div>
+        <div className="mt-16 pt-8 border-t border-black/20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
+            <div className="content-spacing-small">
               {coreValuesStatement && (
                 <>
-                  <h2 className="text-2xl font-bold mb-4">Nos valeurs</h2>
-                  <p className="text-lg mb-6 text-gray-700">{coreValuesStatement}</p>
+                  <h2 className="text-2xl font-bold">Nos valeurs</h2>
+                  <p className="text-lg text-gray-700">{coreValuesStatement}</p>
                   
                   {displayButton && (
-                    <div>
-                      <Button asChild>
+                    <div className="flex items-center mt-6">
+                      <Button asChild variant="flame" className="font-medium mr-4">
                         <Link href={buttonLink}>
                           {buttonText}
                         </Link>
                       </Button>
+                      
+                      {teamMembers?.length > 0 && (
+                        <div className="flex items-center">
+                          {teamMembers
+                            .filter(tm => tm?.member && typeof tm.member !== 'string' && tm.member.photo)
+                            .map((teamMember, index) => {
+                              const member = teamMember.member;
+                              
+                              return (
+                                <div
+                                  key={`team-member-${index}`}
+                                  className="relative rounded-full overflow-hidden border-2 border-white shadow-lg hover:scale-110 hover:z-10 transition-transform"
+                                  style={{
+                                    width: '50px',
+                                    height: '50px',
+                                    marginLeft: index === 0 ? 0 : '-12px',
+                                    zIndex: 10 - index,
+                                  }}
+                                >
+                                  <img
+                                    src={`${member.photo.url}?w=100&h=100&fit=crop`}
+                                    alt={member.name || 'Team member'}
+                                    className="w-full h-full object-cover"
+                                    title={`${member.name || ''}${member.title ? ` - ${member.title}` : ''}`}
+                                  />
+                                </div>
+                              );
+                            })}
+                        </div>
+                      )}
                     </div>
                   )}
                 </>
@@ -123,7 +122,7 @@ export const AboutUsBlock: React.FC<AboutUsBlock> = (props) => {
             </div>
             
             {detailedDescription && (
-              <div className="prose max-w-none">
+              <div className="rich-text">
                 <RichText data={detailedDescription} />
               </div>
             )}
