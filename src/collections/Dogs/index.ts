@@ -1,8 +1,9 @@
 import type { CollectionConfig } from 'payload'
 
-import { authenticated } from '../access/authenticated'
-import { authenticatedOrPublished } from '../access/authenticatedOrPublished'
+import { authenticated } from '@/access/authenticated'
+import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { slugField } from '@/fields/slug'
+import { revalidateHome, revalidateHomeAfterDelete } from './hooks/revalidateHome'
 import {
   MetaDescriptionField,
   MetaImageField,
@@ -258,6 +259,8 @@ export const Dogs: CollectionConfig<'dogs'> = {
         return data
       },
     ],
+    afterChange: [revalidateHome],
+    afterDelete: [revalidateHomeAfterDelete],
   },
   versions: {
     drafts: {
