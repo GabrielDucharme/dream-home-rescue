@@ -62,7 +62,7 @@ export const SuccessStories: CollectionConfig<'success-stories'> = {
       name: 'adoptionDate',
       type: 'date',
       required: true,
-      label: 'Date d\'adoption',
+      label: 'Date d&apos;adoption',
       admin: {
         date: {
           pickerAppearance: 'dayAndMonth',
@@ -124,7 +124,7 @@ export const SuccessStories: CollectionConfig<'success-stories'> = {
       }),
       required: true,
       admin: {
-        description: 'Partagez l\'histoire de cette adoption et comment le chien s\'adapte à sa nouvelle vie',
+        description: 'Partagez l&apos;histoire de cette adoption et comment le chien s&apos;adapte à sa nouvelle vie',
       },
     },
     {
@@ -141,7 +141,7 @@ export const SuccessStories: CollectionConfig<'success-stories'> = {
       label: 'Mise en avant',
       defaultValue: false,
       admin: {
-        description: 'Mettre cette histoire en avant sur la page d\'accueil',
+        description: 'Mettre cette histoire en avant sur la page d&apos;accueil',
       },
     },
     {
@@ -185,7 +185,7 @@ export const SuccessStories: CollectionConfig<'success-stories'> = {
         // If no meta title is provided, use the story's title
         if (!data.meta?.title && data.title) {
           if (!data.meta) data.meta = {}
-          data.meta.title = `${data.title} - Histoire d'adoption | Dream Home Rescue`
+          data.meta.title = `${data.title} - Histoire d&apos;adoption | Dream Home Rescue`
         }
         return data
       },

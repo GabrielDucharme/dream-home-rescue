@@ -31,7 +31,7 @@ export default async function DogsPage() {
       <div className="container mb-16">
         <div className="prose max-w-none">
           <h1>Nos Chiens</h1>
-          <p>Découvrez tous les chiens disponibles pour l'adoption dans notre refuge.</p>
+          <p>Découvrez tous les chiens disponibles pour l&apos;adoption dans notre refuge.</p>
         </div>
       </div>
 
@@ -61,7 +61,7 @@ export default async function DogsPage() {
                   >
                     {dog.status === 'available' ? 'Disponible' : 
                      dog.status === 'pending' ? 'Adoption en cours' : 
-                     dog.status === 'foster' ? 'Famille d\'accueil' : 
+                     dog.status === 'foster' ? 'Famille d&apos;accueil' : 
                      dog.status === 'medical' ? 'Soins médicaux' : 
                      'Adopté'}
                   </div>
@@ -82,6 +82,6 @@ export default async function DogsPage() {
 export function generateMetadata(): Metadata {
   return {
     title: 'Nos Chiens | Fondation de Secours pour Chiens',
-    description: 'Découvrez tous les chiens disponibles pour l\'adoption dans notre refuge.',
+    description: 'Découvrez tous les chiens disponibles pour l&apos;adoption dans notre refuge.',
   }
 }

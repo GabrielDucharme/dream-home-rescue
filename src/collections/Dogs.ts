@@ -83,7 +83,7 @@ export const Dogs: CollectionConfig<'dogs'> = {
           required: true,
           label: 'Années',
           admin: {
-            description: 'Âge en années (utilisez 0 pour les chiens de moins d\'un an)',
+            description: 'Âge en années (utilisez 0 pour les chiens de moins d&apos;un an)',
           },
           min: 0,
         },
@@ -108,7 +108,7 @@ export const Dogs: CollectionConfig<'dogs'> = {
       defaultValue: 'available',
       options: [
         {
-          label: 'Disponible pour l\'adoption',
+          label: 'Disponible pour l&apos;adoption',
           value: 'available',
         },
         {
@@ -120,7 +120,7 @@ export const Dogs: CollectionConfig<'dogs'> = {
           value: 'adopted',
         },
         {
-          label: 'En famille d\'accueil',
+          label: 'En famille d&apos;accueil',
           value: 'foster',
         },
         {

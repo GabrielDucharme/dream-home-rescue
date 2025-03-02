@@ -11,7 +11,7 @@ export const AvailableDogs: Block = {
       name: 'title',
       label: 'Titre',
       type: 'text',
-      defaultValue: 'Nos chiens disponibles pour l\'adoption',
+      defaultValue: 'Nos chiens disponibles pour l&apos;adoption',
     },
     {
       name: 'subtitle',
@@ -32,7 +32,7 @@ export const AvailableDogs: Block = {
           value: 'all',
         },
         {
-          label: 'Disponibles pour l\'adoption',
+          label: 'Disponibles pour l&apos;adoption',
           value: 'available',
         },
         {
@@ -44,7 +44,7 @@ export const AvailableDogs: Block = {
           value: 'adopted',
         },
         {
-          label: 'En famille d\'accueil',
+          label: 'En famille d&apos;accueil',
           value: 'foster',
         },
         {

@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { PawIcon, DogHouseIcon } from '@/components/icons'
 import Link from 'next/link'
 import { Media } from '@/components/Media'
-import { RichText } from '@/components/RichText'
+import RichText  from '@/components/RichText'
 
 import type { SuccessStory } from '@/payload-types'
 
