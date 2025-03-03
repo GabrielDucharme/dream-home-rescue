@@ -122,7 +122,7 @@ export const AboutUsBlock: React.FC<AboutUsBlock> = (props) => {
             
             {detailedDescription && (
               <p className="z-10">
-                <RichText data={detailedDescription} className='text-lg text-gray-700' />
+                <RichText data={detailedDescription} className=' text-gray-700' />
               </p>
             )}
           </div>
@@ -130,7 +130,7 @@ export const AboutUsBlock: React.FC<AboutUsBlock> = (props) => {
       </div>
       
       {/* Team image at the bottom */}
-      <div className="relative w-full overflow-hidden -mb-44 -mt-[500px]">
+      <div className="relative w-full overflow-hidden -mb-80 -mt-[400px]">
         <Image 
           src="/team.webp" 
           alt="Our Team" 
