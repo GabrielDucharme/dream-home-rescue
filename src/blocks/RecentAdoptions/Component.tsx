@@ -159,7 +159,7 @@ export const Component: React.FC<{
       <WaveDivider fillColor="#CDE9CE" position="top" height={70} className="-mt-16" />
       
       <div className="container">
-        <h2 className="text-2xl font-semibold mb-8 text-center">{heading}</h2>
+        <h2 className="mb-8 text-center">{heading}</h2>
       
       <div className="relative px-4 md:px-14">
         <Carousel className="w-full" opts={{ loop: successStories.length > 1 }}>
@@ -168,40 +168,33 @@ export const Component: React.FC<{
               <CarouselItem 
                 key={story.id} 
                 className={`basis-full ${successStories.length > 1 ? 'md:basis-1/2' : 'md:basis-2/3 lg:basis-1/2'} p-4`}>
-                <div className="relative overflow-hidden rounded-xl shadow-lg group hover:shadow-xl transition-all duration-300 bg-white h-full flex flex-col">
-                  {/* Badge that stays visible */}
-                  <div className="absolute top-3 right-3 z-10 bg-primary/90 text-white text-xs px-2 py-1 rounded-full font-medium">
-                    Adopté
-                  </div>
-
-                  {/* Image with fixed height that can handle both portrait and landscape */}
-                  <div className="relative w-full h-72 bg-gray-100 flex items-center justify-center">
-                    <Media
-                      resource={story.mainImage}
-                      alt={story.mainImage?.alt || story.title}
-                      imgClassName="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  
-                  {/* Card content with white background */}
-                  <div className="p-6 bg-white flex-grow flex flex-col">
-                    <div className="flex-grow">
-                      <h3 className="text-2xl font-bold text-gray-800 mb-2">{story.dog?.name}</h3>
-                      <p className="text-sm text-gray-600 mb-3">
-                        {`Adopté par ${story.family}`}
-                      </p>
-                      
-                      {story.testimonial && (
-                        <div className="my-3">
-                          <p className="text-sm italic text-gray-700 line-clamp-3">
-                            "{story.testimonial.substring(0, 120)}{story.testimonial.length > 120 ? '...' : '"'}
-                          </p>
-                        </div>
-                      )}
+                <div className="relative overflow-hidden rounded-xl shadow-lg group hover:shadow-xl transition-all duration-300 h-full flex flex-col bg-gradient-to-br from-primary/5 to-primary/10">
+                  {/* Image container with overlay elements */}
+                  <div className="relative w-full h-80 overflow-hidden">
+                    {/* Blurred background image */}
+                    <div className="absolute inset-0 opacity-30 blur-xl scale-110 overflow-hidden">
+                      <Media
+                        resource={story.mainImage}
+                        alt=""
+                        imgClassName="w-full h-full object-cover"
+                      />
                     </div>
                     
-                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-                      <p className="text-xs text-gray-500">
+                    {/* Main image */}
+                    <div className="absolute inset-0 flex items-center justify-center z-1">
+                      <Media
+                        resource={story.mainImage}
+                        alt={story.mainImage?.alt || story.title}
+                        imgClassName="max-w-full max-h-80 object-contain transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                    
+                    {/* Dark gradient overlay at the top */}
+                    <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/60 to-transparent z-10"></div>
+                    
+                    {/* Date on image */}
+                    <div className="absolute top-3 left-3 z-20">
+                      <div className="bg-black/40 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-md">
                         {formatDateTime({
                           date: new Date(story.adoptionDate),
                           options: {
@@ -210,12 +203,36 @@ export const Component: React.FC<{
                             day: 'numeric',
                           }
                         })}
+                      </div>
+                    </div>
+                    
+                    {/* Badge */}
+                    <div className="absolute top-3 right-3 z-20 bg-primary shadow-md text-white text-xs px-3 py-1 rounded-full font-medium">
+                      Adopté
+                    </div>
+                    
+                    {/* Dog name overlay at bottom of image */}
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent z-10 pt-12 pb-4 px-4">
+                      <h3 className="text-xl md:text-2xl font-bold text-white drop-shadow-sm">{story.dog?.name}</h3>
+                      <p className="text-xs text-white/90">
+                        Adopté par {story.family}
                       </p>
-                      
+                    </div>
+                  </div>
+                  
+                  {/* Minimal, clean card footer */}
+                  <div className="p-4 flex-grow flex flex-col bg-white">
+                    {story.testimonial && (
+                      <p className="text-sm italic text-gray-600 mb-4 line-clamp-2">
+                        "{story.testimonial.substring(0, 100)}{story.testimonial.length > 100 ? '...' : '"'}
+                      </p>
+                    )}
+                    
+                    <div className="mt-auto">
                       <Button 
-                        size="sm" 
+                        size="sm"
+                        variant="default"
                         asChild
-                        className="whitespace-nowrap"
                       >
                         <Link href={`/success-stories/${story.slug}`}>
                           {ctaText}

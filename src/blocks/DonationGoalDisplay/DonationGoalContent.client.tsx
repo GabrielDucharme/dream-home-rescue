@@ -96,7 +96,7 @@ export const DonationGoalContent: React.FC<{
       <div className={`container mx-auto px-4 relative z-10 ${isWideLayout ? 'max-w-6xl' : ''}`}>
         {/* Header Section */}
         <div className={`${isWideLayout ? 'text-center mb-8' : 'mb-6'}`}>
-          {heading && <h2 className="text-2xl font-bold mb-3">{heading}</h2>}
+          {heading && <h2 className="mb-3">{heading}</h2>}
           {description && <RichText data={description} className="mb-4" />}
         </div>
 
@@ -170,8 +170,11 @@ export const DonationGoalContent: React.FC<{
             
             {goal.image && !isCompactLayout && (
               <div className={`${isWideLayout ? 'md:w-1/3' : 'w-full'} flex justify-center`}>
-                <div className="relative w-full max-w-xs rounded-lg overflow-hidden">
-                  <Media resource={goal.image} />
+                <div className="relative w-full max-w-xs rounded-lg overflow-hidden h-64">
+                  <Media 
+                    resource={goal.image} 
+                    imgClassName="object-contain h-full w-full"
+                  />
                 </div>
               </div>
             )}
