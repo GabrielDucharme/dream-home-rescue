@@ -146,7 +146,7 @@ export const AboutUsBlock: React.FC<AboutUsBlock> = (props) => {
         <div className="absolute bottom-96 left-24 w-32 md:w-40 lg:w-80 h-auto">
           <Image
             src="/twistie2.png"
-            alt="Decorative element"
+            alt="decorative element"
             width={200}
             height={200}
             className="w-full h-auto object-contain"
