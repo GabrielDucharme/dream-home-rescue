@@ -37,7 +37,7 @@ export const Component: React.FC<{
           )}
         </div>
         
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 pt-10">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 py-10">
           {services?.map((service) => (
             <Card key={service.id} className="bg-[#EDEBE0] rounded-b-xl rounded-t-[60px]">
               <CardHeader className='p-0'>

@@ -70,7 +70,9 @@ export const DonationGoalContent: React.FC<{
   const debugMode = false;
   
   return (
-    <div className={`w-full py-12 ${isCompactLayout ? 'bg-gray-50' : ''}`}>
+    <div id="donation" className={`w-full py-10 md:py-16 ${isCompactLayout ? 'bg-gray-50' : ''} relative`}>
+      <WaveDivider position="top" fillColor={isCompactLayout ? '#F0F3F7' : '#F0F3F7'} height={70} className="-mt-16" />
+      
       {/* Debug info panel at the top if debug mode is on */}
       {debugMode && (
         <div className="container mb-4">
@@ -91,7 +93,7 @@ export const DonationGoalContent: React.FC<{
         </div>
       )}
       
-      <div className={`container ${isWideLayout ? 'max-w-6xl' : ''}`}>
+      <div className={`container mx-auto px-4 relative z-10 ${isWideLayout ? 'max-w-6xl' : ''}`}>
         {/* Header Section */}
         <div className={`${isWideLayout ? 'text-center mb-8' : 'mb-6'}`}>
           {heading && <h2 className="text-2xl font-bold mb-3">{heading}</h2>}
