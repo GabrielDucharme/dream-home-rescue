@@ -25,18 +25,19 @@ export const Component: React.FC<{
   }>
 }> = ({ heading, subheading, buttonLabel = 'En savoir plus', services }) => {
   return (
-    <div id="services" className="w-full bg-[#26483B] pt-0 relative section-spacing-small">
+    <div id="services" className="w-full bg-[#26483B] relative section-spacing">
       <WaveDivider fillColor="#26483B" position="top" height={70} className="-mt-16" />
       
-      <div className="container mx-auto px-4 relative z-10 pt-2">
-        <div className="text-center mb-12">
-          <h2 className="text-[#F0F3F7] mb-2">{heading}</h2>
+      <div className="container mx-auto px-4 relative z-10 pt-2 content-spacing">
+        <div className="text-center max-w-3xl mx-auto relative content-spacing-small">
+          <p className="text-xs font-medium uppercase tracking-wider text-[#F0F3F7] mb-2">Nos Valeurs</p>
+          <h2 className="text-[#F0F3F7] mb-2 mt-0 text-balance">{heading}</h2>
           {subheading && (
-            <p className="text-lg text-white/80">{subheading}</p>
+            <p className=" text-balance text-[#F0F3F7]">{subheading}</p>
           )}
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pt-10">
           {services?.map((service) => (
             <Card key={service.id} className="bg-[#EDEBE0] rounded-b-xl rounded-t-[60px]">
               <CardHeader className='p-0'>
