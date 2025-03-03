@@ -123,7 +123,7 @@ export const Component: React.FC<{
   // If goal not found or error occurred
   if (!goal) {
     return (
-      <div className="w-full">
+      <div id="donation" className="w-full">
         <div className="container">
           <div className="text-center p-6 bg-white shadow rounded-lg">
             <h3 className="text-xl font-bold mb-4">Aucun objectif de don trouvé</h3>
