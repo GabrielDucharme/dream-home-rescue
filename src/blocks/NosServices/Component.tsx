@@ -28,7 +28,7 @@ export const Component: React.FC<{
     <div id="services" className="w-full bg-[#26483B] pt-0 relative section-spacing-small">
       <WaveDivider fillColor="#26483B" position="top" height={70} className="-mt-16" />
       
-      <div className="container mx-auto px-4 relative z-10 pt-16">
+      <div className="container mx-auto px-4 relative z-10 pt-2">
         <div className="text-center mb-12">
           <h2 className="text-[#F0F3F7] mb-2">{heading}</h2>
           {subheading && (
@@ -38,17 +38,25 @@ export const Component: React.FC<{
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {services?.map((service) => (
-            <Card key={service.id} className="bg-[#EDEBE0] rounded-b-xl rounded-t-3xl">
-              <CardHeader>
-                <CardTitle className='text-center'>{service.title}</CardTitle>
+            <Card key={service.id} className="bg-[#EDEBE0] rounded-b-xl rounded-t-[60px]">
+              <CardHeader className='p-0'>
+                <CardTitle className='text-center'>
+                  <h3 className='text-2xl font-light'>
+                    {service.title}
+                  </h3>
+                </CardTitle>
               </CardHeader>
-              <CardContent className='p-0 w-full mx-auto flex items-center justify-center'>
-                <Media resource={service.image} className="object-cover p-8" />
+              <CardContent className='w-full mx-auto flex items-center justify-center'>
+                <div className="w-full flex items-center justify-center">
+                  <Media 
+                    resource={service.image} 
+                    className="h-full w-auto object-contain p-4" 
+                  />
+                </div>
               </CardContent>
-              <CardFooter>
+              <CardFooter className='p-0'>
                 <p className="text-gray-600 text-center text-sm px-10">{service.description}</p>
               </CardFooter>
-
             </Card>
           ))}
         </div>
