@@ -130,7 +130,7 @@ export const AboutUsBlock: React.FC<AboutUsBlock> = (props) => {
       </div>
       
       {/* Team image at the bottom */}
-      <div className="relative w-full overflow-hidden -mb-80 -mt-[400px]">
+      <div className="relative w-full overflow-hidden -mb-80 -mt-[450px]">
         <Image 
           src="/team.webp" 
           alt="Our Team" 
@@ -143,7 +143,7 @@ export const AboutUsBlock: React.FC<AboutUsBlock> = (props) => {
         <div className="absolute inset-0"></div>
         
         {/* Twistie image at bottom left */}
-        <div className="absolute bottom-96 left-24 w-32 md:w-40 lg:w-80 h-auto">
+        <div className="absolute bottom-80 left-24 w-32 md:w-40 lg:w-80 h-auto">
           <Image
             src="/twistie2.png"
             alt="decorative element"
