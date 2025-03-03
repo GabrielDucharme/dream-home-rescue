@@ -6,7 +6,7 @@ import RichText from '@/components/RichText'
 import { VideoPlayer } from './VideoPlayer.client'
 import { DogHouseIcon, DogBoneIcon, PawIcon } from '@/components/icons'
 import { WaveDivider } from '@/components/Divider'
-
+import Image from 'next/image'
 
 import type { AboutUsBlock } from '@/payload-types'
 
@@ -70,13 +70,12 @@ export const AboutUsBlock: React.FC<AboutUsBlock> = (props) => {
           </div>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-black/20">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
-            <div className="content-spacing-small">
+        <div className="mt-16 border-t border-black/20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 mt-16">
+            <div className="self-start">
               {coreValuesStatement && (
                 <>
-                  <h2 className="text-2xl font-bold">Nos valeurs</h2>
-                  <p className="text-lg text-gray-700">{coreValuesStatement}</p>
+                  <h3 className="text-3xl font-light text-gray-700 pt-0 mt-0">{coreValuesStatement}</h3>
                   
                   {displayButton && (
                     <div className="flex items-center mt-6">
@@ -122,11 +121,36 @@ export const AboutUsBlock: React.FC<AboutUsBlock> = (props) => {
             </div>
             
             {detailedDescription && (
-              <div className="rich-text">
-                <RichText data={detailedDescription} />
-              </div>
+              <p className="z-10">
+                <RichText data={detailedDescription} className='text-lg text-gray-700' />
+              </p>
             )}
           </div>
+        </div>
+      </div>
+      
+      {/* Team image at the bottom */}
+      <div className="relative w-full overflow-hidden -mb-44 -mt-[500px]">
+        <Image 
+          src="/team.webp" 
+          alt="Our Team" 
+          width={1920}
+          height={600}
+          className="w-full object-cover h-auto mix-blend-overlay"
+          priority={false}
+          quality={85}
+        />
+        <div className="absolute inset-0"></div>
+        
+        {/* Twistie image at bottom left */}
+        <div className="absolute bottom-96 left-24 w-32 md:w-40 lg:w-80 h-auto">
+          <Image
+            src="/twistie2.png"
+            alt="Decorative element"
+            width={200}
+            height={200}
+            className="w-full h-auto object-contain"
+          />
         </div>
       </div>
     </div>
