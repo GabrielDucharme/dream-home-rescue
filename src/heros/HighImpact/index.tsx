@@ -46,7 +46,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
         </div>
         
         {/* Right Column with Donation Card */}
-        <div className="w-full md:max-w-[45%]">
+        <div className="w-full md:max-w-[45%] mt-20">
           <Card className="w-full bg-white text-gray-800 rounded-xl md:rounded-t-3xl shadow-md md:shadow-none">
             <CardHeader>
               <CardTitle className="text-center text-primary">Faire un don</CardTitle>
