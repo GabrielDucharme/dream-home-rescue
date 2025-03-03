@@ -8,6 +8,7 @@ import RichText from '@/components/RichText'
 import { formatDateTime } from '@/utilities/formatDateTime'
 import { DogBoneIcon, PawIcon } from '@/components/icons'
 import type { DonationGoal } from '@/payload-types'
+import { WaveDivider } from '@/components/Divider'
 
 export const DonationGoalContent: React.FC<{
   goal: DonationGoal

@@ -28,7 +28,7 @@ export const Component: React.FC<{
     <div id="services" className="w-full bg-[#26483B] relative section-spacing">
       <WaveDivider fillColor="#26483B" position="top" height={70} className="-mt-16" />
       
-      <div className="container mx-auto px-4 relative z-10 pt-2 content-spacing">
+      <div className="container mx-auto px-4 relative z-10 content-spacing">
         <div className="text-center max-w-3xl mx-auto relative content-spacing-small">
           <p className="text-xs font-medium uppercase tracking-wider text-[#F0F3F7] mb-2">Nos Valeurs</p>
           <h2 className="text-[#F0F3F7] mb-2 mt-0 text-balance">{heading}</h2>
@@ -37,7 +37,7 @@ export const Component: React.FC<{
           )}
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pt-10">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 pt-10">
           {services?.map((service) => (
             <Card key={service.id} className="bg-[#EDEBE0] rounded-b-xl rounded-t-[60px]">
               <CardHeader className='p-0'>
@@ -56,7 +56,7 @@ export const Component: React.FC<{
                 </div>
               </CardContent>
               <CardFooter className='p-0'>
-                <p className="text-gray-600 text-center text-sm px-10">{service.description}</p>
+                <p className="text-gray-600 text-center text-sm px-4 md:px-10">{service.description}</p>
               </CardFooter>
             </Card>
           ))}

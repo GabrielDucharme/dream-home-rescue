@@ -12,6 +12,7 @@ import type { DonationGoal } from '@/payload-types'
 
 // Client-side component for interactivity
 import { DonationGoalContent } from './DonationGoalContent.client'
+import { WaveDivider } from '@/components/Divider'
 
 export const Component: React.FC<{
   heading?: string

@@ -43,7 +43,7 @@ export const AboutUsBlock: React.FC<AboutUsBlock> = (props) => {
               <PawIcon width={18} height={18} className="text-amber-500 opacity-70 hover:opacity-100 transition-all hover:scale-110 animate-bounce" />
               <DogBoneIcon width={20} height={18} className="text-amber-500 opacity-70 hover:opacity-100 transition-all hover:scale-110 animate-float animation-delay-600" />
             </div>
-            <p className="text-sm font-medium uppercase tracking-wider text-amber-700 mb-2">À Propos de nous</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-amber-700 mb-2">À Propos de nous</p>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">{mainHeading}</h2>
             
             {supportingStatement && (
@@ -130,7 +130,7 @@ export const AboutUsBlock: React.FC<AboutUsBlock> = (props) => {
       </div>
       
       {/* Team image at the bottom */}
-      <div className="relative w-full overflow-hidden -mb-80 -mt-[450px]">
+      <div className="relative w-full overflow-hidden -mt-40 md:-mb-36 md:-mt-[400px]">
         <Image 
           src="/team.webp" 
           alt="Our Team" 
