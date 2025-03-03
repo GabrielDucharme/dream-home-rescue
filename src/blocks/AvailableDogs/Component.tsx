@@ -76,7 +76,7 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
   }
 
   return (
-    <div id="carousel" className="container relative">
+    <div id="carousel" className="container relative section-spacing mb-48">
       {/* Decorative background images */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <Image 
@@ -84,7 +84,7 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
           alt="" 
           width={500} 
           height={500} 
-          className="absolute -right-20 -bottom-20 select-none"
+          className="absolute -right-20 -bottom-20 select-none w-1/2 md:w-1/3"
           aria-hidden="true"
         />
         <Image 
@@ -92,7 +92,7 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
           alt="" 
           width={280} 
           height={280} 
-          className="absolute -left-10 -bottom-48 select-none"
+          className="absolute -left-10 -bottom-48 select-none w-1/2 md:w-1/4"
           aria-hidden="true"
         />
       </div>
@@ -109,8 +109,8 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
       </div>
       
       {displayLink && (
-        <div className="relative z-10 flex justify-center">
-          <Button asChild withArrow className="font-medium bg-[#051436] text-white">
+        <div className="relative z-10 flex justify-center pt-10">
+          <Button asChild withArrow className="font-medium bg-[#051436] text-white md:text-lg">
             <Link href="/dogs" className='text-white'>
               {linkText}
             </Link>

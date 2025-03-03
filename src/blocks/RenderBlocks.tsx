@@ -51,7 +51,7 @@ export const RenderBlocks: React.FC<{
             if (Block) {
               return (
                 <section 
-                  className="section-spacing" 
+                  className="" 
                   key={index}
                   id={`block-${blockType}-${index}`}
                 >
