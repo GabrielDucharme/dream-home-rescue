@@ -5,19 +5,25 @@ import configPromise from '@payload-config'
 import type { Metadata } from 'next'
 import RichText from '@/components/RichText'
 import { Dog } from '@/payload-types'
-import { FormBlock } from '@/blocks/Form/Component'
+import { FormBlockWrapper } from './FormBlockWrapper.client'
 import { AdoptApplicationClient } from './AdoptApplicationClient'
 
 // Define the page props
 type AdoptionApplicationPageProps = {
-  params: {
+  params: Promise<{
+    dogId: string
+  }> | {
     dogId: string
   }
 }
 
 // Generate metadata for the page
-export async function generateMetadata({ params }: AdoptionApplicationPageProps): Promise<Metadata> {
-  const dog = await getDogById(params.dogId)
+export async function generateMetadata({ params: paramsPromise }: AdoptionApplicationPageProps): Promise<Metadata> {
+  // Await params if it's a promise
+  const params = 'then' in paramsPromise ? await paramsPromise : paramsPromise
+  const dogId = params.dogId
+  
+  const dog = await getDogById(dogId)
   
   if (!dog) {
     return {
@@ -71,11 +77,10 @@ async function getAdoptionForm() {
       })
       
       if (formById) {
-        console.log('Found adoption form by ID (67c72586f855d44d70291478):', formById.id)
         return formById
       }
     } catch (idError) {
-      console.log('Could not find form by ID, trying other methods...')
+      // Fall through to try other methods
     }
     
     // Check if the form with the specific slug exists
@@ -90,22 +95,13 @@ async function getAdoptionForm() {
     })
     
     if (formWithSlug.docs && formWithSlug.docs.length > 0) {
-      console.log('Found adoption form with slug "formulaire-adoption":', formWithSlug.docs[0].id)
       return formWithSlug.docs[0]
     }
     
     // If not found with that slug, try to find any form that might contain adoption in the title
-    console.log('No form found with slug "formulaire-adoption", trying to find any adoption form...')
     const allForms = await payload.find({
       collection: 'forms',
       limit: 10,
-    })
-    
-    console.log(`Found ${allForms.totalDocs} forms in total`)
-    
-    // Log the available forms for debugging
-    allForms.docs.forEach(form => {
-      console.log(`- Form: "${form.title}" (ID: ${form.id})`)
     })
     
     // Try to find a form with "adoption" in the title
@@ -114,17 +110,13 @@ async function getAdoptionForm() {
     )
     
     if (adoptionForm) {
-      console.log(`Using form "${adoptionForm.title}" instead (ID: ${adoptionForm.id})`)
       return adoptionForm
     }
     
     // If no adoption form is found, just return the first form as a fallback
     if (allForms.docs.length > 0) {
-      console.log(`No adoption form found, using first available form "${allForms.docs[0].title}" as fallback`)
       return allForms.docs[0]
     }
-    
-    console.log('No forms found in the database')
     return null
   } catch (error) {
     console.error('Error fetching adoption form:', error)
@@ -133,9 +125,13 @@ async function getAdoptionForm() {
 }
 
 // Main page component
-export default async function AdoptionApplicationPage({ params }: AdoptionApplicationPageProps) {
+export default async function AdoptionApplicationPage({ params: paramsPromise }: AdoptionApplicationPageProps) {
+  // Await params if it's a promise
+  const params = 'then' in paramsPromise ? await paramsPromise : paramsPromise
+  const dogId = params.dogId
+  
   // Get the dog and form data
-  const dog = await getDogById(params.dogId)
+  const dog = await getDogById(dogId)
   const adoptionForm = await getAdoptionForm()
   
   // If no dog is found, return 404
@@ -154,159 +150,6 @@ export default async function AdoptionApplicationPage({ params }: AdoptionApplic
         </p>
       </div>
     )
-  }
-
-  const introContent = {
-    root: {
-      children: [
-        {
-          children: [
-            {
-              detail: 0,
-              format: 0,
-              mode: "normal",
-              style: "",
-              text: `Vous souhaitez adopter ${dog.name}`,
-              type: "text",
-              version: 1
-            }
-          ],
-          direction: "ltr",
-          format: "",
-          indent: 0,
-          type: "heading",
-          version: 1,
-          tag: "h1"
-        },
-        {
-          children: [
-            {
-              detail: 0,
-              format: 0,
-              mode: "normal",
-              style: "",
-              text: "Merci de l'interet que vous portez a nos animaux ! Pour adopter un animal chez Dream Home Rescue, nous vous demandons de remplir ce formulaire afin de nous assurer que l'adoption est adaptee aux besoins specifiques de l'animal et a votre mode de vie.",
-              type: "text",
-              version: 1
-            }
-          ],
-          direction: "ltr",
-          format: "",
-          indent: 0,
-          type: "paragraph",
-          version: 1
-        },
-        {
-          children: [
-            {
-              detail: 0,
-              format: 0,
-              mode: "normal",
-              style: "",
-              text: "Le processus d'adoption comprend plusieurs etapes :",
-              type: "text",
-              version: 1
-            }
-          ],
-          direction: "ltr",
-          format: "",
-          indent: 0,
-          type: "paragraph",
-          version: 1
-        },
-        {
-          children: [
-            {
-              children: [
-                {
-                  detail: 0,
-                  format: 0,
-                  mode: "normal",
-                  style: "",
-                  text: "Remplir ce formulaire d'adoption",
-                  type: "text",
-                  version: 1
-                }
-              ],
-              direction: "ltr",
-              format: "",
-              indent: 0,
-              type: "listitem",
-              version: 1,
-              value: 1
-            },
-            {
-              children: [
-                {
-                  detail: 0,
-                  format: 0,
-                  mode: "normal",
-                  style: "",
-                  text: "Entretien telephonique avec un de nos benevoles",
-                  type: "text",
-                  version: 1
-                }
-              ],
-              direction: "ltr",
-              format: "",
-              indent: 0,
-              type: "listitem",
-              version: 1,
-              value: 2
-            },
-            {
-              children: [
-                {
-                  detail: 0,
-                  format: 0,
-                  mode: "normal",
-                  style: "",
-                  text: "Visite a votre domicile",
-                  type: "text",
-                  version: 1
-                }
-              ],
-              direction: "ltr",
-              format: "",
-              indent: 0,
-              type: "listitem",
-              version: 1,
-              value: 3
-            },
-            {
-              children: [
-                {
-                  detail: 0,
-                  format: 0,
-                  mode: "normal",
-                  style: "",
-                  text: "Signature du contrat d'adoption et finalisation",
-                  type: "text",
-                  version: 1
-                }
-              ],
-              direction: "ltr",
-              format: "",
-              indent: 0,
-              type: "listitem",
-              version: 1,
-              value: 4
-            }
-          ],
-          direction: "ltr",
-          format: "",
-          indent: 0,
-          type: "list",
-          version: 1,
-          listType: "number"
-        }
-      ],
-      direction: "ltr",
-      format: "",
-      indent: 0,
-      type: "root",
-      version: 1
-    }
   }
 
   return (
@@ -331,7 +174,15 @@ export default async function AdoptionApplicationPage({ params }: AdoptionApplic
               </div>
               <h2 className="text-3xl font-serif font-bold mb-2">{dog.name}</h2>
               {dog.breed && <p className="text-muted-foreground mb-2">{dog.breed}</p>}
-              {dog.age && <p className="mb-2"><span className="font-medium">Age:</span> {dog.age}</p>}
+              <p className="mb-2">
+                <span className="font-medium">Age:</span>{' '}
+                {dog.age 
+                  ? (typeof dog.age === 'object' 
+                    ? `${dog.age.years || 0} an${dog.age.years !== 1 ? 's' : ''} ${dog.age.months ? `et ${dog.age.months} mois` : ''}`
+                    : dog.age)
+                  : 'Non spécifié'
+                }
+              </p>
               {dog.sex && <p className="mb-2"><span className="font-medium">Sexe:</span> {dog.sex}</p>}
               {dog.description && (
                 <div className="mt-4 line-clamp-3 text-sm text-muted-foreground">
@@ -340,31 +191,66 @@ export default async function AdoptionApplicationPage({ params }: AdoptionApplic
               )}
             </div>
           </div>
-          
-          <RichText data={introContent} />
         </div>
         
         {adoptionForm ? (
-          <div className="max-w-4xl mx-auto">
-            <AdoptApplicationClient dogId={params.dogId} dogName={dog.name} />
-            
-            {/* Form debugging info - remove this in production */}
-            {process.env.NODE_ENV === 'development' && (
-              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
-                <p><strong>Form debugging info:</strong></p>
-                <p>Form ID: {adoptionForm.id}</p>
-                <p>Form Title: {adoptionForm.title}</p>
-                <p>Form Slug: {adoptionForm.slug}</p>
-                <p>Fields Count: {adoptionForm.fields?.length || 0}</p>
+          <div className="max-w-6xl mx-auto">
+            <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+              {/* Left sidebar with dog info and tips */}
+              <div className="lg:col-span-4 lg:sticky lg:top-24 lg:self-start">
+                <div className="bg-background/80 p-6 rounded-lg border border-border mb-6">
+                  <h3 className="text-xl font-serif font-medium mb-4 text-primary">Processus d'adoption</h3>
+                  <div className="space-y-4">
+                    <div className="flex gap-3">
+                      <div className="bg-flame text-white h-7 w-7 rounded-full flex items-center justify-center text-sm flex-shrink-0">1</div>
+                      <div>
+                        <p className="font-medium">Remplir le formulaire</p>
+                        <p className="text-sm text-muted-foreground">Complétez toutes les informations demandées</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="bg-flame text-white h-7 w-7 rounded-full flex items-center justify-center text-sm flex-shrink-0">2</div>
+                      <div>
+                        <p className="font-medium">Analyse de votre demande</p>
+                        <p className="text-sm text-muted-foreground">Nous étudions votre candidature sous 72h</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="bg-flame text-white h-7 w-7 rounded-full flex items-center justify-center text-sm flex-shrink-0">3</div>
+                      <div>
+                        <p className="font-medium">Visite préadoption</p>
+                        <p className="text-sm text-muted-foreground">Nous organisons une visite à votre domicile</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="bg-flame text-white h-7 w-7 rounded-full flex items-center justify-center text-sm flex-shrink-0">4</div>
+                      <div>
+                        <p className="font-medium">Finalisation de l'adoption</p>
+                        <p className="text-sm text-muted-foreground">Signature du contrat et rencontre avec {dog.name}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <AdoptApplicationClient dogId={dogId} dogName={dog.name} />
               </div>
-            )}
-            
-            {/* Wrapped form in a client component for better UX */}
-            <div className="mt-4 bg-background/50 p-6 rounded-lg border border-border">
-              <FormBlock 
-                form={adoptionForm}
-                enableIntro={false}
-              />
+              
+              {/* Right content with the form */}
+              <div className="lg:col-span-8 mt-8 lg:mt-0">
+                <div className="bg-white p-8 rounded-lg border border-border shadow-sm">
+                  <h2 className="text-2xl font-serif font-bold mb-6 text-center lg:text-left">
+                    Formulaire d'adoption pour {dog.name}
+                  </h2>
+                  <div className="prose prose-sm mb-6 max-w-none">
+                    <p>
+                      Merci pour votre intérêt à adopter {dog.name}. Ce formulaire nous aide à comprendre votre situation et à 
+                      déterminer si {dog.name} correspond à votre mode de vie. Prenez votre temps pour répondre avec 
+                      précision à toutes les questions.
+                    </p>
+                  </div>
+                  <FormBlockWrapper form={adoptionForm} />
+                </div>
+              </div>
             </div>
           </div>
         ) : (

@@ -4,7 +4,6 @@ import { getPayload } from 'payload'
 import React from 'react'
 import { Media } from '@/components/Media'
 import Link from 'next/link'
-import AdoptMeButtonClient from './AdoptMeButtonClient'
 
 export const dynamic = 'force-static'
 export const revalidate = 600
@@ -44,19 +43,16 @@ export default async function DogsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {dogs.map((dog) => (
             <div 
-              key={dog.slug}
-              className="border border-border rounded-lg overflow-hidden bg-card hover:shadow-md transition-shadow flex flex-col h-full group relative"
+              key={dog.id || `dog-${dog.slug}`}
+              className="border border-border rounded-lg overflow-hidden bg-card hover:shadow-md transition-shadow flex flex-col h-full"
             >
-              <Link href={`/dogs/${dog.slug}`} className="absolute inset-0 z-10">
-                <span className="sr-only">Voir le profil de {dog.name}</span>
-              </Link>
               <div className="relative">
                 {dog.mainImage && typeof dog.mainImage !== 'string' && (
                   <div className="relative aspect-video overflow-hidden">
                     <Media 
                       resource={dog.mainImage}
                       alt={dog.name}
-                      imgClassName="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      imgClassName="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       fill
                     />
                     <div 
@@ -78,11 +74,39 @@ export default async function DogsPage() {
                 )}
               </div>
               <div className="p-4 flex-grow">
-                <h2 className="text-lg font-bold group-hover:text-primary transition-colors">{dog.name}</h2>
-                <p className="text-sm text-gray-600">{dog.breed} - {dog.sex === 'male' ? 'Mâle' : 'Femelle'}</p>
+                <h2 className="text-lg font-bold">{dog.name}</h2>
+                <p className="text-sm text-gray-600 mb-2">{dog.breed} - {dog.sex === 'male' ? 'Mâle' : 'Femelle'}</p>
+                
+                {dog.age && (
+                  <p className="text-sm text-gray-600">
+                    <span className="font-medium">Âge:</span>{' '}
+                    {typeof dog.age === 'object' 
+                      ? `${dog.age.years || 0} an${dog.age.years !== 1 ? 's' : ''} ${dog.age.months ? `et ${dog.age.months} mois` : ''}`
+                      : dog.age}
+                  </p>
+                )}
               </div>
-              <div className="p-4 pt-0 mt-auto relative z-20">
-                <AdoptMeButtonClient dog={dog} className="w-full" />
+              <div className="p-4 grid grid-cols-2 gap-3">
+                <Link 
+                  href={dog.slug ? `/dogs/${dog.slug}` : `/dogs/${dog.id}`}
+                  className="flex justify-center items-center px-3 py-2 bg-primary/10 text-primary text-sm font-medium rounded-md hover:bg-primary/20 transition-colors"
+                >
+                  Voir profil
+                </Link>
+                
+                {(dog.status === 'available' || dog.status === 'disponible') ? (
+                  <Link 
+                    href={dog.id ? `/adopt/application/${dog.id}` : '#'}
+                    className={`flex justify-center items-center px-3 py-2 bg-flame text-white text-sm font-medium rounded-md hover:bg-flame/90 transition-colors ${!dog.id ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    {...(!dog.id ? { onClick: (e) => e.preventDefault() } : {})}
+                  >
+                    Adopter {dog.name}
+                  </Link>
+                ) : (
+                  <div className="flex justify-center items-center px-3 py-2 bg-gray-100 text-gray-500 text-sm font-medium rounded-md cursor-not-allowed">
+                    Non disponible
+                  </div>
+                )}
               </div>
             </div>
           ))}

@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Progress } from '@/components/ui/progress'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
+import { ChevronLeft, HelpCircle, ArrowUpCircle } from 'lucide-react'
 
 type AdoptApplicationClientProps = {
   dogId: string
@@ -16,13 +16,12 @@ export const AdoptApplicationClient: React.FC<AdoptApplicationClientProps> = ({
   dogName 
 }) => {
   const [formProgress, setFormProgress] = useState(0)
-  const [showTips, setShowTips] = useState(true)
+  const [showTips, setShowTips] = useState(false)
   const router = useRouter()
   
-  // Simulated form progress tracking - in a real app, this would be based on fields completed
+  // Form progress tracking
   useEffect(() => {
     const handleFormChange = () => {
-      // This is a simplified example - in a real implementation, you'd calculate based on completed fields
       const form = document.querySelector('form')
       if (form) {
         const inputs = form.querySelectorAll('input, textarea, select')
@@ -39,6 +38,9 @@ export const AdoptApplicationClient: React.FC<AdoptApplicationClientProps> = ({
       }
     }
     
+    // Initial calculation
+    setTimeout(handleFormChange, 1000)
+    
     // Set up the event listener
     document.addEventListener('change', handleFormChange)
     
@@ -49,57 +51,84 @@ export const AdoptApplicationClient: React.FC<AdoptApplicationClientProps> = ({
   
   return (
     <>
-      {showTips && (
-        <Alert className="mb-6 bg-blue-50 border-blue-200">
-          <AlertTitle className="text-blue-800 font-medium text-lg mb-2">
-            Conseils pour remplir votre demande
-          </AlertTitle>
-          <AlertDescription className="text-blue-700">
-            <ul className="list-disc pl-5 space-y-1">
-              <li>Prenez votre temps pour compléter le formulaire avec précision</li>
-              <li>Répondez à toutes les questions obligatoires (marquées d'un *)</li>
-              <li>Si vous avez des questions, contactez-nous au 01 23 45 67 89</li>
-              <li>N'oubliez pas de joindre les documents demandés</li>
-              <li>Votre demande sera examinée sous 72h par notre équipe</li>
-            </ul>
-            <Button 
-              variant="outline" 
-              className="mt-3 text-blue-800 border-blue-300 hover:bg-blue-100"
-              onClick={() => setShowTips(false)}
-            >
-              Masquer ces conseils
-            </Button>
-          </AlertDescription>
-        </Alert>
-      )}
-      
-      <div className="bg-background/80 p-4 rounded-lg border border-border mb-6">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-medium">Progression du formulaire</span>
-          <span className="text-sm font-medium">{formProgress}%</span>
+      <div className="space-y-6">
+        {/* Progress tracker */}
+        <div className="bg-background/80 p-5 rounded-lg border border-border">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm font-medium">Progression</span>
+            <span className="text-sm font-medium">{formProgress}%</span>
+          </div>
+          <Progress value={formProgress} className="h-2 bg-gray-100" />
+          <p className="text-xs text-muted-foreground mt-2">
+            {formProgress < 50 
+              ? "Continuez à remplir les champs obligatoires" 
+              : formProgress < 90 
+                ? "Vous avancez bien, continuez !" 
+                : "Presque terminé !"}
+          </p>
         </div>
-        <Progress value={formProgress} className="h-2" />
-        <p className="text-xs text-muted-foreground mt-2">
-          Remplissez tous les champs obligatoires pour compléter votre demande.
-        </p>
-      </div>
-      
-      <div className="flex gap-4 mb-6">
-        <Button 
-          variant="outline"
-          onClick={() => router.back()}
-          className="text-sm"
-        >
-          Retour au profil de {dogName}
-        </Button>
         
-        <Button
-          variant="outline"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="text-sm ml-auto"
-        >
-          Haut de page
-        </Button>
+        {/* Tips section - collapsible */}
+        <div className="bg-background/80 rounded-lg border border-border overflow-hidden">
+          <button 
+            className="w-full px-5 py-4 text-left flex items-center justify-between"
+            onClick={() => setShowTips(!showTips)}
+          >
+            <div className="flex items-center gap-2">
+              <HelpCircle className="w-5 h-5 text-flame" />
+              <span className="font-medium">Conseils pour remplir le formulaire</span>
+            </div>
+            <ChevronLeft className={`w-5 h-5 transition-transform ${showTips ? 'rotate-90' : '-rotate-90'}`} />
+          </button>
+          
+          {showTips && (
+            <div className="px-5 py-4 border-t border-border">
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-start gap-2">
+                  <span className="text-flame font-bold">•</span>
+                  <span>Prenez votre temps pour compléter le formulaire avec précision</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-flame font-bold">•</span>
+                  <span>Répondez à toutes les questions obligatoires (marquées d'un *)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-flame font-bold">•</span>
+                  <span>Si vous avez des questions, contactez-nous au 01 23 45 67 89</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-flame font-bold">•</span>
+                  <span>N'oubliez pas de joindre les documents demandés si nécessaire</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-flame font-bold">•</span>
+                  <span>Votre demande sera examinée sous 72h par notre équipe</span>
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
+        
+        {/* Navigation buttons */}
+        <div className="space-y-2">
+          <Button 
+            variant="outline"
+            onClick={() => router.back()}
+            className="text-sm w-full flex items-center justify-center gap-1"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Retour au profil de {typeof dogName === 'string' ? dogName : 'ce chien'}
+          </Button>
+          
+          <Button
+            variant="outline"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="text-sm w-full flex items-center justify-center gap-1"
+          >
+            <ArrowUpCircle className="w-4 h-4" />
+            Haut de page
+          </Button>
+        </div>
       </div>
     </>
   )
