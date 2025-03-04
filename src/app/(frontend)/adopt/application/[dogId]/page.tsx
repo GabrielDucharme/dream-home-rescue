@@ -57,12 +57,29 @@ async function getDogById(dogId: string): Promise<Dog | null> {
   }
 }
 
-// Get adoption form by slug
+// Get adoption form by slug or ID
 async function getAdoptionForm() {
   try {
     const payload = await getPayload({ config: configPromise })
     
-    const { docs } = await payload.find({
+    // First try to get the form by ID directly
+    try {
+      // You mentioned the form ID is 67c72586f855d44d70291478
+      const formById = await payload.findByID({
+        collection: 'forms',
+        id: '67c72586f855d44d70291478',
+      })
+      
+      if (formById) {
+        console.log('Found adoption form by ID (67c72586f855d44d70291478):', formById.id)
+        return formById
+      }
+    } catch (idError) {
+      console.log('Could not find form by ID, trying other methods...')
+    }
+    
+    // Check if the form with the specific slug exists
+    const formWithSlug = await payload.find({
       collection: 'forms',
       where: {
         slug: {
@@ -71,8 +88,44 @@ async function getAdoptionForm() {
       },
       limit: 1,
     })
-
-    return docs[0] || null
+    
+    if (formWithSlug.docs && formWithSlug.docs.length > 0) {
+      console.log('Found adoption form with slug "formulaire-adoption":', formWithSlug.docs[0].id)
+      return formWithSlug.docs[0]
+    }
+    
+    // If not found with that slug, try to find any form that might contain adoption in the title
+    console.log('No form found with slug "formulaire-adoption", trying to find any adoption form...')
+    const allForms = await payload.find({
+      collection: 'forms',
+      limit: 10,
+    })
+    
+    console.log(`Found ${allForms.totalDocs} forms in total`)
+    
+    // Log the available forms for debugging
+    allForms.docs.forEach(form => {
+      console.log(`- Form: "${form.title}" (ID: ${form.id})`)
+    })
+    
+    // Try to find a form with "adoption" in the title
+    const adoptionForm = allForms.docs.find(form => 
+      (form.title && form.title.toLowerCase().includes('adoption'))
+    )
+    
+    if (adoptionForm) {
+      console.log(`Using form "${adoptionForm.title}" instead (ID: ${adoptionForm.id})`)
+      return adoptionForm
+    }
+    
+    // If no adoption form is found, just return the first form as a fallback
+    if (allForms.docs.length > 0) {
+      console.log(`No adoption form found, using first available form "${allForms.docs[0].title}" as fallback`)
+      return allForms.docs[0]
+    }
+    
+    console.log('No forms found in the database')
+    return null
   } catch (error) {
     console.error('Error fetching adoption form:', error)
     return null
@@ -291,9 +344,20 @@ export default async function AdoptionApplicationPage({ params }: AdoptionApplic
           <RichText data={introContent} />
         </div>
         
-        {adoptionForm && (
+        {adoptionForm ? (
           <div className="max-w-4xl mx-auto">
             <AdoptApplicationClient dogId={params.dogId} dogName={dog.name} />
+            
+            {/* Form debugging info - remove this in production */}
+            {process.env.NODE_ENV === 'development' && (
+              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
+                <p><strong>Form debugging info:</strong></p>
+                <p>Form ID: {adoptionForm.id}</p>
+                <p>Form Title: {adoptionForm.title}</p>
+                <p>Form Slug: {adoptionForm.slug}</p>
+                <p>Fields Count: {adoptionForm.fields?.length || 0}</p>
+              </div>
+            )}
             
             {/* Wrapped form in a client component for better UX */}
             <div className="mt-4 bg-background/50 p-6 rounded-lg border border-border">
@@ -301,6 +365,22 @@ export default async function AdoptionApplicationPage({ params }: AdoptionApplic
                 form={adoptionForm}
                 enableIntro={false}
               />
+            </div>
+          </div>
+        ) : (
+          <div className="max-w-4xl mx-auto p-6 bg-red-50 border border-red-200 rounded-lg text-red-800">
+            <h3 className="text-lg font-bold mb-2">Formulaire d'adoption non trouvé</h3>
+            <p className="mb-4">Le formulaire d'adoption n'a pas été trouvé dans la base de données.</p>
+            
+            <div className="bg-white p-4 rounded border border-red-100 text-sm font-mono overflow-x-auto">
+              <p>Pour corriger ce problème :</p>
+              <ol className="list-decimal ml-5 mt-2 space-y-1">
+                <li>Accédez à l'admin Payload</li>
+                <li>Allez à la collection "Forms"</li>
+                <li>Créez un nouveau formulaire ou modifiez un existant</li>
+                <li>Assurez-vous que le slug est exactement "formulaire-adoption"</li>
+                <li>Ajoutez tous les champs nécessaires pour le formulaire d'adoption</li>
+              </ol>
             </div>
           </div>
         )}
