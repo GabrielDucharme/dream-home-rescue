@@ -3,6 +3,8 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 import { Media } from '@/components/Media'
+import Link from 'next/link'
+import AdoptMeButtonClient from './AdoptMeButtonClient'
 
 export const dynamic = 'force-static'
 export const revalidate = 600
@@ -15,7 +17,9 @@ export default async function DogsPage() {
     depth: 1,
     limit: 100,
     sort: '-createdAt',
+    // Include id for the AdoptMeButton
     select: {
+      id: true,
       name: true,
       breed: true,
       sex: true,
@@ -39,41 +43,48 @@ export default async function DogsPage() {
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {dogs.map((dog) => (
-            <a 
-              key={dog.slug} 
-              href={`/dogs/${dog.slug}`}
-              className="block border border-border rounded-lg overflow-hidden bg-card hover:shadow-md transition-shadow"
+            <div 
+              key={dog.slug}
+              className="border border-border rounded-lg overflow-hidden bg-card hover:shadow-md transition-shadow flex flex-col h-full group relative"
             >
-              {dog.mainImage && typeof dog.mainImage !== 'string' && (
-                <div className="relative aspect-video overflow-hidden">
-                  <Media 
-                    resource={dog.mainImage}
-                    alt={dog.name}
-                    imgClassName="w-full h-full object-cover"
-                    fill
-                  />
-                  <div 
-                    className={`absolute top-2 right-2 px-2 py-1 text-xs rounded ${
-                      dog.status === 'available' ? 'bg-green-100 text-green-800' : 
-                      dog.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                      dog.status === 'foster' ? 'bg-blue-100 text-blue-800' : 
-                      dog.status === 'medical' ? 'bg-red-100 text-red-800' : 
-                      'bg-gray-100 text-gray-800'
-                    }`}
-                  >
-                    {dog.status === 'available' ? 'Disponible' : 
-                     dog.status === 'pending' ? 'Adoption en cours' : 
-                     dog.status === 'foster' ? 'Famille d&apos;accueil' : 
-                     dog.status === 'medical' ? 'Soins médicaux' : 
-                     'Adopté'}
+              <Link href={`/dogs/${dog.slug}`} className="absolute inset-0 z-10">
+                <span className="sr-only">Voir le profil de {dog.name}</span>
+              </Link>
+              <div className="relative">
+                {dog.mainImage && typeof dog.mainImage !== 'string' && (
+                  <div className="relative aspect-video overflow-hidden">
+                    <Media 
+                      resource={dog.mainImage}
+                      alt={dog.name}
+                      imgClassName="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      fill
+                    />
+                    <div 
+                      className={`absolute top-2 right-2 px-2 py-1 text-xs rounded ${
+                        dog.status === 'available' ? 'bg-green-100 text-green-800' : 
+                        dog.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                        dog.status === 'foster' ? 'bg-blue-100 text-blue-800' : 
+                        dog.status === 'medical' ? 'bg-red-100 text-red-800' : 
+                        'bg-gray-100 text-gray-800'
+                      }`}
+                    >
+                      {dog.status === 'available' ? 'Disponible' : 
+                       dog.status === 'pending' ? 'Adoption en cours' : 
+                       dog.status === 'foster' ? 'Famille d&apos;accueil' : 
+                       dog.status === 'medical' ? 'Soins médicaux' : 
+                       'Adopté'}
+                    </div>
                   </div>
-                </div>
-              )}
-              <div className="p-4">
-                <h2 className="text-lg font-bold">{dog.name}</h2>
+                )}
+              </div>
+              <div className="p-4 flex-grow">
+                <h2 className="text-lg font-bold group-hover:text-primary transition-colors">{dog.name}</h2>
                 <p className="text-sm text-gray-600">{dog.breed} - {dog.sex === 'male' ? 'Mâle' : 'Femelle'}</p>
               </div>
-            </a>
+              <div className="p-4 pt-0 mt-auto relative z-20">
+                <AdoptMeButtonClient dog={dog} className="w-full" />
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -83,7 +94,7 @@ export default async function DogsPage() {
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'Nos Chiens | Fondation de Secours pour Chiens',
-    description: 'Découvrez tous les chiens disponibles pour l&apos;adoption dans notre refuge.',
+    title: 'Nos Chiens | Dream Home Rescue',
+    description: 'Découvrez tous les chiens disponibles pour l&apos;adoption chez Dream Home Rescue.',
   }
 }

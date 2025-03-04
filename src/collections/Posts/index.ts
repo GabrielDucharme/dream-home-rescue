@@ -17,6 +17,7 @@ import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidateDelete, revalidatePost } from './hooks/revalidatePost'
+import { cleanRelatedPosts } from './hooks/cleanRelatedPosts'
 
 import {
   MetaDescriptionField,
@@ -120,6 +121,7 @@ export const Posts: CollectionConfig<'posts'> = {
               label: 'Articles liés',
               admin: {
                 position: 'sidebar',
+                description: 'Articles liés à cet article',
               },
               filterOptions: ({ id }) => {
                 return {
@@ -130,6 +132,8 @@ export const Posts: CollectionConfig<'posts'> = {
               },
               hasMany: true,
               relationTo: 'posts',
+              // Make related posts optional
+              required: false,
             },
             {
               name: 'categories',
@@ -237,6 +241,7 @@ export const Posts: CollectionConfig<'posts'> = {
     afterChange: [revalidatePost],
     afterRead: [populateAuthors],
     afterDelete: [revalidateDelete],
+    beforeRead: [cleanRelatedPosts],
   },
   versions: {
     drafts: {

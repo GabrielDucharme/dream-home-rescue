@@ -28,6 +28,16 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  // Skip static generation errors and use on-demand ISR instead
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
+  onDemandEntries: {
+    // Keep unused pages in memory for this many seconds
+    maxInactiveAge: 60 * 60,
+    // Number of pages to keep in memory
+    pagesBufferLength: 5,
+  },
 }
 
 export default withPayload(nextConfig)
