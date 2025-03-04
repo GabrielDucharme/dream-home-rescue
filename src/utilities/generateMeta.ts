@@ -37,13 +37,54 @@ export const generateMeta = async (args: {
     const docTitle = doc?.meta?.title || (doc.title as string) || 'Dream Home Rescue'
     ogImageUrl.searchParams.set('title', docTitle)
     
-    // Determine the type of content
+    // Determine the type of content and add appropriate additional data
     if ('layout' in doc) {
       pageType = 'page'
       ogImageUrl.searchParams.set('type', pageType)
+      
+      // For pages, add a potential subtitle from meta description
+      if (doc?.meta?.description) {
+        const shortDesc = doc.meta.description.length > 100 
+          ? doc.meta.description.substring(0, 97) + '...' 
+          : doc.meta.description
+        ogImageUrl.searchParams.set('subtitle', shortDesc)
+      }
+      
     } else if ('publishedAt' in doc) {
       pageType = 'post'
       ogImageUrl.searchParams.set('type', pageType)
+      
+      // For posts, add publication date and author info
+      if (doc.publishedAt) {
+        const pubDate = new Date(doc.publishedAt as string).toLocaleDateString('fr-CA', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        })
+        
+        // Add author information if available
+        let extraData = pubDate
+        if (doc.authors && Array.isArray(doc.authors) && doc.authors.length > 0) {
+          const authorNames = doc.authors
+            .filter(author => author && typeof author === 'object' && 'name' in author)
+            .map(author => author.name)
+            .join(', ')
+            
+          if (authorNames) {
+            extraData += ` • Par ${authorNames}`
+          }
+        }
+        
+        ogImageUrl.searchParams.set('extraData', extraData)
+      }
+      
+      // For posts, also add a subtitle from meta description
+      if (doc?.meta?.description) {
+        const shortDesc = doc.meta.description.length > 100 
+          ? doc.meta.description.substring(0, 97) + '...' 
+          : doc.meta.description
+        ogImageUrl.searchParams.set('subtitle', shortDesc)
+      }
     }
     
     // Add image if available

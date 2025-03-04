@@ -48,6 +48,22 @@ export async function generateMetadata({ params: paramsPromise }: { params: Even
     month: 'long', 
     year: 'numeric'
   })
+  
+  // Format time for display
+  const eventTime = new Date(event.eventDate).toLocaleTimeString('fr-CA', { 
+    hour: 'numeric', 
+    minute: '2-digit',
+    hour12: false 
+  })
+  
+  // Add subtitle with event short description
+  if (event.shortDescription) {
+    ogImageUrl.searchParams.set('subtitle', event.shortDescription)
+  }
+  
+  // Add extra data with date and location
+  const extraData = `${eventDate} à ${eventTime}${event.location?.city ? ` • ${event.location.city}` : ''}`
+  ogImageUrl.searchParams.set('extraData', extraData)
 
   const title = event.meta?.title || `${event.title} | Dream Home Rescue`
   const description = event.meta?.description || event.shortDescription || `Événement de financement: ${event.title}`

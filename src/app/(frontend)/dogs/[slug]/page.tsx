@@ -68,6 +68,28 @@ export async function generateMetadata({ params: paramsPromise }: { params: DogD
   if (dog.mainImage?.url) {
     ogImageUrl.searchParams.set('image', `${baseUrl}${dog.mainImage.url}`)
   }
+  
+  // Add more detailed information
+  if (dog.breed) {
+    ogImageUrl.searchParams.set('subtitle', dog.breed)
+  }
+  
+  // Construct extra data string from dog details
+  const extraDataParts = []
+  if (dog.age) {
+    if (typeof dog.age === 'object') {
+      extraDataParts.push(`${dog.age.years || 0} ans ${dog.age.months ? `et ${dog.age.months} mois` : ''}`)
+    } else {
+      extraDataParts.push(`${dog.age}`)
+    }
+  }
+  if (dog.sex) {
+    extraDataParts.push(dog.sex === 'male' ? 'Mâle' : 'Femelle')
+  }
+  
+  if (extraDataParts.length > 0) {
+    ogImageUrl.searchParams.set('extraData', extraDataParts.join(' • '))
+  }
 
   return {
     title: `${dog.name} | Dream Home Rescue`,
