@@ -344,6 +344,9 @@ export interface Post {
     };
     [k: string]: unknown;
   };
+  /**
+   * Articles liés à cet article
+   */
   relatedPosts?: (string | Post)[] | null;
   categories?: (string | Category)[] | null;
   meta?: {
