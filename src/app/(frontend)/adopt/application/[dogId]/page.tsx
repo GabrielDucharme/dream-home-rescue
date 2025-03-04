@@ -72,7 +72,7 @@ async function getAdoptionForm() {
     try {
       // Use different form IDs based on environment
       const formId = process.env.NODE_ENV === 'production' 
-        ? '67c7382f52221499fc180b45'  // Production form ID
+        ? '67c73845ad653cd257388a1d'  // Updated production form ID
         : '67c72586f855d44d70291478'  // Development form ID
         
       const formById = await payload.findByID({
