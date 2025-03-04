@@ -125,7 +125,7 @@ export async function Footer() {
         <div className="container mx-auto px-4 pt-8 mt-12 border-t border-gray-300/30">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-xs text-gray-600">
-              © {currentYear} Dog Happy Rescue. Tous droits réservés.
+              © {currentYear} Dream Home Rescue. Tous droits réservés.
             </p>
             <div className="mt-4 md:mt-0 flex items-center space-x-4">
               <a href="#" className="text-xs text-gray-600 hover:text-primary">Politique de confidentialité</a>
