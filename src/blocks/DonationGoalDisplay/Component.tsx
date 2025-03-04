@@ -14,6 +14,13 @@ import type { DonationGoal } from '@/payload-types'
 import { DonationGoalContent } from './DonationGoalContent.client'
 import { WaveDivider } from '@/components/Divider'
 
+// Function to check if an event is upcoming
+function isUpcoming(dateStr: string): boolean {
+  const eventDate = new Date(dateStr)
+  const now = new Date()
+  return eventDate > now
+}
+
 export const Component: React.FC<{
   heading?: string
   description?: any
@@ -72,20 +79,41 @@ export const Component: React.FC<{
     )
   }
   
-  // Fetch goal data using server component and the payload API
+  // Fetch goal data and upcoming events using server component and the payload API
   let goal: DonationGoal | null = null
+  let upcomingEvent: any = null
   
   try {
     // Initialize the Payload client with our config
     const payload = await getPayload({ config: configPromise })
     
-    // Query with proper depth to ensure all relationships are populated
+    // Query goals with proper depth to ensure all relationships are populated
     const allGoals = await payload.find({
       collection: 'donation-goals',
       depth: 2 // Ensure relationships are populated to a depth of 2
     })
     
-    console.log('All donation goals:', allGoals)
+    // Also fetch upcoming events
+    const events = await payload.find({
+      collection: 'funding-events',
+      depth: 1,
+      where: {
+        status: {
+          equals: 'published'
+        }
+      },
+      sort: 'eventDate',
+      limit: 3 // Just fetch a few events
+    })
+    
+    // Find the first upcoming event
+    if (events && events.docs && events.docs.length > 0) {
+      upcomingEvent = events.docs.find(event => event.eventDate && isUpcoming(event.eventDate))
+      
+      if (upcomingEvent) {
+        console.log('Found upcoming event:', upcomingEvent.title)
+      }
+    }
     
     if (allGoals.docs.length > 0) {
       // If we have any goals, use the first one
@@ -111,7 +139,7 @@ export const Component: React.FC<{
       console.log('No donation goals found in the database - please create one in the Payload admin')
     }
   } catch (error) {
-    console.error('Error fetching donation goal:', error)
+    console.error('Error fetching donation goal or events:', error)
   }
 
   // Create debug data for frontend display
@@ -162,6 +190,7 @@ export const Component: React.FC<{
       showDonationButton={showDonationButton}
       donationButtonText={donationButtonText}
       layout={layout}
+      upcomingEvent={upcomingEvent}
     />
   )
 }

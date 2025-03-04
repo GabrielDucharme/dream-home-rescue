@@ -19,6 +19,7 @@ export const DonationGoalContent: React.FC<{
   showDonationButton?: boolean
   donationButtonText?: string
   layout?: 'standard' | 'compact' | 'wide'
+  upcomingEvent?: any
 }> = ({ 
   goal,
   heading,
@@ -27,7 +28,8 @@ export const DonationGoalContent: React.FC<{
   showNextGoals = true,
   showDonationButton = true,
   donationButtonText = 'Faire un don',
-  layout = 'standard'
+  layout = 'standard',
+  upcomingEvent
 }) => {
   // Handle missing or zero values to prevent errors
   const currentAmount = goal.currentAmount || 0
@@ -94,10 +96,14 @@ export const DonationGoalContent: React.FC<{
       )}
       
       <div className={`container mx-auto px-4 relative z-10 ${isWideLayout ? 'max-w-6xl' : ''}`}>
-        {/* Header Section */}
-        <div className={`${isWideLayout ? 'text-center mb-8' : 'mb-6'}`}>
-          {heading && <h2 className="mb-3">{heading}</h2>}
-          {description && <RichText data={description} className="mb-4" />}
+        {/* Header Section with improved layout - heading on left, description on right */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div>
+            {heading && <h2 className="text-3xl font-serif font-bold mb-2">{heading}</h2>}
+          </div>
+          <div className="md:max-w-xl">
+            {description && <RichText data={description} className="text-muted-foreground" />}
+          </div>
         </div>
 
         {/* Main Goal Card */}
@@ -210,9 +216,82 @@ export const DonationGoalContent: React.FC<{
           )}
         </div>
         
+        {/* Upcoming Event Section */}
+        {upcomingEvent && (
+          <div className="mt-12">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+              <div>
+                <h3 className="text-2xl font-serif font-bold">Événement à venir</h3>
+              </div>
+              <div>
+                <Link href="/evenements" className="text-primary hover:text-primary/80 transition-colors font-medium flex items-center">
+                  Voir tous les événements <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+            
+            <Link href={`/evenements/${upcomingEvent.slug}`} className="block group">
+              <div className="p-0 bg-white rounded-xl border border-border shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+                <div className="flex flex-col md:flex-row">
+                  {/* Event Image */}
+                  {upcomingEvent.mainImage && (
+                    <div className="md:w-1/3 relative">
+                      <div className="aspect-video md:aspect-square relative overflow-hidden">
+                        <Media 
+                          resource={upcomingEvent.mainImage}
+                          fill
+                          imgClassName="object-cover group-hover:scale-105 transition-transform duration-300"
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          alt={upcomingEvent.title}
+                        />
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Event Details */}
+                  <div className="flex-1 p-6">
+                    <div className="mb-2">
+                      <span className="inline-block bg-flame/10 text-flame text-xs font-medium px-2 py-1 rounded-md mb-2">
+                        {formatDateTime({
+                          date: new Date(upcomingEvent.eventDate),
+                          options: {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          }
+                        })}
+                      </span>
+                      <h4 className="text-xl font-bold group-hover:text-primary transition-colors">{upcomingEvent.title}</h4>
+                    </div>
+                    
+                    <p className="text-muted-foreground mb-4 line-clamp-2">{upcomingEvent.shortDescription}</p>
+                    
+                    <div className="flex items-center text-sm text-muted-foreground mb-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <span>{upcomingEvent.location?.name}, {upcomingEvent.location?.city}</span>
+                    </div>
+                    
+                    <div className="inline-flex items-center font-medium text-primary group-hover:underline">
+                      En savoir plus
+                      <svg xmlns="http://www.w3.org/2000/svg" className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
+        )}
+        
         {/* Next Goals Section */}
         {showNextGoals && sortedNextGoals?.length > 0 && (
-          <div className="mt-8">
+          <div className="mt-12">
             <h3 className="text-lg font-bold mb-4 flex items-center">
               <PawIcon className="w-5 h-5 mr-2 text-primary" />
               Prochains objectifs

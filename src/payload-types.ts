@@ -76,6 +76,7 @@ export interface Config {
     users: User;
     services: Service;
     'donation-goals': DonationGoal;
+    'funding-events': FundingEvent;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -97,6 +98,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
     'donation-goals': DonationGoalsSelect<false> | DonationGoalsSelect<true>;
+    'funding-events': FundingEventsSelect<false> | FundingEventsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1165,6 +1167,132 @@ export interface SuccessStory {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "funding-events".
+ */
+export interface FundingEvent {
+  id: string;
+  title: string;
+  status: 'draft' | 'published';
+  eventDate: string;
+  /**
+   * Seulement requis si l'événement dure plus d'une journée
+   */
+  endDate?: string | null;
+  location: {
+    name: string;
+    address: string;
+    city: string;
+    postalCode: string;
+    /**
+     * URL complète de Google Maps vers cet emplacement
+     */
+    googleMapsUrl?: string | null;
+  };
+  mainImage: string | Media;
+  galleryImages?:
+    | {
+        image: string | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Bref résumé de l'événement (100-150 caractères)
+   */
+  shortDescription: string;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  ticketOptions?:
+    | {
+        name: string;
+        /**
+         * Prix en dollars canadiens
+         */
+        price: number;
+        description?: string | null;
+        /**
+         * Laissez vide si illimité
+         */
+        maxQuantity?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  registrationEnabled?: boolean | null;
+  /**
+   * Formulaire à utiliser pour les inscriptions à cet événement
+   */
+  registrationForm?: (string | null) | Form;
+  /**
+   * Laissez vide si aucune date limite n'est applicable
+   */
+  registrationDeadline?: string | null;
+  sponsors?:
+    | {
+        name: string;
+        logo?: (string | null) | Media;
+        website?: string | null;
+        sponsorLevel?: ('platinum' | 'gold' | 'silver' | 'bronze' | 'supporter') | null;
+        id?: string | null;
+      }[]
+    | null;
+  organizers?:
+    | {
+        name: string;
+        role?: string | null;
+        contact?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  faq?:
+    | {
+        question: string;
+        answer: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1374,6 +1502,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'donation-goals';
         value: string | DonationGoal;
+      } | null)
+    | ({
+        relationTo: 'funding-events';
+        value: string | FundingEvent;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2001,6 +2133,83 @@ export interface DonationGoalsSelect<T extends boolean = true> {
   image?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "funding-events_select".
+ */
+export interface FundingEventsSelect<T extends boolean = true> {
+  title?: T;
+  status?: T;
+  eventDate?: T;
+  endDate?: T;
+  location?:
+    | T
+    | {
+        name?: T;
+        address?: T;
+        city?: T;
+        postalCode?: T;
+        googleMapsUrl?: T;
+      };
+  mainImage?: T;
+  galleryImages?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  shortDescription?: T;
+  description?: T;
+  ticketOptions?:
+    | T
+    | {
+        name?: T;
+        price?: T;
+        description?: T;
+        maxQuantity?: T;
+        id?: T;
+      };
+  registrationEnabled?: T;
+  registrationForm?: T;
+  registrationDeadline?: T;
+  sponsors?:
+    | T
+    | {
+        name?: T;
+        logo?: T;
+        website?: T;
+        sponsorLevel?: T;
+        id?: T;
+      };
+  organizers?:
+    | T
+    | {
+        name?: T;
+        role?: T;
+        contact?: T;
+        id?: T;
+      };
+  faq?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
