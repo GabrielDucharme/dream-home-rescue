@@ -24,7 +24,33 @@ export const generateMeta = async (args: {
 }): Promise<Metadata> => {
   const { doc } = args
 
-  const ogImage = getImageURL(doc?.meta?.image)
+  const serverUrl = getServerSideURL()
+  
+  // Create dynamic OG image URL for better social sharing
+  const ogImageUrl = new URL(`${serverUrl}/api/og`)
+  
+  // Set title and type based on document type
+  let pageType = 'default'
+  
+  if (doc) {
+    // Set the title for the OG image
+    const docTitle = doc?.meta?.title || (doc.title as string) || 'Dream Home Rescue'
+    ogImageUrl.searchParams.set('title', docTitle)
+    
+    // Determine the type of content
+    if ('layout' in doc) {
+      pageType = 'page'
+      ogImageUrl.searchParams.set('type', pageType)
+    } else if ('publishedAt' in doc) {
+      pageType = 'post'
+      ogImageUrl.searchParams.set('type', pageType)
+    }
+    
+    // Add image if available
+    if (doc?.meta?.image && typeof doc.meta.image === 'object' && 'url' in doc.meta.image) {
+      ogImageUrl.searchParams.set('image', `${serverUrl}${doc.meta.image.url}`)
+    }
+  }
 
   const title = doc?.meta?.title
     ? doc?.meta?.title + ' | Dream Home Rescue'
@@ -34,16 +60,23 @@ export const generateMeta = async (args: {
     description: doc?.meta?.description,
     openGraph: mergeOpenGraph({
       description: doc?.meta?.description || '',
-      images: ogImage
-        ? [
-            {
-              url: ogImage,
-            },
-          ]
-        : undefined,
+      images: [
+        {
+          url: ogImageUrl.toString(),
+          width: 1200,
+          height: 630,
+          alt: title,
+        }
+      ],
       title,
       url: Array.isArray(doc?.slug) ? doc?.slug.join('/') : '/',
     }),
+    twitter: {
+      card: 'summary_large_image',
+      title: title,
+      description: doc?.meta?.description || '',
+      images: [ogImageUrl.toString()],
+    },
     title,
   }
 }

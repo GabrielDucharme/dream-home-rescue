@@ -18,7 +18,8 @@ type EventPageProps = {
 }
 
 // Generate metadata for the page
-export async function generateMetadata({ params }: EventPageProps): Promise<Metadata> {
+export async function generateMetadata({ params: paramsPromise }: { params: EventPageProps['params'] }): Promise<Metadata> {
+  const params = await Promise.resolve(paramsPromise)
   const event = await getEventBySlug(params.slug)
   
   if (!event) {
@@ -28,12 +29,52 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
     }
   }
 
+  // Base URL for API
+  const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+  
+  // Create OG image URL with query parameters
+  const ogImageUrl = new URL(`${baseUrl}/api/og`)
+  ogImageUrl.searchParams.set('title', event.title)
+  ogImageUrl.searchParams.set('type', 'event')
+  
+  // Add image parameter if available
+  if (event.mainImage?.url) {
+    ogImageUrl.searchParams.set('image', `${baseUrl}${event.mainImage.url}`)
+  }
+
+  // Format date for sharing
+  const eventDate = new Date(event.eventDate).toLocaleDateString('fr-CA', { 
+    day: 'numeric', 
+    month: 'long', 
+    year: 'numeric'
+  })
+
+  const title = event.meta?.title || `${event.title} | Dream Home Rescue`
+  const description = event.meta?.description || event.shortDescription || `Événement de financement: ${event.title}`
+
   return {
-    title: event.meta?.title || `${event.title} | Dream Home Rescue`,
-    description: event.meta?.description || event.shortDescription || `Événement de financement: ${event.title}`,
+    title: title,
+    description: description,
     openGraph: {
-      images: event.mainImage?.url ? [event.mainImage.url] : [],
+      title: `${event.title} - ${eventDate} | Dream Home Rescue`,
+      description: description,
+      type: 'website', // Must be a valid OG type: website, article, book, profile, etc.
+      url: `${baseUrl}/evenements/${params.slug}`,
+      images: [
+        {
+          url: ogImageUrl.toString(),
+          width: 1200,
+          height: 630,
+          alt: event.title,
+        }
+      ],
     },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${event.title} - ${eventDate}`,
+      description: description,
+      images: [ogImageUrl.toString()],
+    }
   }
 }
 

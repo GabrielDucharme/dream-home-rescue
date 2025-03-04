@@ -45,7 +45,8 @@ type DogDetailPageProps = {
 }
 
 // Generate metadata for the page
-export async function generateMetadata({ params }: DogDetailPageProps): Promise<Metadata> {
+export async function generateMetadata({ params: paramsPromise }: { params: DogDetailPageProps['params'] }): Promise<Metadata> {
+  const params = await Promise.resolve(paramsPromise)
   const dog = await getDogBySlug(params.slug)
   
   if (!dog) {
@@ -55,12 +56,42 @@ export async function generateMetadata({ params }: DogDetailPageProps): Promise<
     }
   }
 
+  // Base URL for API
+  const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+  
+  // Create OG image URL with query parameters
+  const ogImageUrl = new URL(`${baseUrl}/api/og`)
+  ogImageUrl.searchParams.set('title', `Adoptez ${dog.name}`)
+  ogImageUrl.searchParams.set('type', 'dog')
+  
+  // Add image parameter if available
+  if (dog.mainImage?.url) {
+    ogImageUrl.searchParams.set('image', `${baseUrl}${dog.mainImage.url}`)
+  }
+
   return {
     title: `${dog.name} | Dream Home Rescue`,
     description: dog.metaDescription || `${dog.name} est disponible pour l'adoption chez Dream Home Rescue`,
     openGraph: {
-      images: dog.mainImage?.url ? [dog.mainImage.url] : [],
+      title: `Adoptez ${dog.name} | Dream Home Rescue`,
+      description: dog.metaDescription || `${dog.name} est disponible pour l'adoption chez Dream Home Rescue`,
+      type: 'article',
+      url: `${baseUrl}/dogs/${params.slug}`,
+      images: [
+        {
+          url: ogImageUrl.toString(),
+          width: 1200,
+          height: 630,
+          alt: `Photo de ${dog.name}`,
+        }
+      ],
     },
+    twitter: {
+      card: 'summary_large_image',
+      title: `Adoptez ${dog.name} | Dream Home Rescue`,
+      description: dog.metaDescription || `${dog.name} est disponible pour l'adoption chez Dream Home Rescue`,
+      images: [ogImageUrl.toString()],
+    }
   }
 }
 
