@@ -3,7 +3,13 @@
 import React from 'react'
 import { FormBlock } from '@/blocks/Form/Component'
 
-export function FormBlockWrapper({ form }: { form: any }) {
+interface FormBlockWrapperProps {
+  form: any
+  dogId?: string
+  dogName?: string
+}
+
+export function FormBlockWrapper({ form, dogId, dogName }: FormBlockWrapperProps) {
   if (!form) {
     return <div className="p-6 bg-gray-50 rounded-lg text-center">Aucun formulaire disponible</div>
   }
@@ -20,11 +26,18 @@ export function FormBlockWrapper({ form }: { form: any }) {
     )
   }
 
+  // Dog metadata to include with the form submission
+  const dogMetadata = {
+    dogId,
+    dogName
+  }
+
   return (
     <div className="rounded-lg">
       <FormBlock 
         form={form}
         enableIntro={false}
+        metadata={dogMetadata}
       />
     </div>
   )

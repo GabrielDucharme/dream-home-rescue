@@ -17,6 +17,7 @@ export type FormBlockType = {
   enableIntro: boolean
   form: FormType
   introContent?: SerializedEditorState
+  metadata?: Record<string, any>
 }
 
 export const FormBlock: React.FC<
@@ -29,6 +30,7 @@ export const FormBlock: React.FC<
     form: formFromProps,
     form: { id: formID, confirmationMessage, confirmationType, redirect, submitButtonLabel } = {},
     introContent,
+    metadata,
   } = props
 
   const formMethods = useForm({
@@ -63,10 +65,28 @@ export const FormBlock: React.FC<
         }, 1000)
 
         try {
+          // Prepare the submission data
+          const submissionData = [...dataToSend];
+          
+          // If we have dog metadata, include it in the form field data
+          if (metadata?.dogId) {
+            submissionData.push({
+              field: 'dog_id',
+              value: metadata.dogId
+            });
+          }
+          
+          if (metadata?.dogName) {
+            submissionData.push({
+              field: 'dog_name',
+              value: metadata.dogName
+            });
+          }
+          
           const req = await fetch(`${getClientSideURL()}/api/form-submissions`, {
             body: JSON.stringify({
               form: formID,
-              submissionData: dataToSend,
+              submissionData: submissionData,
             }),
             headers: {
               'Content-Type': 'application/json',
@@ -110,7 +130,7 @@ export const FormBlock: React.FC<
 
       void submitForm()
     },
-    [router, formID, redirect, confirmationType],
+    [router, formID, redirect, confirmationType, metadata],
   )
 
   return (

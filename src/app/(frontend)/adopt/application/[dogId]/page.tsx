@@ -252,7 +252,11 @@ export default async function AdoptionApplicationPage({ params: paramsPromise }:
                       précision à toutes les questions.
                     </p>
                   </div>
-                  <FormBlockWrapper form={adoptionForm} />
+                  <FormBlockWrapper 
+                    form={adoptionForm} 
+                    dogId={dogId} 
+                    dogName={dog.name} 
+                  />
                 </div>
               </div>
             </div>
