@@ -5,7 +5,15 @@ import React from 'react'
 import Link from 'next/link'
 import { Media } from '@/components/Media'
 import { formatDateTime } from '@/utilities/formatDateTime'
-import { MapPin, Calendar, ArrowRight } from 'lucide-react'
+import { MapPin, Calendar, ArrowRight, Clock, Users } from 'lucide-react'
+
+// Import shadcn components
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Separator } from '@/components/ui/separator'
 
 export const dynamic = 'force-static'
 export const revalidate = 600
@@ -23,6 +31,16 @@ function formatDate(dateStr: string): string {
   }
   
   return date.toLocaleDateString('fr-CA', options)
+}
+
+// Function to format time
+function formatTime(dateStr: string): string {
+  const date = new Date(dateStr)
+  return date.toLocaleTimeString('fr-CA', { 
+    hour: 'numeric', 
+    minute: '2-digit',
+    hour12: false 
+  })
 }
 
 // Function to check if an event is upcoming
@@ -54,29 +72,31 @@ export default async function EventsPage() {
   const pastEvents = allEvents.filter(event => !isUpcoming(event.eventDate))
     .sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime()) // Sort past events newest to oldest
 
+  const hasUpcomingEvents = upcomingEvents.length > 0
+  const hasPastEvents = pastEvents.length > 0
+
   return (
     <div className="pt-24 pb-24">
-      <div className="container mb-16">
-        <div className="prose max-w-none">
-          <h1>Événements de financement</h1>
-          <p>Joignez-vous à nous lors de nos événements pour soutenir notre mission de sauvetage et d'adoption.</p>
+      <div className="container mb-10">
+        <div className="max-w-3xl">
+          <Badge variant="outline" className="mb-4">Événements</Badge>
+          <h1 className="text-4xl font-serif font-bold mb-3">Événements de financement</h1>
+          <p className="text-muted-foreground text-lg">Joignez-vous à nous lors de nos événements pour soutenir notre mission de sauvetage et d'adoption.</p>
         </div>
       </div>
-
+      
       <div className="container">
-        {/* Upcoming Events */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-serif font-bold mb-8">Événements à venir</h2>
+        <Tabs defaultValue="upcoming" className="mb-12">
+          <TabsList className="mb-6">
+            <TabsTrigger value="upcoming">Événements à venir</TabsTrigger>
+            <TabsTrigger value="past">Événements passés</TabsTrigger>
+          </TabsList>
           
-          {upcomingEvents.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {upcomingEvents.map((event) => (
-                <Link 
-                  key={event.id}
-                  href={`/evenements/${event.slug}`}
-                  className="block group"
-                >
-                  <div className="border border-border rounded-lg overflow-hidden bg-card hover:shadow-md transition-shadow h-full flex flex-col">
+          <TabsContent value="upcoming">
+            {hasUpcomingEvents ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {upcomingEvents.map((event) => (
+                  <Card key={event.id} className="overflow-hidden group h-full flex flex-col hover:shadow-md transition-all">
                     {event.mainImage && typeof event.mainImage !== 'string' && (
                       <div className="relative aspect-video overflow-hidden">
                         <Media 
@@ -85,16 +105,29 @@ export default async function EventsPage() {
                           imgClassName="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           fill
                         />
+                        <div className="absolute top-2 left-2">
+                          <Badge variant="flame" className="bg-flame text-white">
+                            Événement à venir
+                          </Badge>
+                        </div>
                       </div>
                     )}
                     
-                    <div className="p-6 flex-grow">
-                      <div className="flex items-center gap-1 text-sm text-flame font-medium mb-2">
-                        <Calendar className="h-4 w-4" />
-                        <span>{formatDate(event.eventDate)}</span>
+                    <CardContent className="pt-6 flex-grow">
+                      <div className="flex flex-wrap gap-3 mb-3">
+                        <Badge variant="outline" className="flex items-center gap-1 bg-primary/5">
+                          <Calendar className="h-3 w-3" />
+                          {formatDate(event.eventDate)}
+                        </Badge>
+                        <Badge variant="outline" className="flex items-center gap-1 bg-primary/5">
+                          <Clock className="h-3 w-3" />
+                          {formatTime(event.eventDate)}
+                        </Badge>
                       </div>
                       
-                      <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{event.title}</h3>
+                      <CardTitle className="text-xl mb-2 group-hover:text-primary transition-colors">
+                        {event.title}
+                      </CardTitle>
                       
                       {event.location && (
                         <div className="flex items-center gap-1 text-sm text-muted-foreground mb-3">
@@ -103,41 +136,36 @@ export default async function EventsPage() {
                         </div>
                       )}
                       
-                      <p className="text-muted-foreground mb-4">{event.shortDescription}</p>
-                      
-                      <div className="mt-auto pt-2">
-                        <span className="inline-flex items-center gap-1 text-primary font-medium group-hover:gap-2 transition-all">
+                      <CardDescription className="mb-4 text-base">
+                        {event.shortDescription}
+                      </CardDescription>
+                    </CardContent>
+                    
+                    <CardFooter className="pt-0 mt-auto">
+                      <Button variant="outline" className="w-full" asChild>
+                        <Link href={`/evenements/${event.slug}`}>
                           En savoir plus
-                          <ArrowRight className="h-4 w-4" />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="bg-muted p-8 rounded-lg text-center">
-              <p className="text-muted-foreground">
-                Aucun événement à venir pour le moment. Revenez bientôt pour découvrir nos prochains événements.
-              </p>
-            </div>
-          )}
-        </div>
-        
-        {/* Past Events */}
-        {pastEvents.length > 0 && (
-          <div>
-            <h2 className="text-2xl font-serif font-bold mb-8">Événements passés</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {pastEvents.map((event) => (
-                <Link 
-                  key={event.id}
-                  href={`/evenements/${event.slug}`}
-                  className="block group"
-                >
-                  <div className="border border-border rounded-lg overflow-hidden bg-card hover:shadow-md transition-shadow h-full flex flex-col opacity-80 hover:opacity-100">
+                          <ArrowRight className="h-4 w-4 ml-2" />
+                        </Link>
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Alert className="bg-muted border">
+                <AlertDescription className="text-center py-8">
+                  Aucun événement à venir pour le moment. Revenez bientôt pour découvrir nos prochains événements.
+                </AlertDescription>
+              </Alert>
+            )}
+          </TabsContent>
+          
+          <TabsContent value="past">
+            {hasPastEvents ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {pastEvents.map((event) => (
+                  <Card key={event.id} className="overflow-hidden group h-full flex flex-col hover:shadow-md transition-all opacity-80 hover:opacity-100">
                     {event.mainImage && typeof event.mainImage !== 'string' && (
                       <div className="relative aspect-video overflow-hidden grayscale group-hover:grayscale-0 transition-all">
                         <Media 
@@ -146,16 +174,25 @@ export default async function EventsPage() {
                           imgClassName="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           fill
                         />
+                        <div className="absolute top-2 left-2">
+                          <Badge variant="secondary" className="bg-secondary/80 backdrop-blur-sm">
+                            Événement passé
+                          </Badge>
+                        </div>
                       </div>
                     )}
                     
-                    <div className="p-6 flex-grow">
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground mb-2">
-                        <Calendar className="h-4 w-4" />
-                        <span>{formatDate(event.eventDate)}</span>
+                    <CardContent className="pt-6 flex-grow">
+                      <div className="flex flex-wrap gap-3 mb-3">
+                        <Badge variant="outline" className="flex items-center gap-1">
+                          <Calendar className="h-3 w-3" />
+                          {formatDate(event.eventDate)}
+                        </Badge>
                       </div>
                       
-                      <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{event.title}</h3>
+                      <CardTitle className="text-xl mb-2 group-hover:text-primary transition-colors">
+                        {event.title}
+                      </CardTitle>
                       
                       {event.location && (
                         <div className="flex items-center gap-1 text-sm text-muted-foreground mb-3">
@@ -164,21 +201,44 @@ export default async function EventsPage() {
                         </div>
                       )}
                       
-                      <p className="text-muted-foreground mb-4">{event.shortDescription}</p>
-                      
-                      <div className="mt-auto pt-2">
-                        <span className="inline-flex items-center gap-1 text-primary font-medium group-hover:gap-2 transition-all">
+                      <CardDescription className="mb-4 text-base">
+                        {event.shortDescription}
+                      </CardDescription>
+                    </CardContent>
+                    
+                    <CardFooter className="pt-0 mt-auto">
+                      <Button variant="outline" className="w-full" asChild>
+                        <Link href={`/evenements/${event.slug}`}>
                           Voir le récapitulatif
-                          <ArrowRight className="h-4 w-4" />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
+                          <ArrowRight className="h-4 w-4 ml-2" />
+                        </Link>
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Alert className="bg-muted border">
+                <AlertDescription className="text-center py-8">
+                  Aucun événement passé n'est disponible pour le moment.
+                </AlertDescription>
+              </Alert>
+            )}
+          </TabsContent>
+        </Tabs>
+        
+        <Separator className="my-12" />
+        
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-2xl font-serif font-bold mb-4">Vous souhaitez organiser un événement?</h2>
+          <p className="text-muted-foreground mb-6">
+            Nous sommes toujours à la recherche de partenaires pour organiser des événements de financement. 
+            Si vous êtes intéressé à nous aider, contactez-nous!
+          </p>
+          <Button size="lg" variant="flame" asChild>
+            <Link href="/contact">Nous contacter</Link>
+          </Button>
+        </div>
       </div>
     </div>
   )

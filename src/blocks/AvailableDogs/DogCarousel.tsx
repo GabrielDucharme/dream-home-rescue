@@ -21,8 +21,8 @@ export const DogsCarousel = ({ dogs }) => {
       className="relative mx-auto w-full"
     >
       <CarouselContent>
-        {dogs.map((dog) => (
-          <CarouselItem key={dog.slug} className="basis-4/5 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 px-2">
+        {dogs.map((dog, index) => (
+          <CarouselItem key={dog.id || `dog-${index}`} className="basis-4/5 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 px-2">
             <Link
               href={`/dogs/${dog.slug}`}
               className="block overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow rounded-t-2xl rounded-b-lg h-full"

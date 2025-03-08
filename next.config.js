@@ -28,10 +28,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Skip static generation errors and use on-demand ISR instead
-  experimental: {
-    missingSuspenseWithCSRBailout: false,
-  },
+  // experimental: {
+  //   missingSuspenseWithCSRBailout: false, // Removed - no longer supported
+  // },
   onDemandEntries: {
     // Keep unused pages in memory for this many seconds
     maxInactiveAge: 60 * 60,

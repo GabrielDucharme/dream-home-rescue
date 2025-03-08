@@ -10,6 +10,16 @@ import { Media } from '@/components/Media'
 import { MapPin, Calendar, Clock, Users, ExternalLink, ArrowRight } from 'lucide-react'
 import { EventRegistrationForm } from './EventRegistrationForm.client'
 
+// Import shadcn components
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Separator } from '@/components/ui/separator'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+
 // Define the page props
 type EventPageProps = {
   params: {
@@ -205,10 +215,10 @@ export default async function EventPage({ params }: EventPageProps) {
           {/* Adjusted padding for better mobile experience */}
           <div className="pt-10 pb-14 md:pt-24 md:pb-24">
             <div className="max-w-3xl mx-auto text-center text-white">
-              {/* Event type label with improved mobile spacing */}
-              <div className="inline-block bg-flame text-white text-xs md:text-sm font-medium px-2.5 py-1 md:px-3 md:py-1 rounded-full mb-3 md:mb-5">
+              {/* Event type label with Badge component */}
+              <Badge variant="default" className="bg-flame mb-3 md:mb-5 px-3 py-1.5 text-xs md:text-sm">
                 Événement de financement
-              </div>
+              </Badge>
               
               {/* Title with improved font sizes for mobile */}
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-3 md:mb-4 drop-shadow-sm">{event.title}</h1>
@@ -252,12 +262,14 @@ export default async function EventPage({ params }: EventPageProps) {
               {/* Registration button with fixed position */}
               {registrationOpen && (
                 <div className="fixed bottom-4 left-0 right-0 z-50 px-4 md:static md:mt-8 md:px-0">
-                  <a 
-                    href="#inscription" 
-                    className="bg-flame hover:bg-flame/90 text-white font-medium rounded-md px-5 py-2.5 md:px-6 md:py-3 flex items-center justify-center w-full md:inline-flex md:w-auto transition-colors shadow-md hover:shadow-lg"
+                  <Button
+                    variant="flame"
+                    size="lg"
+                    className="w-full md:w-auto shadow-md hover:shadow-lg"
+                    asChild
                   >
-                    Je m'inscris maintenant
-                  </a>
+                    <a href="#inscription">Je m'inscris maintenant</a>
+                  </Button>
                 </div>
               )}
             </div>
@@ -269,223 +281,309 @@ export default async function EventPage({ params }: EventPageProps) {
         <div className="lg:grid lg:grid-cols-3 lg:gap-12">
           {/* Main content */}
           <div className="lg:col-span-2">
-            <div className="prose max-w-none mb-12">
-              <RichText data={event.description} />
-            </div>
+            {/* Description section */}
+            <Card className="mb-12 border-border/30">
+              <CardHeader>
+                <CardTitle className="text-2xl font-serif text-primary relative pb-3 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-16 after:h-1 after:bg-primary/30 after:rounded-full">
+                  À propos de l'événement
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="prose max-w-none">
+                <RichText data={event.description} />
+              </CardContent>
+            </Card>
             
             {/* Ticket options */}
             {hasTicketOptions && (
-              <div className="mb-12">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-serif font-bold">Options de participation</h2>
-                  {registrationOpen && (
-                    <a 
-                      href="#inscription" 
-                      className="text-primary hover:text-primary/80 font-medium flex items-center gap-1 text-sm"
-                    >
-                      Voir l'inscription <ArrowRight className="h-3 w-3 ml-1" />
-                    </a>
-                  )}
-                </div>
-                
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {event.ticketOptions.map((ticket: any, i: number) => (
-                    <div 
-                      key={i} 
-                      className={`bg-card border rounded-lg overflow-hidden flex flex-col h-full group hover:shadow-md transition-shadow ${
-                        i === 0 ? 'border-primary/40 bg-primary/5' : 'border-border'
-                      }`}
-                    >
-                      {i === 0 && (
-                        <div className="bg-primary text-white text-xs font-medium py-1 px-3 text-center">
-                          Option recommandée
-                        </div>
-                      )}
-                      
-                      <div className="p-6 flex-grow">
-                        <div className="flex flex-col mb-4">
-                          <span className="text-2xl font-bold mb-1">{ticket.price ? `${ticket.price} $` : 'Gratuit'}</span>
-                          <h3 className="text-lg font-bold">{ticket.name}</h3>
-                        </div>
-                        
-                        {ticket.description && (
-                          <p className="text-muted-foreground flex-grow">{ticket.description}</p>
-                        )}
-                      </div>
-                      
-                      <div className="p-6 pt-0 border-t border-border/40 mt-auto">
-                        {ticket.maxQuantity && (
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground mb-3">
-                            <Users className="h-4 w-4" />
-                            <span>Limité à {ticket.maxQuantity} participations</span>
-                          </div>
-                        )}
-                        
-                        {registrationOpen ? (
-                          <a 
-                            href="#inscription" 
-                            className={`w-full block text-center py-2 px-4 rounded-md font-medium transition-colors ${
-                              i === 0 
-                                ? 'bg-flame hover:bg-flame/90 text-white' 
-                                : 'bg-muted hover:bg-muted-foreground/10 text-foreground'
+              <div className="bg-gradient-to-br from-primary/5 to-transparent rounded-xl border border-primary/20 mb-12 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/3 z-0"></div>
+                <div className="relative z-10 p-6 sm:p-8">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <h2 className="text-2xl font-serif font-bold text-primary">Options de participation</h2>
+                    {registrationOpen && (
+                      <Button
+                        variant="outline" 
+                        size="sm"
+                        className="bg-white/80 backdrop-blur-sm shadow-sm text-primary rounded-full"
+                        asChild
+                        withArrow
+                      >
+                        <a href="#inscription">Voir l'inscription</a>
+                      </Button>
+                    )}
+                  </div>
+                  
+                  <div className="grid gap-6 sm:grid-cols-2">
+                    {event.ticketOptions.map((ticket: any, i: number) => (
+                      <HoverCard key={i}>
+                        <HoverCardTrigger asChild>
+                          <Card 
+                            className={`overflow-hidden flex flex-col h-full group hover:shadow-md transition-all cursor-pointer ${
+                              i === 0 ? 'border-2 border-primary/40 ring-2 ring-primary/10' : 'border-border/30'
                             }`}
                           >
-                            Choisir cette option
-                          </a>
-                        ) : (
-                          <div className="w-full block text-center py-2 px-4 rounded-md font-medium bg-muted text-muted-foreground cursor-not-allowed">
-                            Non disponible
+                            {i === 0 && (
+                              <div className="bg-primary text-white text-xs font-medium py-1.5 px-3 text-center">
+                                Option recommandée
+                              </div>
+                            )}
+                            
+                            <CardContent className="p-6 sm:p-8 flex-grow pt-6">
+                              <div className="flex flex-col mb-5">
+                                <span className={`text-3xl font-bold mb-2 ${i === 0 ? 'text-primary' : ''}`}>
+                                  {ticket.price ? `${ticket.price} $` : 'Gratuit'}
+                                </span>
+                                <h3 className="text-xl font-bold">{ticket.name}</h3>
+                              </div>
+                              
+                              {ticket.description && (
+                                <CardDescription className={`mb-4 flex-grow ${i === 0 ? 'text-foreground' : ''}`}>
+                                  {ticket.description}
+                                </CardDescription>
+                              )}
+                            </CardContent>
+                            
+                            <CardFooter className="p-6 border-t border-border/40 mt-auto bg-gray-50/80 block">
+                              {ticket.maxQuantity && (
+                                <div className="flex items-center gap-1 text-sm text-muted-foreground mb-4">
+                                  <Users className="h-4 w-4" />
+                                  <span>Limité à {ticket.maxQuantity} participations</span>
+                                </div>
+                              )}
+                              
+                              {registrationOpen ? (
+                                <Button
+                                  variant={i === 0 ? "flame" : "outline"}
+                                  className={`w-full ${i === 0 ? 'shadow-md hover:shadow-lg' : ''}`}
+                                  asChild
+                                >
+                                  <a href="#inscription">
+                                    {i === 0 ? 'Choisir cette option' : 'Sélectionner'}
+                                  </a>
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="outline"
+                                  className="w-full bg-muted text-muted-foreground cursor-not-allowed"
+                                  disabled
+                                >
+                                  Non disponible
+                                </Button>
+                              )}
+                            </CardFooter>
+                          </Card>
+                        </HoverCardTrigger>
+                        <HoverCardContent className="w-80">
+                          <div className="space-y-2">
+                            <h4 className="text-sm font-semibold">{ticket.name}</h4>
+                            <p className="text-sm text-muted-foreground">{ticket.description}</p>
+                            <Separator className="my-2" />
+                            <div className="flex justify-between">
+                              <span className="text-sm font-medium">Prix:</span>
+                              <span className="font-bold">{ticket.price ? `${ticket.price} $` : 'Gratuit'}</span>
+                            </div>
+                            {ticket.maxQuantity && (
+                              <div className="flex justify-between">
+                                <span className="text-sm font-medium">Disponibilité:</span>
+                                <span>{ticket.maxQuantity} places</span>
+                              </div>
+                            )}
+                            <p className="text-xs text-muted-foreground pt-2">
+                              Cliquez sur la carte pour sélectionner cette option et vous inscrire à l'événement.
+                            </p>
                           </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                        </HoverCardContent>
+                      </HoverCard>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
             
             {/* Sponsors */}
             {hasSponsors && (
-              <div className="mb-12">
-                <h2 className="text-2xl font-serif font-bold mb-6">Nos commanditaires</h2>
-                
-                {/* Platinum sponsors */}
-                {event.sponsors.filter((s: any) => s.sponsorLevel === 'platinum').length > 0 && (
-                  <div className="mb-8">
-                    <h3 className="text-lg font-medium mb-4">Commanditaires Platine</h3>
-                    <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-                      {event.sponsors
-                        .filter((s: any) => s.sponsorLevel === 'platinum')
-                        .map((sponsor: any, i: number) => (
-                          <div key={i} className="flex flex-col items-center text-center">
-                            {sponsor.logo ? (
-                              <div className="mb-3 h-24 w-full relative">
-                                <Media 
-                                  resource={sponsor.logo}
-                                  imgClassName="object-contain"
-                                  alt={sponsor.name}
-                                  fill
-                                />
-                              </div>
-                            ) : (
-                              <div className="mb-3 font-bold text-xl">{sponsor.name}</div>
-                            )}
-                            
-                            {sponsor.website && (
-                              <a 
-                                href={sponsor.website} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1 text-primary hover:text-primary/80 text-sm mt-1"
-                              >
-                                Visiter le site <ExternalLink className="h-3 w-3" />
-                              </a>
-                            )}
-                          </div>
-                        ))
-                      }
+              <Card className="mb-12">
+                <CardHeader>
+                  <CardTitle>Nos commanditaires</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {/* Platinum sponsors */}
+                  {event.sponsors.filter((s: any) => s.sponsorLevel === 'platinum').length > 0 && (
+                    <div className="mb-10">
+                      <Badge className="bg-primary mb-6 px-3 py-1">Commanditaires Platine</Badge>
+                      <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3">
+                        {event.sponsors
+                          .filter((s: any) => s.sponsorLevel === 'platinum')
+                          .map((sponsor: any, i: number) => (
+                            <Card key={i} className="flex flex-col items-center text-center overflow-hidden">
+                              <CardContent className="pt-6">
+                                {sponsor.logo ? (
+                                  <div className="mb-4 h-28 w-full relative">
+                                    <Media 
+                                      resource={sponsor.logo}
+                                      imgClassName="object-contain"
+                                      alt={sponsor.name}
+                                      fill
+                                    />
+                                  </div>
+                                ) : (
+                                  <div className="mb-4 font-bold text-xl">{sponsor.name}</div>
+                                )}
+                              </CardContent>
+                              
+                              {sponsor.website && (
+                                <CardFooter className="pt-0">
+                                  <Button variant="outline" size="sm" asChild>
+                                    <a 
+                                      href={sponsor.website} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                                    >
+                                      Visiter le site <ExternalLink className="h-3 w-3 ml-2" />
+                                    </a>
+                                  </Button>
+                                </CardFooter>
+                              )}
+                            </Card>
+                          ))
+                        }
+                      </div>
                     </div>
-                  </div>
-                )}
-                
-                {/* Gold sponsors */}
-                {event.sponsors.filter((s: any) => s.sponsorLevel === 'gold').length > 0 && (
-                  <div className="mb-8">
-                    <h3 className="text-lg font-medium mb-4">Commanditaires Or</h3>
-                    <div className="grid gap-6 sm:grid-cols-3 lg:grid-cols-4">
-                      {event.sponsors
-                        .filter((s: any) => s.sponsorLevel === 'gold')
-                        .map((sponsor: any, i: number) => (
-                          <div key={i} className="flex flex-col items-center text-center">
-                            {sponsor.logo ? (
-                              <div className="mb-2 h-16 w-full relative">
-                                <Media 
-                                  resource={sponsor.logo}
-                                  imgClassName="object-contain"
-                                  alt={sponsor.name}
-                                  fill
-                                />
-                              </div>
-                            ) : (
-                              <div className="mb-2 font-bold">{sponsor.name}</div>
-                            )}
-                            
-                            {sponsor.website && (
-                              <a 
-                                href={sponsor.website} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1 text-primary hover:text-primary/80 text-sm mt-1"
-                              >
-                                Site web <ExternalLink className="h-3 w-3" />
-                              </a>
-                            )}
-                          </div>
-                        ))
-                      }
+                  )}
+                  
+                  {/* Gold sponsors */}
+                  {event.sponsors.filter((s: any) => s.sponsorLevel === 'gold').length > 0 && (
+                    <div className="mb-10">
+                      <Badge variant="outline" className="mb-6 px-3 py-1 border-amber-300 bg-amber-50 text-amber-700">
+                        Commanditaires Or
+                      </Badge>
+                      <div className="grid gap-6 sm:grid-cols-3 lg:grid-cols-4">
+                        {event.sponsors
+                          .filter((s: any) => s.sponsorLevel === 'gold')
+                          .map((sponsor: any, i: number) => (
+                            <Card key={i} className="flex flex-col items-center text-center overflow-hidden">
+                              <CardContent className="pt-6">
+                                {sponsor.logo ? (
+                                  <div className="mb-3 h-16 w-full relative">
+                                    <Media 
+                                      resource={sponsor.logo}
+                                      imgClassName="object-contain"
+                                      alt={sponsor.name}
+                                      fill
+                                    />
+                                  </div>
+                                ) : (
+                                  <div className="mb-3 font-bold">{sponsor.name}</div>
+                                )}
+                              </CardContent>
+                              
+                              {sponsor.website && (
+                                <CardFooter className="pt-0">
+                                  <Button variant="outline" size="sm" asChild>
+                                    <a 
+                                      href={sponsor.website} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                                    >
+                                      Site web <ExternalLink className="h-3 w-3 ml-2" />
+                                    </a>
+                                  </Button>
+                                </CardFooter>
+                              )}
+                            </Card>
+                          ))
+                        }
+                      </div>
                     </div>
-                  </div>
-                )}
-                
-                {/* Other sponsors */}
-                {event.sponsors.filter((s: any) => !['platinum', 'gold'].includes(s.sponsorLevel || '')).length > 0 && (
-                  <div>
-                    <h3 className="text-lg font-medium mb-4">Autres commanditaires</h3>
-                    <ul className="grid gap-x-6 gap-y-2 sm:grid-cols-2 md:grid-cols-3">
-                      {event.sponsors
-                        .filter((s: any) => !['platinum', 'gold'].includes(s.sponsorLevel || ''))
-                        .map((sponsor: any, i: number) => (
-                          <li key={i}>
-                            <span className="font-medium">{sponsor.name}</span>
-                            {sponsor.sponsorLevel && (
-                              <span className="text-sm text-muted-foreground ml-2">
-                                ({sponsor.sponsorLevel === 'silver' ? 'Argent' : 
-                                  sponsor.sponsorLevel === 'bronze' ? 'Bronze' : 'Soutien'})
-                              </span>
-                            )}
-                          </li>
-                        ))
-                      }
-                    </ul>
-                  </div>
-                )}
-              </div>
+                  )}
+                  
+                  {/* Other sponsors */}
+                  {event.sponsors.filter((s: any) => !['platinum', 'gold'].includes(s.sponsorLevel || '')).length > 0 && (
+                    <div>
+                      <Badge variant="outline" className="mb-6 px-3 py-1">
+                        Autres commanditaires
+                      </Badge>
+                      <Card>
+                        <CardContent className="grid gap-x-6 gap-y-3 sm:grid-cols-2 md:grid-cols-3">
+                          {event.sponsors
+                            .filter((s: any) => !['platinum', 'gold'].includes(s.sponsorLevel || ''))
+                            .map((sponsor: any, i: number) => (
+                              <div key={i} className="flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-gray-300"></div>
+                                <span className="font-medium">{sponsor.name}</span>
+                                {sponsor.sponsorLevel && (
+                                  <Badge variant="outline" className="ml-auto">
+                                    {sponsor.sponsorLevel === 'silver' ? 'Argent' : 
+                                      sponsor.sponsorLevel === 'bronze' ? 'Bronze' : 'Soutien'}
+                                  </Badge>
+                                )}
+                              </div>
+                            ))
+                          }
+                        </CardContent>
+                      </Card>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             )}
             
             {/* FAQ */}
             {hasFAQ && (
-              <div className="mb-12">
-                <h2 className="text-2xl font-serif font-bold mb-6">Questions fréquentes</h2>
-                <div className="space-y-6">
-                  {event.faq.map((item: any, i: number) => (
-                    <div key={i} className="border-b border-border pb-6 last:border-0">
-                      <h3 className="text-lg font-bold mb-2">{item.question}</h3>
-                      <div className="prose-sm max-w-none">
-                        <RichText data={item.answer} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <Card className="mb-12">
+                <CardHeader>
+                  <CardTitle className="text-2xl font-serif text-primary relative pb-3 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-16 after:h-1 after:bg-primary/30 after:rounded-full">
+                    Questions fréquentes
+                  </CardTitle>
+                  <CardDescription>
+                    Tout ce que vous devez savoir sur l'événement
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {event.faq.map((item: any, i: number) => (
+                      <Accordion key={i} type="single" collapsible className="w-full">
+                        <AccordionItem value={`item-${i}`}>
+                          <AccordionTrigger className="text-left font-medium px-4 hover:no-underline">
+                            {item.question}
+                          </AccordionTrigger>
+                          <AccordionContent className="px-4 pb-4 prose-sm max-w-none">
+                            <RichText data={item.answer} />
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             )}
             
             {/* Gallery */}
             {hasGallery && (
-              <div className="mb-12">
-                <h2 className="text-2xl font-serif font-bold mb-6">Galerie</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {event.galleryImages.map((item: any, i: number) => (
-                    <div key={i} className="relative aspect-square rounded-lg overflow-hidden">
-                      <Media 
-                        resource={item.image}
-                        fill
-                        imgClassName="object-cover hover:scale-105 transition-transform duration-300"
-                        alt={item.caption || `Image ${i+1}`}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <Card className="mb-12">
+                <CardHeader>
+                  <CardTitle>Galerie photos</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+                    {event.galleryImages.map((item: any, i: number) => (
+                      <div key={i} className="group relative aspect-square rounded-lg overflow-hidden border border-border shadow-sm hover:shadow-md transition-all">
+                        <Media 
+                          resource={item.image}
+                          fill
+                          imgClassName="object-cover group-hover:scale-105 transition-transform duration-500"
+                          alt={item.caption || `Image ${i+1}`}
+                        />
+                        {item.caption && (
+                          <div className="absolute inset-x-0 bottom-0 bg-black/60 backdrop-blur-sm p-2 text-white text-xs font-medium translate-y-full group-hover:translate-y-0 transition-transform">
+                            {item.caption}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             )}
           </div>
           
@@ -493,173 +591,190 @@ export default async function EventPage({ params }: EventPageProps) {
           <div className="lg:col-span-1">
             <div className="lg:sticky lg:top-24">
               {/* Event Details Card */}
-              <div className="bg-card border border-border rounded-lg overflow-hidden mb-6">
-                <div className="p-6">
-                  <h2 className="text-xl font-bold mb-4 text-primary">Détails de l'événement</h2>
-                  
-                  <div className="space-y-6 divide-y divide-border">
-                    <div className="pb-5">
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <Calendar className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium text-lg mb-1">Date et heure</h3>
-                          <p className="font-medium">{eventDateFormatted}</p>
-                          <p className="text-muted-foreground">{eventTimeStr}</p>
-                          {endDateStr && (
-                            <p className="text-sm text-muted-foreground mt-1">
-                              Jusqu'au {endDateStr}
-                            </p>
-                          )}
-                        </div>
+              <Card className="mb-7">
+                <CardHeader className="bg-primary/5 border-b">
+                  <CardTitle>Détails de l'événement</CardTitle>
+                </CardHeader>
+                
+                <CardContent className="pt-6 space-y-6 divide-y">
+                  {/* Date details */}
+                  <div className="pb-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <Calendar className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-base mb-2">Date et heure</h3>
+                        <p className="font-medium">{eventDateFormatted}</p>
+                        <p className="text-muted-foreground">{eventTimeStr}</p>
+                        {endDateStr && (
+                          <Badge variant="outline" className="mt-2">
+                            <Calendar className="h-3 w-3 mr-1" />
+                            Jusqu'au {endDateStr}
+                          </Badge>
+                        )}
                       </div>
                     </div>
-                    
-                    <div className="py-5">
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <MapPin className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium text-lg mb-1">Emplacement</h3>
-                          <p className="font-medium">{event.location?.name}</p>
-                          <p className="text-muted-foreground">
-                            {event.location?.address}<br />
-                            {event.location?.city}, {event.location?.postalCode}
-                          </p>
-                          {event.location?.googleMapsUrl && (
+                  </div>
+                  
+                  {/* Location details */}
+                  <div className="py-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <MapPin className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-base mb-2">Emplacement</h3>
+                        <p className="font-medium">{event.location?.name}</p>
+                        <p className="text-muted-foreground">
+                          {event.location?.address}<br />
+                          {event.location?.city}, {event.location?.postalCode}
+                        </p>
+                        {event.location?.googleMapsUrl && (
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="mt-3"
+                            asChild
+                          >
                             <a 
                               href={event.location.googleMapsUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-primary hover:text-primary/80 font-medium text-sm mt-2 hover:gap-2 transition-all"
                             >
-                              Voir sur Google Maps <ExternalLink className="h-3 w-3" />
+                              Voir sur Google Maps <ExternalLink className="h-3 w-3 ml-2" />
                             </a>
-                          )}
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Organizers section */}
+                  {event.organizers && event.organizers.length > 0 && (
+                    <div className="pt-6">
+                      <div className="flex items-start gap-4">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <Users className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-base mb-2">Organisateurs</h3>
+                          <ul className="space-y-4 divide-y divide-border/30">
+                            {event.organizers.map((organizer: any, i: number) => (
+                              <li key={i} className={i > 0 ? "pt-4" : ""}>
+                                <p className="font-medium">{organizer.name}</p>
+                                {organizer.role && (
+                                  <p className="text-muted-foreground text-sm">{organizer.role}</p>
+                                )}
+                                {organizer.contact && (
+                                  <Button variant="link" size="sm" className="px-0 h-auto" asChild>
+                                    <a href={`mailto:${organizer.contact}`}>
+                                      {organizer.contact}
+                                    </a>
+                                  </Button>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       </div>
                     </div>
-                    
-                    {event.organizers && event.organizers.length > 0 && (
-                      <div className="pt-5">
-                        <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                            <Users className="h-5 w-5 text-primary" />
-                          </div>
-                          <div>
-                            <h3 className="font-medium text-lg mb-2">Organisateurs</h3>
-                            <ul className="space-y-3">
-                              {event.organizers.map((organizer: any, i: number) => (
-                                <li key={i} className={i > 0 ? "border-t border-border/50 pt-3" : ""}>
-                                  <p className="font-medium">{organizer.name}</p>
-                                  {organizer.role && (
-                                    <p className="text-muted-foreground">{organizer.role}</p>
-                                  )}
-                                  {organizer.contact && (
-                                    <a 
-                                      href={`mailto:${organizer.contact}`}
-                                      className="text-primary hover:text-primary/80 inline-flex items-center gap-1 text-sm mt-1"
-                                    >
-                                      {organizer.contact}
-                                    </a>
-                                  )}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  )}
+                </CardContent>
+                
+                <CardFooter className="flex flex-col border-t pt-6">
+                  {hasTicketOptions && (
+                    <div className="flex items-center justify-between w-full mb-4 bg-muted p-3 rounded-lg">
+                      <span className="text-muted-foreground">Prix:</span>
+                      <span className="font-bold">
+                        {event.ticketOptions[0]?.price ? `À partir de ${event.ticketOptions[0].price} $` : 'Gratuit'} $` : 'Gratuit'}
+                      </span>
+                    </div>
+                  )}
                   
-                  {/* Add quick action buttons */}
-                  <div className="mt-6 pt-6 border-t border-border">
-                    {hasTicketOptions && (
-                      <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
-                        <span>Prix:</span>
-                        <span className="font-medium text-foreground">
-                          {event.ticketOptions[0]?.price ? `À partir de ${event.ticketOptions[0].price} $` : 'Gratuit'}
-                        </span>
-                      </div>
-                    )}
-                    
-                    {registrationOpen && (
-                      <a 
-                        href="#inscription" 
-                        className="bg-flame hover:bg-flame/90 text-white font-medium rounded-md px-4 py-3 flex items-center justify-center transition-colors w-full"
-                      >
-                        Je m'inscris maintenant
-                      </a>
-                    )}
-                    
-                    {event.location?.googleMapsUrl && (
+                  {registrationOpen && (
+                    <Button 
+                      variant="flame"
+                      size="lg"
+                      className="w-full mb-3"
+                      asChild
+                    >
+                      <a href="#inscription">Je m'inscris maintenant</a>
+                    </Button>
+                  )}
+                  
+                  {event.location?.googleMapsUrl && (
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      asChild
+                    >
                       <a 
                         href={event.location.googleMapsUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-3 border border-border hover:bg-muted text-foreground font-medium rounded-md px-4 py-3 flex items-center justify-center transition-colors w-full"
                       >
                         <MapPin className="h-4 w-4 mr-2" />
                         Itinéraire
                       </a>
-                    )}
-                  </div>
-                </div>
-              </div>
+                    </Button>
+                  )}
+                </CardFooter>
+              </Card>
               
               {/* Registration Section */}
               {event.registrationEnabled && (
-                <div className="bg-card border border-border rounded-lg overflow-hidden shadow-sm" id="inscription">
-                  <div className="bg-primary/5 px-6 py-4 border-b border-border">
-                    <h2 className="text-xl font-bold text-primary">Inscription à l'événement</h2>
-                  </div>
+                <Card id="inscription">
+                  <CardHeader className="bg-primary/5 border-b">
+                    <CardTitle>Inscription à l'événement</CardTitle>
+                  </CardHeader>
                   
-                  <div className="p-6">
+                  <CardContent className="pt-6">
                     {!registrationOpen ? (
-                      <div className="bg-muted p-4 rounded-md my-2">
-                        <p className="text-muted-foreground">
+                      <Alert variant="destructive" className="my-2">
+                        <AlertTitle>
                           {event.registrationDeadline && new Date() > new Date(event.registrationDeadline)
                             ? "La date limite d'inscription est passée."
                             : "Les inscriptions sont actuellement fermées."}
-                        </p>
-                      </div>
+                        </AlertTitle>
+                      </Alert>
                     ) : (
                       <>
                         {event.registrationDeadline && (
-                          <div className="mb-5 p-3 border border-border rounded-md bg-amber-50/50">
-                            <p className="text-sm font-medium flex items-center">
-                              <Calendar className="h-4 w-4 mr-2 text-amber-600" />
-                              <span className="text-amber-800">
-                                Date limite d'inscription: {formatDateTime(event.registrationDeadline)}
-                              </span>
-                            </p>
-                          </div>
+                          <Alert className="mb-6 border-amber-200 bg-amber-50/70">
+                            <Calendar className="h-4 w-4 text-amber-600" />
+                            <AlertTitle className="text-amber-800 ml-2">
+                              Date limite d'inscription: <span className="font-bold">{formatDateTime(event.registrationDeadline)}</span>
+                            </AlertTitle>
+                          </Alert>
                         )}
                         
                         {event.registrationForm ? (
-                          <EventRegistrationForm 
-                            formId={event.registrationForm.id}
-                            eventId={event.id}
-                            eventTitle={event.title}
-                          />
+                          <Card>
+                            <CardContent className="pt-6">
+                              <EventRegistrationForm 
+                                formId={event.registrationForm.id}
+                                eventId={event.id}
+                                eventTitle={event.title}
+                              />
+                            </CardContent>
+                          </Card>
                         ) : (
-                          <div className="bg-muted p-4 rounded-md">
-                            <p className="text-muted-foreground">
+                          <Alert>
+                            <AlertTitle>
                               Aucun formulaire d'inscription n'est configuré pour cet événement.
-                            </p>
-                          </div>
+                            </AlertTitle>
+                          </Alert>
                         )}
                       </>
                     )}
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               )}
             </div>
           </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
   )
 }

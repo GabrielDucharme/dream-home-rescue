@@ -76,6 +76,8 @@ export interface Config {
     users: User;
     services: Service;
     'donation-goals': DonationGoal;
+    donations: Donation;
+    customers: Customer;
     'funding-events': FundingEvent;
     redirects: Redirect;
     forms: Form;
@@ -98,6 +100,8 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
     'donation-goals': DonationGoalsSelect<false> | DonationGoalsSelect<true>;
+    donations: DonationsSelect<false> | DonationsSelect<true>;
+    customers: CustomersSelect<false> | CustomersSelect<true>;
     'funding-events': FundingEventsSelect<false> | FundingEventsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
@@ -1167,6 +1171,40 @@ export interface SuccessStory {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "donations".
+ */
+export interface Donation {
+  id: string;
+  donorName: string;
+  email: string;
+  amount: number;
+  donationType: 'onetime' | 'monthly';
+  relatedGoal?: (string | null) | DonationGoal;
+  customer?: (string | null) | Customer;
+  notes?: string | null;
+  acceptTerms: boolean;
+  stripePaymentStatus?: ('pending' | 'completed' | 'failed' | 'refunded') | null;
+  stripeCustomerID?: string | null;
+  stripeSubscriptionID?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers".
+ */
+export interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  notes?: string | null;
+  donations?: (string | Donation)[] | null;
+  createdAt: string;
+  updatedAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "funding-events".
  */
 export interface FundingEvent {
@@ -1502,6 +1540,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'donation-goals';
         value: string | DonationGoal;
+      } | null)
+    | ({
+        relationTo: 'donations';
+        value: string | Donation;
+      } | null)
+    | ({
+        relationTo: 'customers';
+        value: string | Customer;
       } | null)
     | ({
         relationTo: 'funding-events';
@@ -2133,6 +2179,38 @@ export interface DonationGoalsSelect<T extends boolean = true> {
   image?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "donations_select".
+ */
+export interface DonationsSelect<T extends boolean = true> {
+  donorName?: T;
+  email?: T;
+  amount?: T;
+  donationType?: T;
+  relatedGoal?: T;
+  customer?: T;
+  notes?: T;
+  acceptTerms?: T;
+  stripePaymentStatus?: T;
+  stripeCustomerID?: T;
+  stripeSubscriptionID?: T;
+  createdAt?: T;
+  updatedAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers_select".
+ */
+export interface CustomersSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  phone?: T;
+  notes?: T;
+  donations?: T;
+  createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
