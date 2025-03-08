@@ -125,6 +125,29 @@ export default buildConfig({
               });
               
               console.log(`Donation ${donation.id} marked as completed`);
+              
+              // Update customer donation totals and statistics
+              if (donation.customer) {
+                console.log(`Customer ${donation.customer} has a completed donation`);
+                
+                // Get current customer data
+                const customer = await payload.findByID({
+                  collection: 'customers',
+                  id: donation.customer,
+                });
+                
+                // Update donation statistics
+                await payload.update({
+                  collection: 'customers',
+                  id: donation.customer,
+                  data: {
+                    totalDonated: (customer.totalDonated || 0) + donation.amount,
+                    donationCount: (customer.donationCount || 0) + 1,
+                  },
+                });
+                
+                console.log(`Updated stats for customer ${donation.customer}: total=${(customer.totalDonated || 0) + donation.amount}, count=${(customer.donationCount || 0) + 1}`);
+              }
             } else {
               console.warn('No matching donation found for checkout session:', session.id);
             }

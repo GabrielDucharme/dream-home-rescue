@@ -45,6 +45,35 @@ export const Customers: CollectionConfig = {
       label: 'Dons',
     },
     {
+      name: 'stripeCustomerID',
+      type: 'text',
+      label: 'ID Client Stripe',
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+    },
+    {
+      name: 'totalDonated',
+      type: 'number',
+      label: 'Total des dons ($)',
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+      defaultValue: 0,
+    },
+    {
+      name: 'donationCount',
+      type: 'number',
+      label: 'Nombre de dons',
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+      defaultValue: 0,
+    },
+    {
       name: 'createdAt',
       type: 'date',
       label: 'Date de création',

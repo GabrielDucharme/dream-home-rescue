@@ -68,15 +68,36 @@ export async function POST(req: Request) {
       apiVersion: '2025-02-24.acacia', // Latest API version
     })
     
-    // Create a customer in Stripe directly using the Stripe SDK
-    const customer = await stripe.customers.create({
-      name: donorName,
+    // Check if a customer with this email already exists in Stripe
+    let customer;
+    const existingCustomers = await stripe.customers.list({
       email: email,
-      metadata: {
-        source: 'dhr-website-donation',
-        donationType: donationType,
-      },
-    })
+      limit: 1,
+    });
+
+    if (existingCustomers.data.length > 0) {
+      // Use existing customer
+      customer = existingCustomers.data[0];
+      console.log('Using existing Stripe customer:', customer.id);
+      
+      // Update customer name if needed
+      if (customer.name !== donorName) {
+        customer = await stripe.customers.update(customer.id, {
+          name: donorName,
+        });
+      }
+    } else {
+      // Create a new customer in Stripe
+      customer = await stripe.customers.create({
+        name: donorName,
+        email: email,
+        metadata: {
+          source: 'dhr-website-donation',
+          donationType: donationType,
+        },
+      });
+      console.log('Created new Stripe customer:', customer.id);
+    }
     
     // Determine the checkout mode based on donation type
     const mode = donationType === 'onetime' ? 'payment' : 'subscription'
@@ -156,6 +177,49 @@ export async function POST(req: Request) {
       subscription: session.subscription,
     })
     
+    // Find or create customer in Payload CMS
+    let payloadCustomer;
+    
+    // Try to find existing customer by email
+    const existingPayloadCustomers = await payload.find({
+      collection: 'customers',
+      where: {
+        email: { equals: email },
+      },
+      limit: 1,
+    });
+    
+    if (existingPayloadCustomers.docs.length > 0) {
+      // Use existing customer
+      payloadCustomer = existingPayloadCustomers.docs[0];
+      console.log('Using existing Payload customer:', payloadCustomer.id);
+      
+      // Update customer if needed
+      if (payloadCustomer.name !== donorName) {
+        payloadCustomer = await payload.update({
+          collection: 'customers',
+          id: payloadCustomer.id,
+          data: {
+            name: donorName,
+            // Keep Stripe ID in sync
+            stripeCustomerID: customer.id,
+          },
+        });
+      }
+    } else {
+      // Create new customer in Payload CMS
+      payloadCustomer = await payload.create({
+        collection: 'customers',
+        data: {
+          name: donorName,
+          email,
+          stripeCustomerID: customer.id,
+          createdAt: new Date().toISOString(),
+        },
+      });
+      console.log('Created new Payload customer:', payloadCustomer.id);
+    }
+    
     // Create donation record in Payload CMS
     const donation = await payload.create({
       collection: 'donations',
@@ -167,11 +231,24 @@ export async function POST(req: Request) {
         acceptTerms,
         stripeCustomerID: customer.id,
         stripePaymentStatus: 'pending',
+        // Create relationship with customer
+        customer: payloadCustomer.id,
         ...(mode === 'subscription' && session.subscription 
           ? { stripeSubscriptionID: session.subscription } 
           : {})
       },
     })
+    
+    // Update customer with relationship to this donation
+    await payload.update({
+      collection: 'customers',
+      id: payloadCustomer.id,
+      data: {
+        // Add this donation to customer's donations array
+        // We use the || [] to handle case where customer has no donations yet
+        donations: [...(payloadCustomer.donations || []), donation.id],
+      },
+    });
     
     // Return the Stripe checkout URL and donation ID
     return NextResponse.json({ 

@@ -1200,6 +1200,9 @@ export interface Customer {
   phone?: string | null;
   notes?: string | null;
   donations?: (string | Donation)[] | null;
+  stripeCustomerID?: string | null;
+  totalDonated?: number | null;
+  donationCount?: number | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -2209,6 +2212,9 @@ export interface CustomersSelect<T extends boolean = true> {
   phone?: T;
   notes?: T;
   donations?: T;
+  stripeCustomerID?: T;
+  totalDonated?: T;
+  donationCount?: T;
   createdAt?: T;
   updatedAt?: T;
 }
