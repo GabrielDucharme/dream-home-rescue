@@ -8,6 +8,7 @@ import { generateMeta } from '@/utilities/generateMeta'
 import { Dog } from '@/payload-types'
 import AdoptMeButton from '@/components/AdoptMeButton'
 import { Users, Dog as DogIcon, Cat, Check, X, HelpCircle } from 'lucide-react'
+import { DogSponsorSection } from '../../components/DogSponsorSection'
 
 // Generate static pages for all dogs at build time
 export async function generateStaticParams() {
@@ -363,6 +364,9 @@ export default async function DogDetailPage({ params }: DogDetailPageProps) {
                 </div>
               )}
               
+              {/* Sponsor this dog section */}
+              <DogSponsorSection dog={dog} />
+              
               {/* Photo gallery */}
               {dog.galleryImages && dog.galleryImages.length > 0 && (
                 <div className="bg-white rounded-xl shadow-sm p-6 md:p-8">
@@ -386,33 +390,35 @@ export default async function DogDetailPage({ params }: DogDetailPageProps) {
             
             {/* Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-xl shadow-sm p-6 md:p-8 sticky top-24">
-                <h2 className="text-2xl font-serif font-bold mb-4 text-primary">Intéressé(e) par {dog.name}?</h2>
-                <p className="mb-6 text-gray-600">
-                  Si vous êtes intéressé(e) par l'adoption de {dog.name}, veuillez remplir notre formulaire d'adoption. Nous vous contacterons dans les plus brefs délais pour discuter de la suite du processus.
-                </p>
-                <AdoptMeButton dog={dog} size="lg" className="w-full mb-4" />
-                
-                <div className="mt-6 pt-6 border-t border-gray-100">
-                  <h3 className="font-medium text-gray-900 mb-3">Processus d'adoption</h3>
-                  <ol className="space-y-3 text-sm text-gray-600">
-                    <li className="flex items-start gap-2">
-                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-flame text-white flex items-center justify-center text-xs font-bold">1</div>
-                      <span>Remplir le formulaire d'adoption en ligne</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-flame text-white flex items-center justify-center text-xs font-bold">2</div>
-                      <span>Entretien téléphonique avec un de nos bénévoles</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-flame text-white flex items-center justify-center text-xs font-bold">3</div>
-                      <span>Visite à votre domicile pour s'assurer de la compatibilité</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-flame text-white flex items-center justify-center text-xs font-bold">4</div>
-                      <span>Signature du contrat d'adoption et finalisation</span>
-                    </li>
-                  </ol>
+              <div className="space-y-8 sticky top-24">
+                <div className="bg-white rounded-xl shadow-sm p-6 md:p-8">
+                  <h2 className="text-2xl font-serif font-bold mb-4 text-primary">Intéressé(e) par {dog.name}?</h2>
+                  <p className="mb-6 text-gray-600">
+                    Si vous êtes intéressé(e) par l'adoption de {dog.name}, veuillez remplir notre formulaire d'adoption. Nous vous contacterons dans les plus brefs délais pour discuter de la suite du processus.
+                  </p>
+                  <AdoptMeButton dog={dog} size="lg" className="w-full mb-4" />
+                  
+                  <div className="mt-6 pt-6 border-t border-gray-100">
+                    <h3 className="font-medium text-gray-900 mb-3">Processus d'adoption</h3>
+                    <ol className="space-y-3 text-sm text-gray-600">
+                      <li className="flex items-start gap-2">
+                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-flame text-white flex items-center justify-center text-xs font-bold">1</div>
+                        <span>Remplir le formulaire d'adoption en ligne</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-flame text-white flex items-center justify-center text-xs font-bold">2</div>
+                        <span>Entretien téléphonique avec un de nos bénévoles</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-flame text-white flex items-center justify-center text-xs font-bold">3</div>
+                        <span>Visite à votre domicile pour s'assurer de la compatibilité</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-flame text-white flex items-center justify-center text-xs font-bold">4</div>
+                        <span>Signature du contrat d'adoption et finalisation</span>
+                      </li>
+                    </ol>
+                  </div>
                 </div>
               </div>
             </div>

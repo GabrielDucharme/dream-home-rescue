@@ -185,6 +185,36 @@ export const Dogs: CollectionConfig<'dogs'> = {
       min: 0,
     },
     {
+      name: 'size',
+      label: 'Taille',
+      type: 'select',
+      options: [
+        { label: 'Petit', value: 'small' },
+        { label: 'Moyen', value: 'medium' },
+        { label: 'Grand', value: 'large' },
+      ],
+    },
+    {
+      name: 'sponsors',
+      type: 'relationship',
+      relationTo: 'customers',
+      hasMany: true,
+      label: 'Parrains et Marraines',
+      admin: {
+        description: 'Personnes qui parrainent ce chien',
+      },
+    },
+    {
+      name: 'sponsorDonations',
+      type: 'relationship',
+      relationTo: 'donations',
+      hasMany: true,
+      label: 'Dons de parrainage',
+      admin: {
+        description: 'Dons spécifiquement pour ce chien',
+      },
+    },
+    {
       name: 'goodWith',
       type: 'group',
       label: 'Compatibilité',

@@ -9,26 +9,41 @@ export async function POST(req: Request) {
     // Initialize Payload first
     const payload = await getPayload({ config: configPromise })
     
-    // Parse the request body, with proper error handling
+    // Parse the request body, handling both JSON and form-encoded data
     let body;
+    const contentType = req.headers.get('content-type') || '';
+    
     try {
-      body = await req.json();
-    } catch (error) {
-      console.error('Error parsing request body:', error);
-      console.log('Request content-type:', req.headers.get('content-type'));
-      
-      // Check if this might be a form submission
-      if (req.headers.get('content-type')?.includes('application/x-www-form-urlencoded')) {
-        const text = await req.text();
-        console.log('Form data received:', text);
+      if (contentType.includes('application/json')) {
+        body = await req.json();
+      } else if (contentType.includes('application/x-www-form-urlencoded')) {
+        // Handle form data
+        const formData = await req.formData();
+        body = Object.fromEntries(formData.entries());
+        
+        // Convert amount to number if it exists
+        if (body.amount) {
+          body.amount = Number(body.amount);
+        }
+        
+        // Convert acceptTerms to boolean
+        if (body.acceptTerms) {
+          body.acceptTerms = body.acceptTerms === 'true' || body.acceptTerms === 'on' || body.acceptTerms === '1';
+        }
+        
+        console.log('Form data processed:', body);
+      } else {
         return NextResponse.json(
-          { error: 'Form data received instead of JSON. Please use JSON format.' },
+          { error: 'Unsupported content type. Expected JSON or form data.' },
           { status: 400 }
         );
       }
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      console.log('Request content-type:', contentType);
       
       return NextResponse.json(
-        { error: 'Invalid request format. Expected JSON.' },
+        { error: 'Failed to parse request data.' },
         { status: 400 }
       );
     }
@@ -59,7 +74,7 @@ export async function POST(req: Request) {
     }
     
     // Extract donation data from request
-    const { donorName, email, amount, donationType, acceptTerms } = body
+    const { donorName, email, amount, donationType, acceptTerms, ...metadata } = body
     
     // Validate required fields
     if (!donorName || !email || !amount || !donationType) {
@@ -254,40 +269,91 @@ export async function POST(req: Request) {
       console.log('Created new Payload customer:', payloadCustomer.id);
     }
     
+    // Prepare donation data with base fields
+    const donationData = {
+      donorName,
+      email,
+      amount: numericAmount,
+      donationType,
+      acceptTerms,
+      stripeCustomerID: customer.id,
+      stripePaymentStatus: 'pending',
+      // Create relationship with customer
+      customer: payloadCustomer.id,
+      // Add metadata such as dog sponsorship info
+      ...(Object.keys(metadata).length > 0 ? { metadata: JSON.stringify(metadata) } : {}),
+      // Add subscription ID if applicable
+      ...(mode === 'subscription' && session.subscription 
+        ? { stripeSubscriptionID: session.subscription } 
+        : {})
+    };
+    
+    // If this is a dog sponsorship, add the relationship
+    if (metadata.sponsorType === 'dog' && metadata.dogId) {
+      donationData.sponsoredDog = metadata.dogId;
+      console.log(`Setting donation as sponsorship for dog ID: ${metadata.dogId}`);
+    }
+    
     // Create donation record in Payload CMS
     const donation = await payload.create({
       collection: 'donations',
-      data: {
-        donorName,
-        email,
-        amount: numericAmount,
-        donationType,
-        acceptTerms,
-        stripeCustomerID: customer.id,
-        stripePaymentStatus: 'pending',
-        // Create relationship with customer
-        customer: payloadCustomer.id,
-        ...(mode === 'subscription' && session.subscription 
-          ? { stripeSubscriptionID: session.subscription } 
-          : {})
-      },
+      data: donationData,
     })
     
     // Update customer with relationship to this donation and update totals
     const currentTotal = payloadCustomer.totalDonated || 0;
     const currentCount = payloadCustomer.donationCount || 0;
     
+    const customerUpdateData = {
+      // Add this donation to customer's donations array
+      donations: [...(payloadCustomer.donations || []), donation.id],
+      // Update the total amount donated
+      totalDonated: currentTotal + numericAmount,
+      // Increment the donation count
+      donationCount: currentCount + 1,
+    };
+    
+    // If this is a dog sponsorship, also update the sponsored dogs relationship
+    if (metadata.sponsorType === 'dog' && metadata.dogId) {
+      // Add dog to customer's sponsored dogs if not already there
+      const existingSponsored = payloadCustomer.sponsoredDogs || [];
+      if (!existingSponsored.includes(metadata.dogId)) {
+        customerUpdateData.sponsoredDogs = [...existingSponsored, metadata.dogId];
+      }
+      
+      // Also update the dog to link to this customer and donation
+      try {
+        // Get the current dog data
+        const dog = await payload.findByID({
+          collection: 'dogs',
+          id: metadata.dogId,
+        });
+        
+        if (dog) {
+          // Update dog with sponsor and donation links
+          await payload.update({
+            collection: 'dogs',
+            id: metadata.dogId,
+            data: {
+              // Add sponsor if not already there
+              sponsors: [...(dog.sponsors || []).filter(id => id !== payloadCustomer.id), payloadCustomer.id],
+              // Add donation to sponsor donations
+              sponsorDonations: [...(dog.sponsorDonations || []), donation.id],
+            },
+          });
+          console.log(`Updated dog ${metadata.dogId} with sponsor ${payloadCustomer.id} and donation ${donation.id}`);
+        }
+      } catch (dogError) {
+        console.error(`Error updating dog ${metadata.dogId} with sponsorship info:`, dogError);
+        // Don't fail the whole transaction if this update fails
+      }
+    }
+    
+    // Update the customer with all the changes
     await payload.update({
       collection: 'customers',
       id: payloadCustomer.id,
-      data: {
-        // Add this donation to customer's donations array
-        donations: [...(payloadCustomer.donations || []), donation.id],
-        // Update the total amount donated
-        totalDonated: currentTotal + numericAmount,
-        // Increment the donation count
-        donationCount: currentCount + 1,
-      },
+      data: customerUpdateData,
     });
     
     // Return the Stripe checkout URL and donation ID

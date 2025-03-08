@@ -45,6 +45,16 @@ export const Customers: CollectionConfig = {
       label: 'Dons',
     },
     {
+      name: 'sponsoredDogs',
+      type: 'relationship',
+      relationTo: 'dogs',
+      hasMany: true,
+      label: 'Chiens parrainés',
+      admin: {
+        description: 'Chiens que ce client parraine via des dons',
+      },
+    },
+    {
       name: 'stripeCustomerID',
       type: 'text',
       label: 'ID Client Stripe',

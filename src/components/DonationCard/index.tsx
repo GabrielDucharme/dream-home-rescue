@@ -8,6 +8,9 @@ import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 
+export { MobileDonationCard } from './MobileDonationCard'
+export { DonationTrigger } from './DonationTrigger'
+
 type DonationCardProps = {
   className?: string
 }

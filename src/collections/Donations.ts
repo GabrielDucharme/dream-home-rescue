@@ -70,6 +70,13 @@ export const Donations: CollectionConfig = {
       hasMany: false,
     },
     {
+      name: 'sponsoredDog',
+      type: 'relationship',
+      relationTo: 'dogs',
+      label: 'Chien parrainé (optionnel)',
+      hasMany: false,
+    },
+    {
       name: 'customer',
       type: 'relationship',
       relationTo: 'customers',
@@ -87,6 +94,16 @@ export const Donations: CollectionConfig = {
       required: true,
       label: 'Accepte les conditions',
       defaultValue: false,
+    },
+    {
+      name: 'metadata',
+      type: 'text',
+      label: 'Métadonnées',
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: 'Données supplémentaires en JSON (contient infos parrainage, etc.)',
+      }
     },
     // Stripe-related fields
     {

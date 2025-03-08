@@ -1090,6 +1090,15 @@ export interface Dog {
     [k: string]: unknown;
   };
   weight?: number | null;
+  size?: ('small' | 'medium' | 'large') | null;
+  /**
+   * Personnes qui parrainent ce chien
+   */
+  sponsors?: (string | Customer)[] | null;
+  /**
+   * Dons spécifiquement pour ce chien
+   */
+  sponsorDonations?: (string | Donation)[] | null;
   goodWith?: {
     kids?: ('yes' | 'no' | 'unknown') | null;
     dogs?: ('yes' | 'no' | 'unknown') | null;
@@ -1175,26 +1184,6 @@ export interface SuccessStory {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "donations".
- */
-export interface Donation {
-  id: string;
-  donorName: string;
-  email: string;
-  amount: number;
-  donationType: 'onetime' | 'monthly';
-  relatedGoal?: (string | null) | DonationGoal;
-  customer?: (string | null) | Customer;
-  notes?: string | null;
-  acceptTerms: boolean;
-  stripePaymentStatus?: ('pending' | 'completed' | 'failed' | 'refunded') | null;
-  stripeCustomerID?: string | null;
-  stripeSubscriptionID?: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "customers".
  */
 export interface Customer {
@@ -1204,9 +1193,38 @@ export interface Customer {
   phone?: string | null;
   notes?: string | null;
   donations?: (string | Donation)[] | null;
+  /**
+   * Chiens que ce client parraine via des dons
+   */
+  sponsoredDogs?: (string | Dog)[] | null;
   stripeCustomerID?: string | null;
   totalDonated?: number | null;
   donationCount?: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "donations".
+ */
+export interface Donation {
+  id: string;
+  donorName: string;
+  email: string;
+  amount: number;
+  donationType: 'onetime' | 'monthly';
+  relatedGoal?: (string | null) | DonationGoal;
+  sponsoredDog?: (string | null) | Dog;
+  customer?: (string | null) | Customer;
+  notes?: string | null;
+  acceptTerms: boolean;
+  /**
+   * Données supplémentaires en JSON (contient infos parrainage, etc.)
+   */
+  metadata?: string | null;
+  stripePaymentStatus?: ('pending' | 'completed' | 'failed' | 'refunded') | null;
+  stripeCustomerID?: string | null;
+  stripeSubscriptionID?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -1947,6 +1965,9 @@ export interface DogsSelect<T extends boolean = true> {
       };
   description?: T;
   weight?: T;
+  size?: T;
+  sponsors?: T;
+  sponsorDonations?: T;
   goodWith?:
     | T
     | {
@@ -2198,9 +2219,11 @@ export interface DonationsSelect<T extends boolean = true> {
   amount?: T;
   donationType?: T;
   relatedGoal?: T;
+  sponsoredDog?: T;
   customer?: T;
   notes?: T;
   acceptTerms?: T;
+  metadata?: T;
   stripePaymentStatus?: T;
   stripeCustomerID?: T;
   stripeSubscriptionID?: T;
@@ -2217,6 +2240,7 @@ export interface CustomersSelect<T extends boolean = true> {
   phone?: T;
   notes?: T;
   donations?: T;
+  sponsoredDogs?: T;
   stripeCustomerID?: T;
   totalDonated?: T;
   donationCount?: T;
