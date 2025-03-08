@@ -52,6 +52,17 @@ export const Dogs: CollectionConfig<'dogs'> = {
       label: 'Nom',
     },
     {
+      name: 'successStory',
+      type: 'relationship', // Changed from join to relationship for now
+      relationTo: 'success-stories',
+      hasMany: false,
+      label: 'Histoire de Succès',
+      admin: {
+        description: "L'histoire de succès liée à ce chien (si adopté)",
+        condition: (data) => data.status === 'adopted',
+      },
+    },
+    {
       name: 'breed',
       type: 'text',
       required: true,

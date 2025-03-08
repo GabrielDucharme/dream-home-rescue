@@ -130,23 +130,33 @@ export default buildConfig({
               if (donation.customer) {
                 console.log(`Customer ${donation.customer} has a completed donation`);
                 
+                // Get the full donation data to ensure we have the amount
+                const fullDonation = await payload.findByID({
+                  collection: 'donations',
+                  id: donation.id,
+                });
+                
+                console.log('Full donation data:', fullDonation);
+                
                 // Get current customer data
                 const customer = await payload.findByID({
                   collection: 'customers',
                   id: donation.customer,
                 });
                 
+                const donationAmount = fullDonation.amount || 0;
+                
                 // Update donation statistics
                 await payload.update({
                   collection: 'customers',
                   id: donation.customer,
                   data: {
-                    totalDonated: (customer.totalDonated || 0) + donation.amount,
+                    totalDonated: (customer.totalDonated || 0) + donationAmount,
                     donationCount: (customer.donationCount || 0) + 1,
                   },
                 });
                 
-                console.log(`Updated stats for customer ${donation.customer}: total=${(customer.totalDonated || 0) + donation.amount}, count=${(customer.donationCount || 0) + 1}`);
+                console.log(`Updated stats for customer ${donation.customer}: total=${(customer.totalDonated || 0) + donationAmount}, count=${(customer.donationCount || 0) + 1}`);
               }
             } else {
               console.warn('No matching donation found for checkout session:', session.id);

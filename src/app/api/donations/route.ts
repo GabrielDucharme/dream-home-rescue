@@ -6,23 +6,57 @@ import { headers } from 'next/headers'
 
 export async function POST(req: Request) {
   try {
+    // Initialize Payload first
+    const payload = await getPayload({ config: configPromise })
+    
+    // Parse the request body, with proper error handling
+    let body;
+    try {
+      body = await req.json();
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      console.log('Request content-type:', req.headers.get('content-type'));
+      
+      // Check if this might be a form submission
+      if (req.headers.get('content-type')?.includes('application/x-www-form-urlencoded')) {
+        const text = await req.text();
+        console.log('Form data received:', text);
+        return NextResponse.json(
+          { error: 'Form data received instead of JSON. Please use JSON format.' },
+          { status: 400 }
+        );
+      }
+      
+      return NextResponse.json(
+        { error: 'Invalid request format. Expected JSON.' },
+        { status: 400 }
+      );
+    }
+    
     // Get the referer to validate the request is coming from our site
     const headersList = headers();
     const referer = headersList.get('referer');
     const origin = process.env.NEXT_PUBLIC_SERVER_URL;
     
+    // Log the request data for debugging
+    console.log('Donation request received:', { 
+      referer, 
+      origin,
+      contentType: req.headers.get('content-type'),
+      body: JSON.stringify(body).substring(0, 100) + '...' // Log part of the body
+    });
+    
+    // Skip referer check in development or if specifically allowed
+    const skipRefererCheck = process.env.NODE_ENV === 'development' || process.env.SKIP_REFERER_CHECK === 'true';
+    
     // Simple security check - only accept requests from our site
-    if (!referer || !origin || !referer.startsWith(origin)) {
+    if (!skipRefererCheck && (!referer || !origin || !referer.startsWith(origin))) {
       console.warn('Invalid donation request referer:', referer);
       return NextResponse.json(
         { error: 'Invalid request origin' },
         { status: 403 }
       );
     }
-    
-    // Initialize Payload
-    const payload = await getPayload({ config: configPromise })
-    const body = await req.json()
     
     // Extract donation data from request
     const { donorName, email, amount, donationType, acceptTerms } = body
@@ -239,14 +273,20 @@ export async function POST(req: Request) {
       },
     })
     
-    // Update customer with relationship to this donation
+    // Update customer with relationship to this donation and update totals
+    const currentTotal = payloadCustomer.totalDonated || 0;
+    const currentCount = payloadCustomer.donationCount || 0;
+    
     await payload.update({
       collection: 'customers',
       id: payloadCustomer.id,
       data: {
         // Add this donation to customer's donations array
-        // We use the || [] to handle case where customer has no donations yet
         donations: [...(payloadCustomer.donations || []), donation.id],
+        // Update the total amount donated
+        totalDonated: currentTotal + numericAmount,
+        // Increment the donation count
+        donationCount: currentCount + 1,
       },
     });
     

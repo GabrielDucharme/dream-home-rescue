@@ -65,13 +65,17 @@ export const DonationCard: React.FC<DonationCardProps> = ({ className = '' }) =>
         acceptTerms: acceptTerms,
       }
       
+      console.log('Sending donation data:', donation);
+      
       // Send donation to Payload API
       const response = await fetch('/api/donations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         body: JSON.stringify(donation),
+        cache: 'no-store',
       })
       
       if (!response.ok) {

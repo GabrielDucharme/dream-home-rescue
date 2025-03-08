@@ -1050,6 +1050,10 @@ export interface WhereToFindUsBlock {
 export interface Dog {
   id: string;
   name: string;
+  /**
+   * L'histoire de succès liée à ce chien (si adopté)
+   */
+  successStory?: (string | null) | SuccessStory;
   breed: string;
   sex: 'male' | 'female';
   age: {
@@ -1924,6 +1928,7 @@ export interface PostsSelect<T extends boolean = true> {
  */
 export interface DogsSelect<T extends boolean = true> {
   name?: T;
+  successStory?: T;
   breed?: T;
   sex?: T;
   age?:
