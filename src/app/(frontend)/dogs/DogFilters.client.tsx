@@ -71,6 +71,18 @@ export default function DogFilters({ dogs, onFiltersChange }: DogFilterProps) {
     onFiltersChange(filteredDogs)
   }, [filters, dogs, onFiltersChange])
   
+  // Listen for reset event from parent component
+  useEffect(() => {
+    const handleReset = () => {
+      resetFilters()
+    }
+    
+    window.addEventListener('reset-dog-filters', handleReset)
+    return () => {
+      window.removeEventListener('reset-dog-filters', handleReset)
+    }
+  }, [])
+  
   // Toggle a breed filter
   const toggleBreed = (breed: string) => {
     setFilters(prev => {

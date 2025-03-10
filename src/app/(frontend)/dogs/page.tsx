@@ -15,6 +15,12 @@ export default async function DogsPage() {
     depth: 1,
     limit: 100,
     sort: '-createdAt',
+    // Only show dogs that are available for adoption
+    where: {
+      status: {
+        equals: 'available'
+      }
+    },
     // Include id for the AdoptMeButton and goodWith for filtering
     select: {
       id: true,
@@ -32,15 +38,18 @@ export default async function DogsPage() {
   const dogs = dogsResponse.docs || []
 
   return (
-    <div className="pt-24 pb-24">
-      <div className="container mb-8">
-        <div className="prose max-w-none">
-          <h1>Nos Chiens</h1>
-          <p>Découvrez tous les chiens disponibles pour l&apos;adoption dans notre refuge.</p>
+    <div className="pt-20 pb-28 bg-gray-50">
+      <div className="container mb-10">
+        <div className="max-w-3xl">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Nos Chiens à Adopter</h1>
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            Découvrez les chiens actuellement disponibles pour l&apos;adoption dans notre refuge. 
+            Utilisez les filtres ci-dessous pour trouver votre compagnon idéal.
+          </p>
         </div>
       </div>
 
-      <div className="container">
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <DogsGrid dogs={dogs} />
       </div>
     </div>
@@ -49,7 +58,7 @@ export default async function DogsPage() {
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'Nos Chiens | Dream Home Rescue',
-    description: 'Découvrez tous les chiens disponibles pour l&apos;adoption chez Dream Home Rescue.',
+    title: 'Nos Chiens à Adopter | Dream Home Rescue',
+    description: 'Découvrez les chiens actuellement disponibles pour l&apos;adoption chez Dream Home Rescue.',
   }
 }

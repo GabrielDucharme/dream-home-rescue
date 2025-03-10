@@ -1091,27 +1091,14 @@ export interface Dog {
   };
   weight?: number | null;
   size?: ('small' | 'medium' | 'large') | null;
-  /**
-   * Personnes qui parrainent ce chien
-   */
-  sponsors?: (string | Customer)[] | null;
-  /**
-   * Dons spécifiquement pour ce chien
-   */
-  sponsorDonations?: (string | Donation)[] | null;
   goodWith?: {
     kids?: ('yes' | 'no' | 'unknown') | null;
     dogs?: ('yes' | 'no' | 'unknown') | null;
     cats?: ('yes' | 'no' | 'unknown') | null;
   };
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (string | null) | Media;
-    description?: string | null;
-  };
+  metaTitle?: string | null;
+  metaImage?: (string | null) | Media;
+  metaDescription?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -1184,27 +1171,6 @@ export interface SuccessStory {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "customers".
- */
-export interface Customer {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string | null;
-  notes?: string | null;
-  donations?: (string | Donation)[] | null;
-  /**
-   * Chiens que ce client parraine via des dons
-   */
-  sponsoredDogs?: (string | Dog)[] | null;
-  stripeCustomerID?: string | null;
-  totalDonated?: number | null;
-  donationCount?: number | null;
-  createdAt: string;
-  updatedAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "donations".
  */
 export interface Donation {
@@ -1225,6 +1191,27 @@ export interface Donation {
   stripePaymentStatus?: ('pending' | 'completed' | 'failed' | 'refunded') | null;
   stripeCustomerID?: string | null;
   stripeSubscriptionID?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers".
+ */
+export interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  notes?: string | null;
+  donations?: (string | Donation)[] | null;
+  /**
+   * Chiens que ce client parraine via des dons
+   */
+  sponsoredDogs?: (string | Dog)[] | null;
+  stripeCustomerID?: string | null;
+  totalDonated?: number | null;
+  donationCount?: number | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -1966,8 +1953,6 @@ export interface DogsSelect<T extends boolean = true> {
   description?: T;
   weight?: T;
   size?: T;
-  sponsors?: T;
-  sponsorDonations?: T;
   goodWith?:
     | T
     | {
@@ -1975,13 +1960,9 @@ export interface DogsSelect<T extends boolean = true> {
         dogs?: T;
         cats?: T;
       };
-  meta?:
-    | T
-    | {
-        title?: T;
-        image?: T;
-        description?: T;
-      };
+  metaTitle?: T;
+  metaImage?: T;
+  metaDescription?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;

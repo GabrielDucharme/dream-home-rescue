@@ -32,6 +32,19 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
+  email: () => ({
+    transport: {
+      host: 'smtp.resend.com',
+      secure: true,
+      port: 465,
+      auth: {
+        user: 'resend',
+        pass: process.env.RESEND_API_KEY,
+      },
+    },
+    fromName: 'Dream Home Rescue',
+    fromAddress: 'info@dreamhomerescue.com',
+  }),
   i18n: {
     fallbackLanguage: 'fr',
     supportedLanguages: {fr},

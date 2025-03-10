@@ -43,244 +43,244 @@ export const Dogs: CollectionConfig<'dogs'> = {
   admin: {
     defaultColumns: ['name', 'breed', 'status', 'updatedAt'],
     useAsTitle: 'name',
+    group: 'Contenu',
   },
   fields: [
-    {
-      name: 'name',
-      type: 'text',
-      required: true,
-      label: 'Nom',
-    },
-    {
-      name: 'successStory',
-      type: 'relationship', // Changed from join to relationship for now
-      relationTo: 'success-stories',
-      hasMany: false,
-      label: 'Histoire de Succès',
-      admin: {
-        description: "L'histoire de succès liée à ce chien (si adopté)",
-        condition: (data) => data.status === 'adopted',
-      },
-    },
-    {
-      name: 'breed',
-      type: 'text',
-      required: true,
-      label: 'Race',
-    },
-    {
-      name: 'sex',
-      type: 'select',
-      required: true,
-      label: 'Sexe',
-      options: [
-        {
-          label: 'Mâle',
-          value: 'male',
-        },
-        {
-          label: 'Femelle',
-          value: 'female',
-        },
-      ],
-    },
-    {
-      name: 'age',
-      type: 'group',
-      label: 'Âge',
-      fields: [
-        {
-          name: 'years',
-          type: 'number',
-          required: true,
-          label: 'Années',
-          admin: {
-            description: 'Âge en années (utilisez 0 pour les chiens de moins d&apos;un an)',
-          },
-          min: 0,
-        },
-        {
-          name: 'months',
-          type: 'number',
-          required: true,
-          label: 'Mois',
-          admin: {
-            description: 'Mois additionnels (0-11)',
-          },
-          min: 0,
-          max: 11,
-        },
-      ],
-    },
-    {
-      name: 'status',
-      type: 'select',
-      required: true,
-      label: 'Statut',
-      defaultValue: 'available',
-      options: [
-        {
-          label: 'Disponible pour l&apos;adoption',
-          value: 'available',
-        },
-        {
-          label: 'Adoption en cours',
-          value: 'pending',
-        },
-        {
-          label: 'Adopté',
-          value: 'adopted',
-        },
-        {
-          label: 'En famille d&apos;accueil',
-          value: 'foster',
-        },
-        {
-          label: 'Sous soins médicaux',
-          value: 'medical',
-        },
-      ],
-    },
-    {
-      name: 'mainImage',
-      type: 'upload',
-      relationTo: 'media',
-      required: true,
-      label: 'Image principale',
-    },
-    {
-      name: 'galleryImages',
-      type: 'array',
-      label: 'Images additionnelles',
-      fields: [
-        {
-          name: 'image',
-          type: 'upload',
-          relationTo: 'media',
-          required: true,
-          label: 'Image',
-        },
-      ],
-    },
-    {
-      name: 'description',
-      type: 'richText',
-      label: 'Description',
-      editor: lexicalEditor({
-        features: ({ rootFeatures }) => {
-          return [
-            ...rootFeatures,
-            HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
-            BlocksFeature({}),
-            FixedToolbarFeature(),
-          ]
-        },
-      }),
-      required: true,
-    },
-    {
-      name: 'weight',
-      label: 'Poids (lbs)',
-      type: 'number',
-      min: 0,
-    },
-    {
-      name: 'size',
-      label: 'Taille',
-      type: 'select',
-      options: [
-        { label: 'Petit', value: 'small' },
-        { label: 'Moyen', value: 'medium' },
-        { label: 'Grand', value: 'large' },
-      ],
-    },
-    {
-      name: 'sponsors',
-      type: 'relationship',
-      relationTo: 'customers',
-      hasMany: true,
-      label: 'Parrains et Marraines',
-      admin: {
-        description: 'Personnes qui parrainent ce chien',
-      },
-    },
-    {
-      name: 'sponsorDonations',
-      type: 'relationship',
-      relationTo: 'donations',
-      hasMany: true,
-      label: 'Dons de parrainage',
-      admin: {
-        description: 'Dons spécifiquement pour ce chien',
-      },
-    },
-    {
-      name: 'goodWith',
-      type: 'group',
-      label: 'Compatibilité',
-      fields: [
-        {
-          name: 'kids',
-          label: 'Bon avec les enfants',
-          type: 'select',
-          options: [
-            { label: 'Oui', value: 'yes' },
-            { label: 'Non', value: 'no' },
-            { label: 'Inconnu', value: 'unknown' },
-          ],
-          defaultValue: 'unknown',
-        },
-        {
-          name: 'dogs',
-          label: 'Bon avec les chiens',
-          type: 'select',
-          options: [
-            { label: 'Oui', value: 'yes' },
-            { label: 'Non', value: 'no' },
-            { label: 'Inconnu', value: 'unknown' },
-          ],
-          defaultValue: 'unknown',
-        },
-        {
-          name: 'cats',
-          label: 'Bon avec les chats',
-          type: 'select',
-          options: [
-            { label: 'Oui', value: 'yes' },
-            { label: 'Non', value: 'no' },
-            { label: 'Inconnu', value: 'unknown' },
-          ],
-          defaultValue: 'unknown',
-        },
-      ],
-    },
     {
       type: 'tabs',
       tabs: [
         {
-          name: 'meta',
+          label: 'Information de base',
+          fields: [
+            {
+              name: 'name',
+              type: 'text',
+              required: true,
+              label: 'Nom',
+            },
+            {
+              name: 'successStory',
+              type: 'relationship',
+              relationTo: 'success-stories',
+              hasMany: false,
+              label: 'Histoire de Succès',
+              admin: {
+                description: "L'histoire de succès liée à ce chien (si adopté)",
+                condition: (data) => data.status === 'adopted',
+              },
+            },
+            {
+              name: 'breed',
+              type: 'text',
+              required: true,
+              label: 'Race',
+            },
+            {
+              name: 'sex',
+              type: 'select',
+              required: true,
+              label: 'Sexe',
+              options: [
+                {
+                  label: 'Mâle',
+                  value: 'male',
+                },
+                {
+                  label: 'Femelle',
+                  value: 'female',
+                },
+              ],
+            },
+            {
+              name: 'age',
+              type: 'group',
+              label: 'Âge',
+              fields: [
+                {
+                  name: 'years',
+                  type: 'number',
+                  required: true,
+                  label: 'Années',
+                  admin: {
+                    description: 'Âge en années (utilisez 0 pour les chiens de moins d&apos;un an)',
+                  },
+                  min: 0,
+                },
+                {
+                  name: 'months',
+                  type: 'number',
+                  required: true,
+                  label: 'Mois',
+                  admin: {
+                    description: 'Mois additionnels (0-11)',
+                  },
+                  min: 0,
+                  max: 11,
+                },
+              ],
+            },
+            {
+              name: 'status',
+              type: 'select',
+              required: true,
+              label: 'Statut',
+              defaultValue: 'available',
+              options: [
+                {
+                  label: 'Disponible pour l\'adoption',
+                  value: 'available',
+                },
+                {
+                  label: 'Adoption en cours',
+                  value: 'pending',
+                },
+                {
+                  label: 'Adopté',
+                  value: 'adopted',
+                },
+                {
+                  label: 'En famille d\'accueil',
+                  value: 'foster',
+                },
+                {
+                  label: 'Sous soins médicaux',
+                  value: 'medical',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          label: 'Média & Description',
+          fields: [
+            {
+              name: 'mainImage',
+              type: 'upload',
+              relationTo: 'media',
+              required: true,
+              label: 'Image principale',
+            },
+            {
+              name: 'galleryImages',
+              type: 'array',
+              label: 'Images additionnelles',
+              fields: [
+                {
+                  name: 'image',
+                  type: 'upload',
+                  relationTo: 'media',
+                  required: true,
+                  label: 'Image',
+                },
+              ],
+            },
+            {
+              name: 'description',
+              type: 'richText',
+              label: 'Description',
+              editor: lexicalEditor({
+                features: ({ rootFeatures }) => {
+                  return [
+                    ...rootFeatures,
+                    HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
+                    BlocksFeature({}),
+                    FixedToolbarFeature(),
+                  ]
+                },
+              }),
+              required: true,
+            },
+          ],
+        },
+        {
+          label: 'Caractéristiques',
+          fields: [
+            {
+              name: 'weight',
+              label: 'Poids (lbs)',
+              type: 'number',
+              min: 0,
+            },
+            {
+              name: 'size',
+              label: 'Taille',
+              type: 'select',
+              options: [
+                { label: 'Petit', value: 'small' },
+                { label: 'Moyen', value: 'medium' },
+                { label: 'Grand', value: 'large' },
+              ],
+            },
+            {
+              name: 'goodWith',
+              type: 'group',
+              label: 'Compatibilité',
+              fields: [
+                {
+                  name: 'kids',
+                  label: 'Bon avec les enfants',
+                  type: 'select',
+                  options: [
+                    { label: 'Oui', value: 'yes' },
+                    { label: 'Non', value: 'no' },
+                    { label: 'Inconnu', value: 'unknown' },
+                  ],
+                  defaultValue: 'unknown',
+                },
+                {
+                  name: 'dogs',
+                  label: 'Bon avec les chiens',
+                  type: 'select',
+                  options: [
+                    { label: 'Oui', value: 'yes' },
+                    { label: 'Non', value: 'no' },
+                    { label: 'Inconnu', value: 'unknown' },
+                  ],
+                  defaultValue: 'unknown',
+                },
+                {
+                  name: 'cats',
+                  label: 'Bon avec les chats',
+                  type: 'select',
+                  options: [
+                    { label: 'Oui', value: 'yes' },
+                    { label: 'Non', value: 'no' },
+                    { label: 'Inconnu', value: 'unknown' },
+                  ],
+                  defaultValue: 'unknown',
+                },
+              ],
+            },
+          ],
+        },
+        {
           label: 'SEO',
           fields: [
             OverviewField({
-              titlePath: 'meta.title',
-              descriptionPath: 'meta.description',
-              imagePath: 'meta.image',
+              titlePath: 'metaTitle',
+              descriptionPath: 'metaDescription',
+              imagePath: 'metaImage',
             }),
-            MetaTitleField({
-              hasGenerateFn: true,
+            {
+              name: 'metaTitle',
+              type: 'text',
               label: 'Titre SEO',
-            }),
-            MetaImageField({
+            },
+            {
+              name: 'metaImage',
+              type: 'upload',
               relationTo: 'media',
               label: 'Image SEO',
-            }),
-            MetaDescriptionField({
+            },
+            {
+              name: 'metaDescription',
+              type: 'textarea',
               label: 'Description SEO',
-            }),
+            },
             PreviewField({
               hasGenerateFn: true,
-              titlePath: 'meta.title',
-              descriptionPath: 'meta.description',
+              titlePath: 'metaTitle',
+              descriptionPath: 'metaDescription',
               label: 'Aperçu',
             }),
           ],
@@ -293,9 +293,8 @@ export const Dogs: CollectionConfig<'dogs'> = {
     beforeChange: [
       ({ data }) => {
         // If no meta title is provided, use the dog's name
-        if (!data.meta?.title && data.name) {
-          if (!data.meta) data.meta = {}
-          data.meta.title = `${data.name} - Chien pour adoption`
+        if (!data.metaTitle && data.name) {
+          data.metaTitle = `${data.name} - Chien pour adoption`
         }
         return data
       },
@@ -310,10 +309,5 @@ export const Dogs: CollectionConfig<'dogs'> = {
       },
     },
     maxPerDoc: 20,
-  },
-  admin: {
-    defaultColumns: ['name', 'breed', 'status', 'updatedAt'],
-    useAsTitle: 'name',
-    group: 'Contenu',
   },
 }
