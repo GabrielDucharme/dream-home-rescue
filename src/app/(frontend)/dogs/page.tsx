@@ -15,11 +15,21 @@ export default async function DogsPage() {
     depth: 1,
     limit: 100,
     sort: '-createdAt',
-    // Only show dogs that are available for adoption
+    // Only show dogs that are available for adoption - use explicit filtering to ensure it works in production
     where: {
-      status: {
-        equals: 'available'
-      }
+      and: [
+        {
+          status: {
+            equals: 'available'
+          }
+        },
+        {
+          // Make sure we're not getting draft content in production
+          _status: {
+            equals: 'published'
+          }
+        }
+      ]
     },
     // Include id for the AdoptMeButton and goodWith for filtering
     select: {

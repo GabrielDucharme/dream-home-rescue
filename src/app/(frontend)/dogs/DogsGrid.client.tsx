@@ -81,41 +81,31 @@ export default function DogsGrid({ dogs }: DogsGridProps) {
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     
                     {/* Status Badge - Top Right */}
-                    <div 
-                      className={`absolute top-4 right-4 px-4 py-1.5 text-xs font-semibold rounded-full shadow-md ${
-                        dog.status === 'available' ? 'bg-green-500 text-white' : 
-                        dog.status === 'pending' ? 'bg-yellow-500 text-white' : 
-                        dog.status === 'foster' ? 'bg-blue-500 text-white' : 
-                        dog.status === 'medical' ? 'bg-red-500 text-white' : 
-                        'bg-gray-500 text-white'
-                      }`}
-                    >
-                      {dog.status === 'available' ? 'Disponible' : 
-                       dog.status === 'pending' ? 'Adoption en cours' : 
-                       dog.status === 'foster' ? 'Famille d\'accueil' : 
-                       dog.status === 'medical' ? 'Soins médicaux' : 
-                       'Adopté'}
-                    </div>
-                    
-                    {/* Quick Stats - Bottom */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4 flex justify-between items-center text-xs text-white font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="flex items-center gap-2">
-                        <span className="rounded-full bg-black/50 px-3 py-1.5 backdrop-blur-sm">
-                          {dog.sex === 'male' ? 'Mâle' : 'Femelle'}
-                        </span>
-                        {dog.age && (
-                          <span className="rounded-full bg-black/50 px-3 py-1.5 backdrop-blur-sm">
-                            {typeof dog.age === 'object' 
-                              ? `${dog.age.years || 0} an${dog.age.years !== 1 ? 's' : ''} ${dog.age.months && dog.age.months > 0 ? `${dog.age.months} m` : ''}`
-                              : dog.age}
-                          </span>
-                        )}
-                      </div>
+                    <div className="absolute top-4 right-4 px-4 py-1.5 text-xs font-semibold rounded-full shadow-md bg-green-500 text-white">
+                      Disponible
                     </div>
                   </div>
                 ) : (
                   <div className="aspect-square bg-muted flex items-center justify-center text-muted-foreground">
                     <span>Image non disponible</span>
+                  </div>
+                )}
+                
+                {/* Quick Stats - Bottom */}
+                {dog.mainImage && typeof dog.mainImage !== 'string' && (
+                  <div className="absolute bottom-0 left-0 right-0 p-4 flex justify-between items-center text-xs text-white font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="flex items-center gap-2">
+                      <span className="rounded-full bg-black/50 px-3 py-1.5 backdrop-blur-sm">
+                        {dog.sex === 'male' ? 'Mâle' : 'Femelle'}
+                      </span>
+                      {dog.age && (
+                        <span className="rounded-full bg-black/50 px-3 py-1.5 backdrop-blur-sm">
+                          {typeof dog.age === 'object' 
+                            ? `${dog.age.years || 0} an${dog.age.years !== 1 ? 's' : ''} ${dog.age.months && dog.age.months > 0 ? `${dog.age.months} m` : ''}`
+                            : dog.age}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
@@ -157,22 +147,20 @@ export default function DogsGrid({ dogs }: DogsGridProps) {
               </div>
               
               {/* Adopt Button - Absolutely positioned at the top left */}
-              {(dog.status === 'available' || dog.status === 'disponible') && (
-                <div 
-                  className="absolute top-4 left-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (dog.id) {
-                      window.location.href = `/adopt/application/${dog.id}`;
-                    }
-                  }}
-                >
-                  <div className={`flex justify-center items-center px-4 py-1.5 bg-flame text-white text-xs font-semibold rounded-full shadow-lg hover:bg-flame/90 transition-colors ${!dog.id ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
-                    Adopter {dog.name}
-                  </div>
+              <div 
+                className="absolute top-4 left-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (dog.id) {
+                    window.location.href = `/adopt/application/${dog.id}`;
+                  }
+                }}
+              >
+                <div className={`flex justify-center items-center px-4 py-1.5 bg-flame text-white text-xs font-semibold rounded-full shadow-lg hover:bg-flame/90 transition-colors ${!dog.id ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
+                  Adopter {dog.name}
                 </div>
-              )}
+              </div>
             </Link>
           ))}
         </div>
