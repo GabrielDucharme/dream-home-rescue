@@ -31,45 +31,62 @@ export default async function SuccessStoryPage({ params: { slug } }) {
 
   return (
     <div>
-      {/* Hero section */}
-      <div className="relative w-full overflow-hidden">
-        {/* Fixed height container for the image */}
-        <div className="h-[40vh] md:h-[50vh] lg:h-[60vh] max-h-[800px] relative">
-          {successStory.mainImage && (
-            <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-              <Media
-                resource={successStory.mainImage}
-                fill
-                priority
-                imgClassName="object-cover w-full h-full object-center"
-                className="absolute inset-0"
-              />
-            </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/80"></div>
-        </div>
+      {/* Hero section with blurred background */}
+      <div className="relative w-full overflow-hidden bg-gray-900 py-24 md:py-28">
+        {/* Blurred background image */}
+        {successStory.mainImage && (
+          <div className="absolute inset-0 w-full h-full">
+            <Media
+              resource={successStory.mainImage}
+              fill
+              priority
+              imgClassName="object-cover w-full h-full object-center blur-sm opacity-30"
+              className="absolute inset-0"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/70"></div>
+          </div>
+        )}
         
-        {/* Content container - positioned at the bottom */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 text-white z-10">
-          <div className="container max-w-6xl mx-auto">
-            <h1 className="text-3xl md:text-5xl font-bold mb-4" style={textShadowStyles}>{successStory.title}</h1>
-            <p className="text-lg md:text-xl mb-6" style={textShadowStyles}>
-              <span className="inline-flex items-center">
-                <PawIcon className="mr-2" width={20} height={20} fill="white" />
-                {successStory.dog?.name} - Adopté par {successStory.family}
-              </span>
-            </p>
-            <div className="inline-flex bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg">
-              <p className="text-white font-medium">
-                Date d&apos;adoption: {formatDateTime({
-                  date: new Date(successStory.adoptionDate),
-                  options: {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  }
-                })}
+        {/* Main content container with fixed width */}
+        <div className="relative z-10 container max-w-6xl mx-auto px-4">
+          {/* Header content in original layout */}
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-10">
+            {/* Profile image (square) - now larger and visible on mobile too */}
+            {successStory.mainImage && (
+              <div className="flex-shrink-0">
+                <div className="w-48 h-48 md:w-56 md:h-56 xl:w-64 xl:h-64 rounded-lg overflow-hidden border-4 border-white shadow-xl relative">
+                  <Media
+                    resource={successStory.mainImage}
+                    fill
+                    imgClassName="object-cover"
+                  />
+                </div>
+              </div>
+            )}
+            
+            {/* Header content - better centered vertically with image */}
+            <div className="flex-1 flex flex-col justify-center text-center md:text-left">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-white" style={textShadowStyles}>{successStory.title}</h1>
+              <p className="text-lg md:text-xl mb-6 text-white" style={textShadowStyles}>
+                <span className="inline-flex items-center justify-center md:justify-start">
+                  <PawIcon className="mr-2" width={20} height={20} fill="white" />
+                  {successStory.dog?.name} - Adopté par {successStory.family}
+                </span>
               </p>
+              <div className="flex justify-center md:justify-start">
+                <div className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg">
+                  <p className="text-white font-medium">
+                    Date d&apos;adoption: {formatDateTime({
+                      date: new Date(successStory.adoptionDate),
+                      options: {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      }
+                    })}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
