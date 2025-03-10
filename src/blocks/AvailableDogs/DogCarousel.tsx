@@ -35,6 +35,12 @@ export const DogsCarousel = ({ dogs }) => {
                     imgClassName="w-full h-full object-cover"
                     fill
                   />
+                  {/* Only show status badge for available dogs */}
+                  {dog.status === 'available' && (
+                    <div className="absolute top-2 right-2 px-2 py-1 bg-green-500 text-white text-xs rounded-full">
+                      Disponible
+                    </div>
+                  )}
                 </div>
               )}
               <div className="p-4">

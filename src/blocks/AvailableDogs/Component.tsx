@@ -34,13 +34,24 @@ const DogsData = async ({
     },
   }
   
-  // Filter by status if not showing all
-  if (showStatus !== 'all') {
-    query.where = {
-      status: {
-        equals: showStatus,
+  // Always ensure we're only getting published content
+  query.where = {
+    and: [
+      {
+        // Filter by status if not showing all
+        ...(showStatus !== 'all' ? {
+          status: {
+            equals: showStatus,
+          }
+        } : {}),
       },
-    }
+      {
+        // Make sure we're not getting draft content
+        _status: {
+          equals: 'published'
+        }
+      }
+    ]
   }
   
   const dogsResponse = await payload.find({
