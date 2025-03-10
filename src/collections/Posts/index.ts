@@ -238,6 +238,62 @@ export const Posts: CollectionConfig<'posts'> = {
     ...slugField(),
   ],
   hooks: {
+    beforeChange: [
+      ({ data }) => {
+        // Auto-populate meta title if not provided
+        if (!data.meta?.title && data.title) {
+          if (!data.meta) data.meta = {}
+          data.meta.title = `${data.title} | Dream Home Rescue`
+        }
+        
+        // Auto-populate meta description from content if not provided
+        if (!data.meta?.description && data.content) {
+          if (!data.meta) data.meta = {}
+          
+          // Extract text content from the Lexical JSON structure (simplified)
+          let textContent = '';
+          try {
+            // Try to parse content if it's a string
+            const contentObj = typeof data.content === 'string' 
+              ? JSON.parse(data.content)
+              : data.content;
+              
+            // Check if we have a root with children
+            if (contentObj?.root?.children) {
+              // Very basic extraction of text from paragraphs
+              contentObj.root.children.forEach(node => {
+                if (node.type === 'paragraph' && node.children) {
+                  node.children.forEach(child => {
+                    if (child.type === 'text' && child.text) {
+                      textContent += child.text + ' ';
+                    }
+                  });
+                }
+              });
+            }
+            
+            // Trim and limit to 160 characters
+            textContent = textContent.trim();
+            if (textContent && textContent.length > 3) {
+              data.meta.description = textContent.length > 160 
+                ? textContent.substring(0, 157) + '...'
+                : textContent;
+            }
+          } catch (error) {
+            // If parsing fails, don't set a description
+            console.error('Error parsing content for auto description:', error);
+          }
+        }
+        
+        // Check if meta image is missing, use heroImage if available
+        if (!data.meta?.image && data.heroImage) {
+          if (!data.meta) data.meta = {}
+          data.meta.image = data.heroImage;
+        }
+        
+        return data;
+      }
+    ],
     afterChange: [revalidatePost],
     afterRead: [populateAuthors],
     afterDelete: [revalidateDelete],

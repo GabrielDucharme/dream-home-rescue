@@ -145,7 +145,38 @@ export const Pages: CollectionConfig<'pages'> = {
   ],
   hooks: {
     afterChange: [revalidatePage],
-    beforeChange: [populatePublishedAt],
+    beforeChange: [
+      populatePublishedAt,
+      ({ data }) => {
+        // Auto-populate meta title if not provided
+        if (!data.meta?.title && data.title) {
+          if (!data.meta) data.meta = {}
+          data.meta.title = `${data.title} | Dream Home Rescue`
+        }
+        
+        // Auto-populate meta description from hero if available
+        if (!data.meta?.description && data.hero?.description) {
+          if (!data.meta) data.meta = {}
+          const heroDesc = typeof data.hero.description === 'string' 
+            ? data.hero.description 
+            : '';
+            
+          if (heroDesc.length > 0) {
+            data.meta.description = heroDesc.length > 160 
+              ? heroDesc.substring(0, 157) + '...'
+              : heroDesc;
+          }
+        }
+        
+        // Use hero image for SEO if available and not set
+        if (!data.meta?.image && data.hero?.media) {
+          if (!data.meta) data.meta = {}
+          data.meta.image = data.hero.media;
+        }
+        
+        return data;
+      }
+    ],
     afterDelete: [revalidateDelete],
   },
   versions: {
