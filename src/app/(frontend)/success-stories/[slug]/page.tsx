@@ -92,88 +92,83 @@ export default async function SuccessStoryPage({ params: { slug } }) {
         </div>
       </div>
 
-      {/* Content section */}
-      <div className="container py-16 max-w-6xl">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          <div className="lg:col-span-2">
-            {/* Testimonial if available */}
-            {successStory.testimonial && (
-              <div className="mb-10 p-8 bg-[#EDEBE0] rounded-xl shadow-sm relative">
-                <div className="absolute -top-5 -left-2 text-6xl text-[#d3cfc1]">"</div>
-                <blockquote className="text-xl italic relative z-10">
-                  {successStory.testimonial}
-                </blockquote>
-                <p className="mt-6 font-medium text-right">— {successStory.family}</p>
-              </div>
-            )}
-            
-            {/* Main story content - with better debugging and display */}
-            <div>
-              <h2 className="text-2xl font-bold mb-6">L'histoire de {successStory.dog?.name}</h2>
-              
-              {/* Debug information - only visible in development */}
-              {process.env.NODE_ENV === 'development' && (
-                <pre className="mb-4 p-4 bg-gray-100 rounded-md overflow-auto text-xs">
-                  {JSON.stringify({
-                    story: successStory.story, 
-                    hasStory: !!successStory.story, 
-                    storyType: typeof successStory.story,
-                    isArray: Array.isArray(successStory.story),
-                    storyLength: Array.isArray(successStory.story) ? successStory.story.length : 'N/A',
-                    storyKeys: successStory.story ? Object.keys(successStory.story) : []
-                  }, null, 2)}
-                </pre>
-              )}
-              
-              {/* Attempt to display rich text content using the correct prop as per docs */}
-              {successStory.story ? (
-                <div className="prose prose-lg max-w-none">
-                  {/* The correct prop is 'content' for our custom component or 'data' for the base component */}
-                  <RichText content={successStory.story} />
-                </div>
-              ) : (
-                <div className="p-4 border border-amber-200 bg-amber-50 rounded">
-                  <p className="text-amber-800">
-                    Le contenu de cette histoire n'est pas disponible. Veuillez vérifier le contenu dans l'interface d'administration.
-                  </p>
+      {/* Content section with subtle background */}
+      <div className="bg-gray-50 py-16">
+        <div className="container max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div className="lg:col-span-2">
+              {/* Testimonial if available - subtle design */}
+              {successStory.testimonial && (
+                <div className="mb-6 bg-gray-50 rounded-lg border border-gray-100 overflow-hidden">
+                  <div className="p-6 md:p-8">
+                    <blockquote className="text-gray-600 italic text-lg">
+                      "{successStory.testimonial}"
+                    </blockquote>
+                    <p className="mt-4 text-sm text-gray-500 text-right">
+                      — {successStory.family}
+                    </p>
+                  </div>
                 </div>
               )}
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            {/* Gallery images */}
-            {successStory.galleryImages && successStory.galleryImages.length > 0 && (
-              <div className="mb-8">
-                <h3 className="text-xl font-fraunces font-bold mb-4">Photos</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  {successStory.galleryImages.map((item, i) => (
-                    <div key={i} className="aspect-square relative rounded-lg overflow-hidden">
-                      <Media
-                        resource={item.image}
-                        fill
-                        className="object-cover hover:scale-105 transition-transform duration-300"
-                      />
+              
+              {/* Main story content with improved UI */}
+              <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div className="p-8 md:p-10">
+                  <h2 className="text-2xl font-bold mb-6 text-primary border-b pb-4">L'histoire de {successStory.dog?.name}</h2>
+                  
+                  {successStory.story ? (
+                    <div className="prose prose-lg prose-headings:text-primary prose-a:text-primary prose-a:no-underline hover:prose-a:underline max-w-none">
+                      <RichText content={successStory.story} />
                     </div>
-                  ))}
+                  ) : (
+                    <div className="p-4 border border-amber-200 bg-amber-50 rounded">
+                      <p className="text-amber-800">
+                        Le contenu de cette histoire n'est pas disponible. Veuillez vérifier le contenu dans l'interface d'administration.
+                      </p>
+                    </div>
+                  )}
                 </div>
-                {successStory.galleryImages[0]?.caption && (
-                  <p className="mt-2 text-sm text-gray-600">{successStory.galleryImages[0].caption}</p>
-                )}
               </div>
-            )}
+            </div>
 
-            {/* Back to all stories */}
-            <div className="sticky top-24">
-              <h3 className="text-xl font-fraunces font-bold mb-4">Voir plus</h3>
-              <div className="flex flex-col gap-4">
-                <Button asChild>
-                  <Link href="/success-stories" className="flex items-center gap-2">
-                    <PawIcon width={16} height={16} fill="white" />
-                    Toutes nos histoires d'adoption
-                  </Link>
-                </Button>
+            {/* Sidebar */}
+            <div className="lg:col-span-1">
+              {/* Gallery images with improved UI */}
+              {successStory.galleryImages && successStory.galleryImages.length > 0 && (
+                <div className="mb-8 bg-white rounded-xl shadow-sm overflow-hidden">
+                  <div className="p-8 md:p-8">
+                    <h3 className="text-xl font-bold mb-6 text-primary border-b pb-4">Photos</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      {successStory.galleryImages.map((item, i) => (
+                        <div key={i} className="aspect-square relative rounded-lg overflow-hidden shadow-md">
+                          <Media
+                            resource={item.image}
+                            fill
+                            className="object-cover hover:scale-105 transition-transform duration-500"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    {successStory.galleryImages[0]?.caption && (
+                      <p className="mt-4 text-sm text-gray-600 italic text-center">{successStory.galleryImages[0].caption}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Back to all stories */}
+              <div className="sticky top-24 bg-white rounded-xl shadow-sm overflow-hidden">
+                <div className="p-6 md:p-8">
+                  <h3 className="text-xl font-bold mb-6 text-primary border-b pb-4">Voir plus</h3>
+                  <div className="flex flex-col gap-4">
+                    <Button asChild className="w-full">
+                      <Link href="/success-stories" className="flex items-center justify-center gap-2 w-full">
+                        <PawIcon width={16} height={16} fill="white" />
+                        Toutes nos histoires d'adoption
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
