@@ -22,7 +22,7 @@ export default async function SuccessStoryPage({ params: { slug } }) {
   const successStory = await getDocument<SuccessStory>({
     collection: 'success-stories',
     slug,
-    depth: 1,
+    depth: 2, // Increase depth to ensure we get all nested content
   })
 
   if (!successStory) {
@@ -107,9 +107,37 @@ export default async function SuccessStoryPage({ params: { slug } }) {
               </div>
             )}
             
-            {/* Main story content */}
-            <div className="prose prose-lg max-w-none">
-              <RichText content={successStory.story} />
+            {/* Main story content - with better debugging and display */}
+            <div>
+              <h2 className="text-2xl font-bold mb-6">L'histoire de {successStory.dog?.name}</h2>
+              
+              {/* Debug information - only visible in development */}
+              {process.env.NODE_ENV === 'development' && (
+                <pre className="mb-4 p-4 bg-gray-100 rounded-md overflow-auto text-xs">
+                  {JSON.stringify({
+                    story: successStory.story, 
+                    hasStory: !!successStory.story, 
+                    storyType: typeof successStory.story,
+                    isArray: Array.isArray(successStory.story),
+                    storyLength: Array.isArray(successStory.story) ? successStory.story.length : 'N/A',
+                    storyKeys: successStory.story ? Object.keys(successStory.story) : []
+                  }, null, 2)}
+                </pre>
+              )}
+              
+              {/* Attempt to display rich text content using the correct prop as per docs */}
+              {successStory.story ? (
+                <div className="prose prose-lg max-w-none">
+                  {/* The correct prop is 'content' for our custom component or 'data' for the base component */}
+                  <RichText content={successStory.story} />
+                </div>
+              ) : (
+                <div className="p-4 border border-amber-200 bg-amber-50 rounded">
+                  <p className="text-amber-800">
+                    Le contenu de cette histoire n'est pas disponible. Veuillez vérifier le contenu dans l'interface d'administration.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 

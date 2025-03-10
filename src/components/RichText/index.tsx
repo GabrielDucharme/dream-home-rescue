@@ -56,16 +56,28 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
 })
 
 type Props = {
-  data: SerializedEditorState
+  content?: SerializedEditorState
+  data?: SerializedEditorState // For backward compatibility
   enableGutter?: boolean
   enableProse?: boolean
 } & React.HTMLAttributes<HTMLDivElement>
 
 export default function RichText(props: Props) {
-  const { className, enableProse = true, enableGutter = true, ...rest } = props
+  const { className, content, data, enableProse = true, enableGutter = true, ...rest } = props
+  
+  // Use content prop if provided, otherwise fall back to data
+  const richTextContent = content || data;
+  
+  // If no content is provided, return nothing
+  if (!richTextContent) {
+    console.warn('RichText component called without content or data prop');
+    return null;
+  }
+  
   return (
     <RichTextWithoutBlocks
       converters={jsxConverters}
+      data={richTextContent}
       className={cn(
         {
           'container ': enableGutter,
