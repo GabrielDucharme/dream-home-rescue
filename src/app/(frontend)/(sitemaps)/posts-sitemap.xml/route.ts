@@ -34,10 +34,37 @@ const getPostsSitemap = unstable_cache(
     const sitemap = results.docs
       ? results.docs
           .filter((post) => Boolean(post?.slug))
-          .map((post) => ({
-            loc: `${SITE_URL}/posts/${post?.slug}`,
-            lastmod: post.updatedAt || dateFallback,
-          }))
+          .map((post) => {
+            // Convert updatedAt string to Date object for comparison
+            const updatedAt = new Date(post.updatedAt || dateFallback)
+            const now = new Date()
+            
+            // Calculate difference in days
+            const daysSinceUpdate = Math.floor((now.getTime() - updatedAt.getTime()) / (1000 * 3600 * 24))
+            
+            // Set change frequency based on post age
+            let changefreq = 'monthly'
+            if (daysSinceUpdate < 7) {
+              changefreq = 'daily'  // New posts change more frequently
+            } else if (daysSinceUpdate < 30) {
+              changefreq = 'weekly'  // Recent posts
+            }
+            
+            // Set priority based on recency
+            let priority = 0.6  // Default for older posts
+            if (daysSinceUpdate < 7) {
+              priority = 0.8  // Higher priority for newer posts
+            } else if (daysSinceUpdate < 30) {
+              priority = 0.7  // Medium priority for recent posts
+            }
+            
+            return {
+              loc: `${SITE_URL}/posts/${post?.slug}`,
+              lastmod: post.updatedAt || dateFallback,
+              priority,
+              changefreq,
+            }
+          })
       : []
 
     return sitemap

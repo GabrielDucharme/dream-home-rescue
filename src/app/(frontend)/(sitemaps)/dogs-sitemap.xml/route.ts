@@ -3,7 +3,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { unstable_cache } from 'next/cache'
 
-const getPagesSitemap = unstable_cache(
+const getDogsSitemap = unstable_cache(
   async () => {
     const payload = await getPayload({ config })
     const SITE_URL =
@@ -12,7 +12,7 @@ const getPagesSitemap = unstable_cache(
       'https://example.com'
 
     const results = await payload.find({
-      collection: 'pages',
+      collection: 'dogs',
       overrideAccess: false,
       draft: false,
       depth: 0,
@@ -31,49 +31,39 @@ const getPagesSitemap = unstable_cache(
 
     const dateFallback = new Date().toISOString()
 
+    // Add the main dogs page
     const defaultSitemap = [
       {
-        loc: `${SITE_URL}/search`,
+        loc: `${SITE_URL}/dogs`,
         lastmod: dateFallback,
-        priority: 0.7,
-        changefreq: 'weekly',
-      },
-      {
-        loc: `${SITE_URL}/posts`,
-        lastmod: dateFallback,
-        priority: 0.8,
+        // Set higher priority and more frequent change rate for the main dogs page
+        priority: 0.9,
         changefreq: 'daily',
       },
     ]
 
     const sitemap = results.docs
       ? results.docs
-          .filter((page) => Boolean(page?.slug))
-          .map((page) => {
-            // Set highest priority for homepage
-            const priority = page?.slug === 'home' ? 1.0 : 0.7
-            // Homepage and key pages change more frequently
-            const changefreq = page?.slug === 'home' ? 'daily' : 'weekly'
-            
-            return {
-              loc: page?.slug === 'home' ? `${SITE_URL}/` : `${SITE_URL}/${page?.slug}`,
-              lastmod: page.updatedAt || dateFallback,
-              priority,
-              changefreq,
-            }
-          })
+          .filter((dog) => Boolean(dog?.slug))
+          .map((dog) => ({
+            loc: `${SITE_URL}/dogs/${dog?.slug}`,
+            lastmod: dog.updatedAt || dateFallback,
+            // Set high priority for individual dog pages
+            priority: 0.8,
+            changefreq: 'daily',
+          }))
       : []
 
     return [...defaultSitemap, ...sitemap]
   },
-  ['pages-sitemap'],
+  ['dogs-sitemap'],
   {
-    tags: ['pages-sitemap'],
+    tags: ['dogs-sitemap'],
   },
 )
 
 export async function GET() {
-  const sitemap = await getPagesSitemap()
+  const sitemap = await getDogsSitemap()
 
   return getServerSideSitemap(sitemap)
 }

@@ -1,0 +1,43 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://example.com
+
+# Sitemaps
+Sitemap: https://example.com/sitemap.xml
+Sitemap: https://example.com/pages-sitemap.xml
+Sitemap: https://example.com/posts-sitemap.xml
+Sitemap: https://example.com/dogs-sitemap.xml
+Sitemap: https://example.com/events-sitemap.xml
+Sitemap: https://example.com/success-stories-sitemap.xml
+
+# Disallowed directories
+User-agent: *
+Disallow: /admin/
+Disallow: /api/
+Disallow: */preview/
+Disallow: */exit-preview/
+Disallow: */seed/
+
+# Special directives for Google
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+# Special directives for Bing
+User-agent: Bingbot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+# Special directives for GPTBot (ChatGPT crawler)
+User-agent: GPTBot
+Allow: /dogs/
+Allow: /posts/
+Allow: /evenements/
+Allow: /success-stories/
+Disallow: /admin/
+Disallow: /api/

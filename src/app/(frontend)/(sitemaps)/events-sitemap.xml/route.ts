@@ -3,7 +3,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { unstable_cache } from 'next/cache'
 
-const getPagesSitemap = unstable_cache(
+const getEventsSitemap = unstable_cache(
   async () => {
     const payload = await getPayload({ config })
     const SITE_URL =
@@ -12,7 +12,7 @@ const getPagesSitemap = unstable_cache(
       'https://example.com'
 
     const results = await payload.find({
-      collection: 'pages',
+      collection: 'fundingEvents',
       overrideAccess: false,
       draft: false,
       depth: 0,
@@ -26,54 +26,51 @@ const getPagesSitemap = unstable_cache(
       select: {
         slug: true,
         updatedAt: true,
+        startDate: true,
       },
     })
 
     const dateFallback = new Date().toISOString()
 
+    // Add the main events page
     const defaultSitemap = [
       {
-        loc: `${SITE_URL}/search`,
-        lastmod: dateFallback,
-        priority: 0.7,
-        changefreq: 'weekly',
-      },
-      {
-        loc: `${SITE_URL}/posts`,
+        loc: `${SITE_URL}/evenements`,
         lastmod: dateFallback,
         priority: 0.8,
-        changefreq: 'daily',
+        changefreq: 'weekly',
       },
     ]
 
     const sitemap = results.docs
       ? results.docs
-          .filter((page) => Boolean(page?.slug))
-          .map((page) => {
-            // Set highest priority for homepage
-            const priority = page?.slug === 'home' ? 1.0 : 0.7
-            // Homepage and key pages change more frequently
-            const changefreq = page?.slug === 'home' ? 'daily' : 'weekly'
+          .filter((event) => Boolean(event?.slug))
+          .map((event) => {
+            // Calculate priority based on event date (higher priority for upcoming events)
+            const startDate = event.startDate ? new Date(event.startDate) : null
+            const now = new Date()
+            const isPastEvent = startDate && startDate < now
             
             return {
-              loc: page?.slug === 'home' ? `${SITE_URL}/` : `${SITE_URL}/${page?.slug}`,
-              lastmod: page.updatedAt || dateFallback,
-              priority,
-              changefreq,
+              loc: `${SITE_URL}/evenements/${event?.slug}`,
+              lastmod: event.updatedAt || dateFallback,
+              // Lower priority for past events, higher for upcoming
+              priority: isPastEvent ? 0.5 : 0.8,
+              changefreq: isPastEvent ? 'monthly' : 'weekly',
             }
           })
       : []
 
     return [...defaultSitemap, ...sitemap]
   },
-  ['pages-sitemap'],
+  ['events-sitemap'],
   {
-    tags: ['pages-sitemap'],
+    tags: ['events-sitemap'],
   },
 )
 
 export async function GET() {
-  const sitemap = await getPagesSitemap()
+  const sitemap = await getEventsSitemap()
 
   return getServerSideSitemap(sitemap)
 }
