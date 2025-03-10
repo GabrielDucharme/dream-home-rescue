@@ -1,16 +1,22 @@
-import React from 'react'
-import { Metadata } from 'next'
+'use client'
+
+import React, { useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { PawIcon } from '@/components/icons'
+import { trackEvent } from '@/utilities/analytics'
 
-export const metadata: Metadata = {
-  title: 'Merci pour votre don',
-  description: 'Votre générosité fait toute la différence pour les chiens dans le besoin.',
-}
+// Metadata moved to a separate page-level metadata file since this is now a client component
 
 export default function ThankYouPage() {
+  useEffect(() => {
+    // Track donation completion event on page load
+    trackEvent('donation_completed', { 
+      page: 'thank_you'
+    })
+  }, [])
+
   return (
     <div className="container py-16 md:py-24">
       <Card className="max-w-2xl mx-auto">

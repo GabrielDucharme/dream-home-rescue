@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
+import { trackEvent } from '@/utilities/analytics'
 
 export { MobileDonationCard } from './MobileDonationCard'
 export { DonationTrigger } from './DonationTrigger'
@@ -31,19 +32,24 @@ export const DonationCard: React.FC<DonationCardProps> = ({ className = '' }) =>
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     
+    trackEvent('donation_form_submitted')
+    
     // Validation
     if (!name.trim()) {
       setError('Veuillez entrer votre nom')
+      trackEvent('donation_form_error', { type: 'validation', field: 'name' })
       return
     }
     
     if (!email.trim() || !email.includes('@')) {
       setError('Veuillez entrer une adresse courriel valide')
+      trackEvent('donation_form_error', { type: 'validation', field: 'email' })
       return
     }
     
     if (!acceptTerms) {
       setError('Veuillez accepter les conditions')
+      trackEvent('donation_form_error', { type: 'validation', field: 'terms' })
       return
     }
     
@@ -53,6 +59,7 @@ export const DonationCard: React.FC<DonationCardProps> = ({ className = '' }) =>
     // Make sure we have a valid amount
     if (amount === 'Autre' && (!customAmount || isNaN(Number(customAmount)))) {
       setError('Veuillez entrer un montant valide')
+      trackEvent('donation_form_error', { type: 'validation', field: 'customAmount' })
       return
     }
     
@@ -97,14 +104,23 @@ export const DonationCard: React.FC<DonationCardProps> = ({ className = '' }) =>
       
       // If Stripe checkout URL is returned, redirect to it
       if (result.checkoutUrl) {
+        trackEvent('donation_checkout_started', { 
+          amount: parseInt(finalAmount),
+          type: donationType
+        })
         router.push(result.checkoutUrl)
       } else {
         // Handle non-Stripe success case (unlikely in production)
         console.log('Donation submitted successfully:', result)
+        trackEvent('donation_success', { 
+          amount: parseInt(finalAmount),
+          type: donationType
+        })
         // Redirect to a thank you page or show success message
       }
     } catch (error) {
       console.error('Error submitting donation:', error)
+      trackEvent('donation_error', { error: 'api_error' })
       setError('Une erreur est survenue lors de l\'envoi de votre don. Veuillez réessayer.')
     } finally {
       setIsSubmitting(false)
@@ -125,7 +141,10 @@ export const DonationCard: React.FC<DonationCardProps> = ({ className = '' }) =>
                 type="button"
                 variant={donationType === 'onetime' ? 'default' : 'outline'} 
                 className="w-full"
-                onClick={() => setDonationType('onetime')}
+                onClick={() => {
+                  setDonationType('onetime')
+                  trackEvent('donation_type_selected', { type: 'onetime' })
+                }}
               >
                 Unique
               </Button>
@@ -133,7 +152,10 @@ export const DonationCard: React.FC<DonationCardProps> = ({ className = '' }) =>
                 type="button"
                 variant={donationType === 'monthly' ? 'default' : 'outline'} 
                 className="w-full"
-                onClick={() => setDonationType('monthly')}
+                onClick={() => {
+                  setDonationType('monthly')
+                  trackEvent('donation_type_selected', { type: 'monthly' })
+                }}
               >
                 Mensuel
               </Button>
@@ -146,7 +168,10 @@ export const DonationCard: React.FC<DonationCardProps> = ({ className = '' }) =>
                   type="button"
                   variant={amount === amt ? 'default' : 'outline'} 
                   className="w-full text-xs md:text-base px-1 md:px-4"
-                  onClick={() => setAmount(amt)}
+                  onClick={() => {
+                    setAmount(amt)
+                    trackEvent('donation_amount_selected', { amount: amt })
+                  }}
                 >
                   {amt === 'Autre' ? amt : `${amt}$`}
                 </Button>

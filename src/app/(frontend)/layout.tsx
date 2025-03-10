@@ -10,6 +10,7 @@ import { Header } from '@/Header/Component'
 import { Providers } from '@/providers'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
+import { Analytics } from '@vercel/analytics/react'
 
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -40,6 +41,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {children}
           <Footer />
           <MobileDonationTrigger />
+          <Analytics />
         </Providers>
       </body>
     </html>
