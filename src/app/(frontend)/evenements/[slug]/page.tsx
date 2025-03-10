@@ -177,6 +177,7 @@ export default async function EventPage({ params }: EventPageProps) {
   
   return (
     <div className="pt-24 pb-16">
+      
       {/* Event Hero Section */}
       <div className="relative mb-12">
         {event.mainImage && (
