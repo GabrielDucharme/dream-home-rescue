@@ -79,6 +79,7 @@ export interface Config {
     donations: Donation;
     customers: Customer;
     'funding-events': FundingEvent;
+    partners: Partner;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -103,6 +104,7 @@ export interface Config {
     donations: DonationsSelect<false> | DonationsSelect<true>;
     customers: CustomersSelect<false> | CustomersSelect<true>;
     'funding-events': FundingEventsSelect<false> | FundingEventsSelect<true>;
+    partners: PartnersSelect<false> | PartnersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -225,6 +227,7 @@ export interface Page {
         limit?: number | null;
         displayLink?: boolean | null;
         linkText?: string | null;
+        backgroundColor?: ('bg-[#F9F9F9]' | 'bg-amber-50' | 'bg-white' | 'bg-[#ECE0CE]') | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'availableDogs';
@@ -269,6 +272,33 @@ export interface Page {
         blockName?: string | null;
         blockType: 'aboutUs';
       }
+    | {
+        heading?: string | null;
+        introduction?: string | null;
+        description?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        /**
+         * Nombre maximum de chiens récemment adoptés à faire défiler
+         */
+        adoptionLimit?: number | null;
+        backgroundColor?: ('gradient' | 'bg-amber-50' | 'bg-white' | 'bg-[#ECE0CE]' | 'bg-[#F9F9F9]') | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'quiNousSommes';
+      }
     | NosServicesBlock
     | {
         heading?: string | null;
@@ -311,6 +341,7 @@ export interface Page {
         blockType: 'donationGoalDisplay';
       }
     | WhereToFindUsBlock
+    | PartnerLogosBlock
   )[];
   meta?: {
     title?: string | null;
@@ -1045,6 +1076,30 @@ export interface WhereToFindUsBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PartnerLogosBlock".
+ */
+export interface PartnerLogosBlock {
+  heading: string;
+  description?: string | null;
+  partners: (string | Partner)[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'partner-logos';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners".
+ */
+export interface Partner {
+  id: string;
+  name: string;
+  url?: string | null;
+  logo?: (string | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "dogs".
  */
 export interface Dog {
@@ -1067,6 +1122,14 @@ export interface Dog {
     months: number;
   };
   status: 'available' | 'pending' | 'adopted' | 'foster' | 'medical';
+  /**
+   * La date à laquelle le chien a été adopté
+   */
+  adoptionDate?: string | null;
+  /**
+   * Le nom de la famille qui a adopté ce chien
+   */
+  adoptionFamily?: string | null;
   mainImage: string | Media;
   galleryImages?:
     | {
@@ -1566,6 +1629,10 @@ export interface PayloadLockedDocument {
         value: string | FundingEvent;
       } | null)
     | ({
+        relationTo: 'partners';
+        value: string | Partner;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: string | Redirect;
       } | null)
@@ -1672,6 +1739,7 @@ export interface PagesSelect<T extends boolean = true> {
               limit?: T;
               displayLink?: T;
               linkText?: T;
+              backgroundColor?: T;
               id?: T;
               blockName?: T;
             };
@@ -1696,6 +1764,17 @@ export interface PagesSelect<T extends boolean = true> {
               displayButton?: T;
               buttonText?: T;
               buttonLink?: T;
+              id?: T;
+              blockName?: T;
+            };
+        quiNousSommes?:
+          | T
+          | {
+              heading?: T;
+              introduction?: T;
+              description?: T;
+              adoptionLimit?: T;
+              backgroundColor?: T;
               id?: T;
               blockName?: T;
             };
@@ -1729,6 +1808,7 @@ export interface PagesSelect<T extends boolean = true> {
               blockName?: T;
             };
         whereToFindUs?: T | WhereToFindUsBlockSelect<T>;
+        'partner-logos'?: T | PartnerLogosBlockSelect<T>;
       };
   meta?:
     | T
@@ -1898,6 +1978,17 @@ export interface WhereToFindUsBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PartnerLogosBlock_select".
+ */
+export interface PartnerLogosBlockSelect<T extends boolean = true> {
+  heading?: T;
+  description?: T;
+  partners?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts_select".
  */
 export interface PostsSelect<T extends boolean = true> {
@@ -1943,6 +2034,8 @@ export interface DogsSelect<T extends boolean = true> {
         months?: T;
       };
   status?: T;
+  adoptionDate?: T;
+  adoptionFamily?: T;
   mainImage?: T;
   galleryImages?:
     | T
@@ -2304,6 +2397,17 @@ export interface FundingEventsSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners_select".
+ */
+export interface PartnersSelect<T extends boolean = true> {
+  name?: T;
+  url?: T;
+  logo?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

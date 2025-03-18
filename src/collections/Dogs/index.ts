@@ -148,6 +148,28 @@ export const Dogs: CollectionConfig<'dogs'> = {
                 },
               ],
             },
+            {
+              name: 'adoptionDate',
+              type: 'date',
+              label: 'Date d\'adoption',
+              admin: {
+                description: 'La date à laquelle le chien a été adopté',
+                condition: (data) => data.status === 'adopted',
+                date: {
+                  pickerAppearance: 'dayOnly',
+                  displayFormat: 'dd MMMM yyyy',
+                },
+              },
+            },
+            {
+              name: 'adoptionFamily',
+              type: 'text',
+              label: 'Famille d\'adoption',
+              admin: {
+                description: 'Le nom de la famille qui a adopté ce chien',
+                condition: (data) => data.status === 'adopted',
+              },
+            },
           ],
         },
         {

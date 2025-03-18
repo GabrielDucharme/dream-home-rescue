@@ -41,10 +41,8 @@ export const Component: React.FC<{
           {services?.map((service) => (
             <Card key={service.id} className="bg-[#EDEBE0] rounded-b-xl rounded-t-[60px]">
               <CardHeader className='p-0'>
-                <CardTitle className='text-center'>
-                  <h3 className='text-2xl font-light'>
-                    {service.title}
-                  </h3>
+                <CardTitle className='text-center text-2xl font-light'>
+                  {service.title}
                 </CardTitle>
               </CardHeader>
               <CardContent className='w-full mx-auto flex items-center justify-center'>

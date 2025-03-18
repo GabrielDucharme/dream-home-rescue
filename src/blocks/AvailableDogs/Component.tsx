@@ -70,7 +70,8 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
     showStatus = 'available', 
     limit = 6, 
     displayLink = true, 
-    linkText = 'Voir tous nos chiens' 
+    linkText = 'Voir tous nos chiens',
+    backgroundColor = 'bg-[#F9F9F9]'
   } = props
 
   const dogs = await DogsData({ showStatus, limit })
@@ -87,7 +88,8 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
   }
 
   return (
-    <div id="carousel" className="container relative section-spacing mb-48">
+    <div id="carousel" className={`relative bg-[#F9F9F9] pt-8 pb-20`}>
+      <div className="container relative mb-36">
       {/* Decorative background images */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <Image 
@@ -109,9 +111,15 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
       </div>
       
       <div className="relative z-10 flex flex-col items-center text-center md:text-left md:flex-row md:items-end md:justify-between mb-6 md:mb-20">
-        <h2 className="md:max-w-xl md:text-balance mb-0 mt-0">{title}</h2>
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-1 bg-[#26483B]/30 rounded-full"></div>
+            <div className="w-2 h-1 bg-[#26483B]/60 rounded-full"></div>
+          </div>
+          <h2 className="md:max-w-xl md:text-balance mb-0 mt-0 text-3xl md:text-4xl font-bold">{title}</h2>
+        </div>
         {subtitle && (
-          <p className="mt-2 md:mt-0 md:mb-1 max-w-md text-pretty">{subtitle}</p>
+          <p className="mt-2 md:mt-0 md:mb-1 max-w-md text-pretty text-gray-700">{subtitle}</p>
         )}
       </div>
       
@@ -128,6 +136,7 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
           </Button>
         </div>
       )}
+      </div>
     </div>
   )
 }

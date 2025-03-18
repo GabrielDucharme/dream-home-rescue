@@ -14,6 +14,7 @@ import { Donations } from './collections/Donations'
 import { FundingEvents } from './collections/FundingEvents'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
+import { Partners } from './collections/Partners'
 import { Posts } from './collections/Posts'
 import { Services } from './collections/Services'
 import { SuccessStories } from './collections/SuccessStories'
@@ -22,6 +23,7 @@ import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
+import { PartnerLogos } from './blocks/PartnerLogos/config'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 import { fr } from '@payloadcms/translations/languages/fr'
@@ -82,7 +84,7 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
   }),
-  collections: [Pages, Posts, Dogs, SuccessStories, Media, Categories, TeamMembers, Users, Services, DonationGoals, Donations, Customers, FundingEvents],
+  collections: [Pages, Posts, Dogs, SuccessStories, Media, Categories, TeamMembers, Users, Services, DonationGoals, Donations, Customers, FundingEvents, Partners],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [

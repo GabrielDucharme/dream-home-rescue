@@ -121,9 +121,9 @@ export const AboutUsBlock: React.FC<AboutUsBlock> = (props) => {
             </div>
             
             {detailedDescription && (
-              <p className="z-10">
-                <RichText data={detailedDescription} className=' text-gray-700' />
-              </p>
+              <div className="z-10">
+                <RichText data={detailedDescription} className='text-gray-700' />
+              </div>
             )}
           </div>
         </div>

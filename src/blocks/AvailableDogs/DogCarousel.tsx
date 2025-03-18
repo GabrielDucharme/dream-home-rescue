@@ -25,7 +25,7 @@ export const DogsCarousel = ({ dogs }) => {
           <CarouselItem key={dog.id || `dog-${index}`} className="basis-4/5 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 px-2">
             <Link
               href={`/dogs/${dog.slug}`}
-              className="block overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow rounded-t-2xl rounded-b-lg h-full"
+              className="block overflow-hidden bg-white shadow-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-4px] rounded-t-2xl rounded-b-lg h-full"
             >
               {dog.mainImage && typeof dog.mainImage !== 'string' && (
                 <div className="relative aspect-square w-full overflow-hidden">

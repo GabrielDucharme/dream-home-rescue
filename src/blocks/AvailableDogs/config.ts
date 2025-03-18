@@ -79,5 +79,29 @@ export const AvailableDogs: Block = {
         condition: (data, siblingData) => siblingData.displayLink,
       },
     },
+    {
+      name: 'backgroundColor',
+      label: 'Couleur de fond',
+      type: 'select',
+      defaultValue: 'bg-[#F9F9F9]',
+      options: [
+        {
+          label: 'Gris clair',
+          value: 'bg-[#F9F9F9]',
+        },
+        {
+          label: 'Ambre clair',
+          value: 'bg-amber-50',
+        },
+        {
+          label: 'Blanc',
+          value: 'bg-white',
+        },
+        {
+          label: 'Crème',
+          value: 'bg-[#ECE0CE]',
+        }
+      ],
+    },
   ],
 }
