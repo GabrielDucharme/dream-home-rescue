@@ -12,6 +12,7 @@ import type { Post } from '@/payload-types'
 
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
+import { generateArticleSchema } from '@/utilities/schema'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 
@@ -78,6 +79,14 @@ export default async function Post({ params: paramsPromise }: Args) {
         {draft && <LivePreviewListener />}
 
         <PostHero post={post} />
+
+        {/* Add JSON-LD schema for the article */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(generateArticleSchema(post))
+          }}
+        />
 
         <div className="flex flex-col items-center gap-4 pt-8">
           <div className="container">

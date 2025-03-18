@@ -5,6 +5,7 @@ import configPromise from '@payload-config'
 import type { Metadata } from 'next'
 import RichText from '@/components/RichText'
 import { formatDateTime } from '@/utilities/formatDateTime'
+import { generateEventSchema } from '@/utilities/schema'
 import Link from 'next/link'
 import { Media } from '@/components/Media'
 import { MapPin, Calendar, Clock, Users, ExternalLink, ArrowRight } from 'lucide-react'
@@ -53,10 +54,14 @@ export async function generateMetadata({ params: paramsPromise }: { params: Even
   }
 
   // Format date for sharing
-  const eventDate = new Date(event.eventDate).toLocaleDateString('fr-CA', { 
-    day: 'numeric', 
-    month: 'long', 
-    year: 'numeric'
+  const eventDate = formatDateTime({
+    date: new Date(event.eventDate),
+    options: { 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric'
+    },
+    locale: 'fr-CA'
   })
   
   // Format time for display
@@ -163,7 +168,16 @@ export default async function EventPage({ params }: EventPageProps) {
   const hasGallery = event.galleryImages && event.galleryImages.length > 0
   
   // Format dates for display
-  const eventDateFormatted = formatDateTime(event.eventDate)
+  const eventDateFormatted = formatDateTime({
+    date: new Date(event.eventDate),
+    options: { 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric'
+    },
+    locale: 'fr-CA'
+  })
+  
   let eventTimeStr = new Date(event.eventDate).toLocaleTimeString('fr-CA', { 
     hour: 'numeric', 
     minute: '2-digit',
@@ -172,11 +186,26 @@ export default async function EventPage({ params }: EventPageProps) {
   
   let endDateStr = ''
   if (event.endDate) {
-    endDateStr = formatDateTime(event.endDate)
+    endDateStr = formatDateTime({
+      date: new Date(event.endDate),
+      options: { 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric'
+      },
+      locale: 'fr-CA'
+    })
   }
   
   return (
     <div className="pt-24 pb-16">
+      {/* Add JSON-LD schema for the event */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateEventSchema(event))
+        }}
+      />
       
       {/* Event Hero Section */}
       <div className="relative mb-12">
@@ -688,7 +717,7 @@ export default async function EventPage({ params }: EventPageProps) {
                     <div className="flex items-center justify-between w-full mb-4 bg-muted p-3 rounded-lg">
                       <span className="text-muted-foreground">Prix:</span>
                       <span className="font-bold">
-                        {event.ticketOptions[0]?.price ? `À partir de ${event.ticketOptions[0].price} $` : 'Gratuit'} $` : 'Gratuit'}
+                        {event.ticketOptions[0]?.price ? `À partir de ${event.ticketOptions[0].price} $` : 'Gratuit'}
                       </span>
                     </div>
                   )}
@@ -745,7 +774,17 @@ export default async function EventPage({ params }: EventPageProps) {
                           <Alert className="mb-6 border-amber-200 bg-amber-50/70">
                             <Calendar className="h-4 w-4 text-amber-600" />
                             <AlertTitle className="text-amber-800 ml-2">
-                              Date limite d'inscription: <span className="font-bold">{formatDateTime(event.registrationDeadline)}</span>
+                              Date limite d'inscription: <span className="font-bold">{formatDateTime({
+                                date: new Date(event.registrationDeadline),
+                                options: { 
+                                  day: 'numeric', 
+                                  month: 'long', 
+                                  year: 'numeric',
+                                  hour: 'numeric',
+                                  minute: '2-digit'
+                                },
+                                locale: 'fr-CA'
+                              })}</span>
                             </AlertTitle>
                           </Alert>
                         )}

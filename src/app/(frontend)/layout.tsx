@@ -18,16 +18,29 @@ import { MobileDonationTrigger } from './components/MobileDonationTrigger'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
+  
+  // Import generateOrganizationSchema from our schema utilities
+  const { generateOrganizationSchema } = await import('@/utilities/schema')
+  
+  // Generate organization schema
+  const orgSchema = generateOrganizationSchema()
 
   return (
     <html className={cn(
       geistSans.variable, 
       geistMono.variable,
       fraunces.variable
-    )} lang="en" data-theme="light">
+    )} lang="fr" data-theme="light">
       <head>
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        {/* Add organization schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(orgSchema)
+          }}
+        />
       </head>
       <body className="font-sans">
         <Providers>

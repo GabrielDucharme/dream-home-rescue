@@ -5,6 +5,7 @@ import configPromise from '@payload-config'
 import type { Metadata } from 'next'
 import RichText from '@/components/RichText'
 import { generateMeta } from '@/utilities/generateMeta'
+import { generateDogSchema } from '@/utilities/schema'
 import { Dog } from '@/payload-types'
 import AdoptMeButton from '@/components/AdoptMeButton'
 import { Users, Dog as DogIcon, Cat, Check, X, HelpCircle } from 'lucide-react'
@@ -174,6 +175,14 @@ export default async function DogDetailPage({ params }: DogDetailPageProps) {
       <div className="container">
         <div className="max-w-5xl mx-auto">
           {/* Hero section with image and basic info */}
+          {/* Add JSON-LD schema for the dog listing */}
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(generateDogSchema(dog))
+            }}
+          />
+          
           <div className="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
             <div className="flex flex-col md:flex-row">
               {dog.mainImage && (

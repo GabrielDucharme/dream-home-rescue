@@ -18,19 +18,17 @@ import { Separator } from '@/components/ui/separator'
 export const dynamic = 'force-static'
 export const revalidate = 600
 
-// Function to format date in French
+// Function to format date in French using the formatDateTime utility
 function formatDate(dateStr: string): string {
-  const date = new Date(dateStr)
-  const now = new Date()
-  
-  // Format options
-  const options: Intl.DateTimeFormatOptions = { 
-    day: 'numeric', 
-    month: 'long', 
-    year: 'numeric' 
-  }
-  
-  return date.toLocaleDateString('fr-CA', options)
+  return formatDateTime({
+    date: new Date(dateStr),
+    options: { 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric' 
+    },
+    locale: 'fr-CA'
+  })
 }
 
 // Function to format time
