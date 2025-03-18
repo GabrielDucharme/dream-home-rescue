@@ -149,31 +149,31 @@ export const Component: React.FC<{
     error: null as string | null
   }
   
-  // If goal not found or error occurred
+  // Even if we don't have a goal, we might have an upcoming event
+  // Pass what we have to the client component
+  if (!goal && upcomingEvent) {
+    // If we have an upcoming event but no goal, we still want to render the event section
+    return (
+      <DonationGoalContent
+        goal={null} 
+        heading={heading}
+        description={description}
+        showMilestones={false} // No milestones without a goal
+        showNextGoals={false} // No next goals without a goal
+        showDonationButton={showDonationButton}
+        donationButtonText={donationButtonText}
+        layout={layout}
+        upcomingEvent={upcomingEvent}
+      />
+    )
+  }
+  
+  // If no goal and no upcoming event, show minimal error without debug info
   if (!goal) {
     return (
-      <div id="donation" className="w-full">
-        <div className="container">
-          <div className="text-center p-6 bg-white shadow rounded-lg">
-            <h3 className="text-xl font-bold mb-4">Aucun objectif de don trouvé</h3>
-            <p className="mb-4">L'objectif de don n'a pas pu être chargé. Veuillez vérifier:</p>
-            <ul className="text-left list-disc pl-8 mb-4">
-              <li>Que l'objectif de don est bien créé dans l'administration</li>
-              <li>Que vous avez sélectionné le bon ID d'objectif dans le bloc</li>
-              <li>Que l'objectif est actif</li>
-            </ul>
-            
-            {/* Debug info visible in frontend */}
-            <div className="mt-6 border-t pt-4 text-left">
-              <h4 className="font-bold mb-2">Informations de débogage:</h4>
-              <pre className="bg-gray-100 p-4 overflow-auto text-xs whitespace-pre-wrap">
-                ID sélectionné: {JSON.stringify(goalIdValue)}<br />
-                Type d'ID: {typeof goalIdValue}<br />
-                Objectifs trouvés: {debugInfo.foundGoals || 'Aucun'}<br />
-                {debugInfo.error && `Erreur: ${debugInfo.error}`}
-              </pre>
-            </div>
-          </div>
+      <div className="w-full">
+        <div className="container py-8">
+          {/* No debug info, just a clean container ready for events */}
         </div>
       </div>
     )
