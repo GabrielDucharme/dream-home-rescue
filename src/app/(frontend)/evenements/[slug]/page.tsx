@@ -61,14 +61,20 @@ export async function generateMetadata({ params: paramsPromise }: { params: Even
       month: 'long', 
       year: 'numeric'
     },
-    locale: 'fr-CA'
+    locale: 'fr-CA',
+    timeZone: 'America/Toronto' // Montreal timezone
   })
   
-  // Format time for display
-  const eventTime = new Date(event.eventDate).toLocaleTimeString('fr-CA', { 
-    hour: 'numeric', 
-    minute: '2-digit',
-    hour12: false 
+  // Format time for display using formatDateTime for consistency
+  const eventTime = formatDateTime({
+    date: new Date(event.eventDate),
+    options: { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: false 
+    },
+    locale: 'fr-CA',
+    timeZone: 'America/Toronto' // Montreal timezone
   })
   
   // Add subtitle with event short description
@@ -134,20 +140,61 @@ async function getEventBySlug(slug: string) {
   }
 }
 
+// Helper to get current time in Montreal timezone
+function getCurrentMontrealTime() {
+  // Create a date object for the current time
+  const now = new Date();
+  
+  // Format now as an ISO string with Montreal timezone offset in the format "YYYY-MM-DDT00:00:00-04:00"
+  // This creates a timezone-aware string that we can parse back to create a date object in Montreal time
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+    timeZone: 'America/Toronto',
+    timeZoneName: 'short'
+  });
+  
+  // Get formatted date parts
+  const parts = formatter.formatToParts(now);
+  
+  // Extract values from parts
+  const year = parts.find(part => part.type === 'year')?.value;
+  const month = parts.find(part => part.type === 'month')?.value;
+  const day = parts.find(part => part.type === 'day')?.value;
+  const hour = parts.find(part => part.type === 'hour')?.value;
+  const minute = parts.find(part => part.type === 'minute')?.value;
+  const second = parts.find(part => part.type === 'second')?.value;
+  
+  // Return new date object
+  return new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}.000-04:00`);
+}
+
 // Determine if registration is still open
 function isRegistrationOpen(event: any): boolean {
   if (!event.registrationEnabled) return false
   
+  // Get current time in Montreal timezone
+  const now = getCurrentMontrealTime();
+  
+  // Check registration deadline if it exists
   if (event.registrationDeadline) {
+    // Convert to date object in Montreal timezone
     const deadlineDate = new Date(event.registrationDeadline)
-    const now = new Date()
-    if (now > deadlineDate) return false
+    
+    // Compare timestamps
+    if (now.getTime() > deadlineDate.getTime()) return false
   }
   
   // If the event has already happened, registration is closed
   const eventDate = new Date(event.eventDate)
-  const now = new Date()
-  if (now > eventDate) return false
+  
+  // Compare timestamps
+  if (now.getTime() > eventDate.getTime()) return false
   
   return true
 }
@@ -175,15 +222,23 @@ export default async function EventPage({ params }: EventPageProps) {
       month: 'long', 
       year: 'numeric'
     },
-    locale: 'fr-CA'
+    locale: 'fr-CA',
+    timeZone: 'America/Toronto' // Montreal timezone
   })
   
-  let eventTimeStr = new Date(event.eventDate).toLocaleTimeString('fr-CA', { 
-    hour: 'numeric', 
-    minute: '2-digit',
-    hour12: false 
+  // Format time separately - using the formatDateTime utility for consistency with Montreal timezone
+  let eventTimeStr = formatDateTime({
+    date: new Date(event.eventDate),
+    options: { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: false 
+    },
+    locale: 'fr-CA',
+    timeZone: 'America/Toronto' // Montreal timezone
   })
   
+  // Format end date if it exists
   let endDateStr = ''
   if (event.endDate) {
     endDateStr = formatDateTime({
@@ -193,7 +248,8 @@ export default async function EventPage({ params }: EventPageProps) {
         month: 'long', 
         year: 'numeric'
       },
-      locale: 'fr-CA'
+      locale: 'fr-CA',
+      timeZone: 'America/Toronto' // Montreal timezone
     })
   }
   
@@ -783,7 +839,8 @@ export default async function EventPage({ params }: EventPageProps) {
                                   hour: 'numeric',
                                   minute: '2-digit'
                                 },
-                                locale: 'fr-CA'
+                                locale: 'fr-CA',
+                                timeZone: 'America/Toronto' // Montreal timezone
                               })}</span>
                             </AlertTitle>
                           </Alert>

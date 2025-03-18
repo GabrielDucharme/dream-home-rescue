@@ -13,9 +13,10 @@ interface FormatDateTimeArgs {
   date: Date;
   options?: DateTimeOptions;
   locale?: string;
+  timeZone?: string;
 }
 
-// Modern implementation that supports Intl.DateTimeFormat
+// Modern implementation that supports Intl.DateTimeFormat with Montreal timezone
 export const formatDateTime = ({
   date, 
   options = { 
@@ -23,11 +24,15 @@ export const formatDateTime = ({
     month: 'numeric',
     day: 'numeric', 
   },
-  locale = 'fr-CA'
+  locale = 'fr-CA',
+  timeZone = 'America/Toronto' // Montreal uses America/Toronto timezone
 }: FormatDateTimeArgs): string => {
   try {
-    // Use Intl.DateTimeFormat for localized date formatting
-    return new Intl.DateTimeFormat(locale, options).format(date);
+    // Use Intl.DateTimeFormat for localized date formatting with timezone
+    return new Intl.DateTimeFormat(locale, {
+      ...options,
+      timeZone, // Use Montreal timezone for all date formatting
+    }).format(date);
   } catch (error) {
     console.error('Error formatting date:', error);
     
@@ -48,5 +53,8 @@ export const formatDateTimeString = (timestamp: string): string => {
   let date = now;
   if (timestamp) date = new Date(timestamp);
   
-  return formatDateTime({ date });
+  return formatDateTime({ 
+    date,
+    timeZone: 'America/Toronto' // Always use Montreal time
+  });
 };

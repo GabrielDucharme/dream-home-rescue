@@ -27,25 +27,79 @@ function formatDate(dateStr: string): string {
       month: 'long', 
       year: 'numeric' 
     },
-    locale: 'fr-CA'
+    locale: 'fr-CA',
+    timeZone: 'America/Toronto' // Montreal timezone
   })
 }
 
-// Function to format time
+// Function to format time using formatDateTime utility
 function formatTime(dateStr: string): string {
+  // First validate that the date is valid
   const date = new Date(dateStr)
-  return date.toLocaleTimeString('fr-CA', { 
-    hour: 'numeric', 
-    minute: '2-digit',
-    hour12: false 
+  if (isNaN(date.getTime())) {
+    console.error(`Invalid date string provided for formatting: ${dateStr}`)
+    return '--:--' // Return a fallback for invalid dates
+  }
+
+  return formatDateTime({
+    date: date,
+    options: { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: false 
+    },
+    locale: 'fr-CA',
+    timeZone: 'America/Toronto' // Montreal timezone
   })
+}
+
+// Helper to get current time in Montreal timezone
+function getCurrentMontrealTime() {
+  // Create a date object for the current time
+  const now = new Date();
+  
+  // Format now as an ISO string with Montreal timezone offset
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+    timeZone: 'America/Toronto',
+    timeZoneName: 'short'
+  });
+  
+  // Get formatted date parts
+  const parts = formatter.formatToParts(now);
+  
+  // Extract values from parts
+  const year = parts.find(part => part.type === 'year')?.value;
+  const month = parts.find(part => part.type === 'month')?.value;
+  const day = parts.find(part => part.type === 'day')?.value;
+  const hour = parts.find(part => part.type === 'hour')?.value;
+  const minute = parts.find(part => part.type === 'minute')?.value;
+  const second = parts.find(part => part.type === 'second')?.value;
+  
+  // Return new date object with Montreal timezone offset
+  return new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}.000-04:00`);
 }
 
 // Function to check if an event is upcoming
 function isUpcoming(dateStr: string): boolean {
+  // First validate that the date is valid
   const eventDate = new Date(dateStr)
-  const now = new Date()
-  return eventDate > now
+  if (isNaN(eventDate.getTime())) {
+    console.error(`Invalid date string provided for upcoming check: ${dateStr}`)
+    return false // Default to not upcoming if invalid date
+  }
+  
+  // Get current time in Montreal timezone to ensure accurate comparison
+  const now = getCurrentMontrealTime();
+  
+  // Use getTime() for more reliable timestamp comparison
+  return eventDate.getTime() > now.getTime()
 }
 
 export default async function EventsPage() {

@@ -104,9 +104,87 @@ export const generateEventSchema = (event: Partial<FundingEvent>) => {
     }
   }
   
-  // Format dates in ISO format for schema
-  const startDate = event.eventDate ? new Date(event.eventDate).toISOString() : null
-  const endDate = event.endDate ? new Date(event.endDate).toISOString() : startDate
+  // Format dates in ISO format for schema with robust error handling
+  // NOTE: Schema.org requires ISO format dates but we need to ensure they're in the correct timezone
+  let startDate = null
+  let endDate = null
+  
+  try {
+    // Parse start date safely
+    if (event.eventDate) {
+      // Use original date string which should already have timezone info preserved
+      const eventDateObj = new Date(event.eventDate)
+      
+      // Check if date is valid before using it
+      if (!isNaN(eventDateObj.getTime())) {
+        // Format with Montreal timezone explicitly for Schema.org
+        const dateFormatter = new Intl.DateTimeFormat('en-CA', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          timeZone: 'America/Toronto',
+          hour12: false
+        });
+        
+        const parts = dateFormatter.formatToParts(eventDateObj);
+        const year = parts.find(part => part.type === 'year')?.value;
+        const month = parts.find(part => part.type === 'month')?.value;
+        const day = parts.find(part => part.type === 'day')?.value;
+        const hour = parts.find(part => part.type === 'hour')?.value;
+        const minute = parts.find(part => part.type === 'minute')?.value;
+        const second = parts.find(part => part.type === 'second')?.value;
+        
+        // Format with Montreal timezone offset (approximate -04:00 for EDT, -05:00 for EST)
+        // For Schema.org, we need to use full ISO format with timezone
+        const tzOffset = new Date().toLocaleString('en', { timeZone: 'America/Toronto', timeZoneName: 'short' })
+          .split(' ').pop() === 'EDT' ? '-04:00' : '-05:00';
+        startDate = `${year}-${month}-${day}T${hour}:${minute}:${second}${tzOffset}`;
+      }
+    }
+    
+    // Parse end date safely using same approach
+    if (event.endDate) {
+      const endDateObj = new Date(event.endDate)
+      
+      // Check if date is valid before using it
+      if (!isNaN(endDateObj.getTime())) {
+        // Format with Montreal timezone explicitly
+        const dateFormatter = new Intl.DateTimeFormat('en-CA', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          timeZone: 'America/Toronto',
+          hour12: false
+        });
+        
+        const parts = dateFormatter.formatToParts(endDateObj);
+        const year = parts.find(part => part.type === 'year')?.value;
+        const month = parts.find(part => part.type === 'month')?.value;
+        const day = parts.find(part => part.type === 'day')?.value;
+        const hour = parts.find(part => part.type === 'hour')?.value;
+        const minute = parts.find(part => part.type === 'minute')?.value;
+        const second = parts.find(part => part.type === 'second')?.value;
+        
+        // Format with Montreal timezone offset
+        const tzOffset = new Date().toLocaleString('en', { timeZone: 'America/Toronto', timeZoneName: 'short' })
+          .split(' ').pop() === 'EDT' ? '-04:00' : '-05:00';
+        endDate = `${year}-${month}-${day}T${hour}:${minute}:${second}${tzOffset}`;
+      }
+    }
+  } catch (error) {
+    console.error('Error formatting dates for schema:', error)
+  }
+  
+  // If no valid end date but we have a start date, use start date as fallback
+  if (!endDate && startDate) {
+    endDate = startDate
+  }
   
   return {
     '@context': 'https://schema.org',
