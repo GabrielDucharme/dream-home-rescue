@@ -110,17 +110,17 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
         />
       </div>
       
-      <div className="relative z-10 flex flex-col items-center text-center md:text-left md:flex-row md:items-end md:justify-between mb-6 md:mb-20">
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-1 bg-[#26483B]/30 rounded-full"></div>
-            <div className="w-2 h-1 bg-[#26483B]/60 rounded-full"></div>
-          </div>
-          <h2 className="md:max-w-xl md:text-balance mb-0 mt-0 text-3xl md:text-4xl font-bold">{title}</h2>
+      <div className="relative z-10 mb-6 md:mb-20">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-8 h-1 bg-[#26483B]/30 rounded-full"></div>
+          <div className="w-2 h-1 bg-[#26483B]/60 rounded-full"></div>
         </div>
-        {subtitle && (
-          <p className="mt-2 md:mt-0 md:mb-1 max-w-md text-pretty text-gray-700">{subtitle}</p>
-        )}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2">
+          <h2 className="md:max-w-xl md:text-balance mb-0 mt-0 text-3xl md:text-4xl font-bold text-center md:text-left">{title}</h2>
+          {subtitle && (
+            <p className="text-gray-700 max-w-md text-pretty text-center md:text-left">{subtitle}</p>
+          )}
+        </div>
       </div>
       
       <div className="relative z-10 mb-10">
