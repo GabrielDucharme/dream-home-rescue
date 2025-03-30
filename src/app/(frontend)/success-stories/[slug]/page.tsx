@@ -92,10 +92,10 @@ export default async function SuccessStoryPage({ params: { slug } }) {
         </div>
       </div>
 
-      {/* Content section with subtle background */}
-      <div className="bg-gray-50 py-16">
-        <div className="container max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      {/* Content section with improved background and spacing */}
+      <div className="bg-gradient-to-b from-gray-50 to-white py-16">
+        <div className="container max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
             <div className="lg:col-span-2">
               {/* Testimonial if available - subtle design */}
               {successStory.testimonial && (
@@ -112,17 +112,25 @@ export default async function SuccessStoryPage({ params: { slug } }) {
               )}
               
               {/* Main story content with improved UI */}
-              <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                 <div className="p-8 md:p-10">
-                  <h2 className="text-2xl font-bold mb-6 text-primary border-b pb-4">L'histoire de {successStory.dog?.name}</h2>
+                  <h2 className="text-2xl font-bold mb-6 text-primary border-b pb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                    </svg>
+                    L'histoire de {successStory.dog?.name}
+                  </h2>
                   
                   {successStory.story ? (
-                    <div className="prose prose-lg prose-headings:text-primary prose-a:text-primary prose-a:no-underline hover:prose-a:underline max-w-none">
+                    <div className="prose prose-lg prose-headings:text-primary prose-a:text-primary prose-a:no-underline hover:prose-a:underline max-w-none prose-img:rounded-lg prose-img:shadow-md prose-p:leading-relaxed">
                       <RichText content={successStory.story} />
                     </div>
                   ) : (
-                    <div className="p-4 border border-amber-200 bg-amber-50 rounded">
-                      <p className="text-amber-800">
+                    <div className="p-4 border border-amber-200 bg-amber-50 rounded-lg">
+                      <p className="text-amber-800 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
                         Le contenu de cette histoire n'est pas disponible. Veuillez vérifier le contenu dans l'interface d'administration.
                       </p>
                     </div>
@@ -135,36 +143,56 @@ export default async function SuccessStoryPage({ params: { slug } }) {
             <div className="lg:col-span-1">
               {/* Gallery images with improved UI */}
               {successStory.galleryImages && successStory.galleryImages.length > 0 && (
-                <div className="mb-8 bg-white rounded-xl shadow-sm overflow-hidden">
-                  <div className="p-8 md:p-8">
-                    <h3 className="text-xl font-bold mb-6 text-primary border-b pb-4">Photos</h3>
-                    <div className="grid grid-cols-2 gap-4">
+                <div className="mb-8 bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+                  <div className="p-6 md:p-6">
+                    <h3 className="text-xl font-bold mb-5 text-primary border-b pb-3 flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      Photos du bonheur
+                    </h3>
+                    <div className="grid grid-cols-2 gap-5">
                       {successStory.galleryImages.map((item, i) => (
-                        <div key={i} className="aspect-square relative rounded-lg overflow-hidden shadow-md">
-                          <Media
-                            resource={item.image}
-                            fill
-                            className="object-cover hover:scale-105 transition-transform duration-500"
-                          />
+                        <div key={i} className="relative rounded-xl overflow-hidden shadow-sm border border-gray-100 group hover:shadow-md transition-all duration-300 bg-gray-50">
+                          <div className="relative w-full h-0" style={{ paddingBottom: '66.67%' }}> {/* 3:2 aspect ratio container */}
+                            <Media
+                              resource={item.image}
+                              fill
+                              priority={i < 2}
+                              className="object-cover transition-all duration-500 group-hover:scale-105"
+                              imgClassName="filter brightness-[1.02]"
+                            />
+                          </div>
+                          {item.caption && (
+                            <div className="p-3 text-sm text-gray-700 italic bg-white border-t border-gray-100">{item.caption}</div>
+                          )}
                         </div>
                       ))}
                     </div>
-                    {successStory.galleryImages[0]?.caption && (
-                      <p className="mt-4 text-sm text-gray-600 italic text-center">{successStory.galleryImages[0].caption}</p>
-                    )}
                   </div>
                 </div>
               )}
 
               {/* Back to all stories */}
-              <div className="sticky top-24 bg-white rounded-xl shadow-sm overflow-hidden">
-                <div className="p-6 md:p-8">
-                  <h3 className="text-xl font-bold mb-6 text-primary border-b pb-4">Voir plus</h3>
+              <div className="sticky top-24 bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+                <div className="p-6 md:p-6">
+                  <h3 className="text-xl font-bold mb-4 text-primary border-b pb-3 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+                    </svg>
+                    Voir plus
+                  </h3>
                   <div className="flex flex-col gap-4">
                     <Button asChild className="w-full">
                       <Link href="/success-stories" className="flex items-center justify-center gap-2 w-full">
                         <PawIcon width={16} height={16} fill="white" />
                         Toutes nos histoires d'adoption
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline" className="w-full">
+                      <Link href="/dogs?status=available" className="flex items-center justify-center gap-2 w-full">
+                        <PawIcon width={16} height={16} fill="#051436" />
+                        Chiens à adopter
                       </Link>
                     </Button>
                   </div>
