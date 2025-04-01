@@ -27,6 +27,11 @@ export default async function SuccessStoriesPage() {
       sort: '-adoptionDate',
       limit: 100,
       depth: 1,
+      where: {
+        _status: {
+          equals: 'published',
+        },
+      },
     },
   })
 
