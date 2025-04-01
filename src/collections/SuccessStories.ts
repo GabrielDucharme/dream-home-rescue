@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload'
 import { authenticated } from '../access/authenticated'
 import { authenticatedOrPublished } from '../access/authenticatedOrPublished'
 import { slugField } from '@/fields/slug'
+import { revalidateSuccessStory, revalidateSuccessStoryAfterDelete } from './SuccessStories/hooks/revalidateSuccessStory'
 import {
   MetaDescriptionField,
   MetaImageField,
@@ -190,6 +191,8 @@ export const SuccessStories: CollectionConfig<'success-stories'> = {
         return data
       },
     ],
+    afterChange: [revalidateSuccessStory],
+    afterDelete: [revalidateSuccessStoryAfterDelete],
   },
   versions: {
     drafts: {
