@@ -67,7 +67,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
         </div>
         
         {/* Right Column with Donation Card - Desktop Only */}
-        <div className="hidden md:block md:max-w-[45%] mt-20">
+        <div className="hidden md:block md:max-w-[45%] mt-40">
           <DonationCard />
         </div>
       </div>
