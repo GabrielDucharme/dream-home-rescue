@@ -109,7 +109,8 @@ export const Dogs: CollectionConfig<'dogs'> = {
                 {
                   name: 'months',
                   type: 'number',
-                  required: true,
+                  required: false,
+                  defaultValue: 0,
                   label: 'Mois',
                   admin: {
                     description: 'Mois additionnels (0-11)',
