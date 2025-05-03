@@ -19,6 +19,7 @@ type CMSLinkType = {
   size?: ButtonProps['size'] | null
   type?: 'custom' | 'reference' | null
   url?: string | null
+  onClick?: () => void
 }
 
 export const CMSLink: React.FC<CMSLinkType> = (props) => {
@@ -32,6 +33,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     reference,
     size: sizeFromProps,
     url,
+    onClick,
   } = props
 
   const href =
@@ -51,15 +53,15 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     // Use SmoothScrollLink for hash links
     if (href?.startsWith('#')) {
       return (
-        <SmoothScrollLink className={cn(className)} href={href}>
+        <SmoothScrollLink className={cn(className)} href={href} onClick={onClick}>
           {label && label}
           {children && children}
         </SmoothScrollLink>
       )
     }
-    
+
     return (
-      <Link className={cn(className)} href={href || url || ''} {...newTabProps}>
+      <Link className={cn(className)} href={href || url || ''} {...newTabProps} onClick={onClick}>
         {label && label}
         {children && children}
       </Link>
@@ -70,7 +72,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
   if (href?.startsWith('#')) {
     return (
       <Button asChild className={className} size={size} variant={appearance}>
-        <SmoothScrollLink href={href}>
+        <SmoothScrollLink href={href} onClick={onClick}>
           {label && label}
           {children && children}
         </SmoothScrollLink>
@@ -80,7 +82,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
 
   return (
     <Button asChild className={className} size={size} variant={appearance}>
-      <Link href={href || url || ''} {...newTabProps}>
+      <Link href={href || url || ''} {...newTabProps} onClick={onClick}>
         {label && label}
         {children && children}
       </Link>

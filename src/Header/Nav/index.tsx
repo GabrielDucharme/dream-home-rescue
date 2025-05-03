@@ -24,13 +24,13 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
   // Get the initial hash and set up an event listener for hash changes
   useEffect(() => {
     const updateHash = () => setCurrentHash(window.location.hash)
-    
+
     // Set initial hash
     updateHash()
-    
+
     // Update hash when it changes
     window.addEventListener('hashchange', updateHash)
-    
+
     return () => {
       window.removeEventListener('hashchange', updateHash)
     }
@@ -52,33 +52,33 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
   }
 
-  const renderNavLinks = (additionalClasses = '') => {
+  const renderNavLinks = (additionalClasses = '', onLinkClick?: () => void) => {
     return navItems.map(({ link }, i) => {
       // Check if this is a hash link (one-page navigation)
-      const isHashLink = link.type === 'custom' && link.url?.startsWith('#');
-      
+      const isHashLink = link.type === 'custom' && link.url?.startsWith('#')
+
       // For hash links, check if the hash in the URL matches
       // For regular links, check if the path matches
-      const isActive = 
-        isHashLink ? 
-          currentHash === link.url :
-          (link.type === 'reference' && 
-            typeof link.reference?.value === 'object' && 
-            link.reference.value.slug && 
-            pathname === `${link.reference?.relationTo !== 'pages' ? `/${link.reference?.relationTo}` : ''}/${link.reference.value.slug}`) ||
-          (link.type === 'custom' && !isHashLink && 
-            pathname === link.url);
-          
+      const isActive = isHashLink
+        ? currentHash === link.url
+        : (link.type === 'reference' &&
+            typeof link.reference?.value === 'object' &&
+            link.reference.value.slug &&
+            pathname ===
+              `${link.reference?.relationTo !== 'pages' ? `/${link.reference?.relationTo}` : ''}/${link.reference.value.slug}`) ||
+          (link.type === 'custom' && !isHashLink && pathname === link.url)
+
       return (
-        <CMSLink 
-          key={i} 
-          {...link} 
-          appearance="custom" 
+        <CMSLink
+          key={i}
+          {...link}
+          appearance="custom"
           className={cn(
             `font-medium transition-colors hover:text-primary`,
             isActive ? 'text-primary' : 'text-gray-600',
-            additionalClasses
+            additionalClasses,
           )}
+          onClick={onLinkClick}
         />
       )
     })
@@ -96,8 +96,8 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
       </nav>
 
       {/* Mobile Burger Button */}
-      <button 
-        className="md:hidden p-2 rounded-full hover:bg-gray-100 transition-colors" 
+      <button
+        className="md:hidden p-2 rounded-full hover:bg-gray-100 transition-colors"
         onClick={toggleMobileMenu}
         aria-expanded={isMobileMenuOpen}
         aria-label="Toggle menu"
@@ -110,25 +110,25 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
       </button>
 
       {/* Mobile Menu Overlay */}
-      <div 
+      <div
         className={cn(
-          "fixed inset-0 bg-black/50 z-30 transition-opacity duration-300",
-          isMobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          'fixed inset-0 bg-black/50 z-30 transition-opacity duration-300',
+          isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none',
         )}
         onClick={() => setIsMobileMenuOpen(false)}
         aria-hidden="true"
       />
 
       {/* Mobile Navigation */}
-      <nav 
+      <nav
         className={cn(
-          "fixed top-0 right-0 h-full w-4/5 max-w-[300px] bg-white z-40 shadow-xl p-6 overflow-y-auto transition-transform duration-300 ease-in-out",
-          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+          'fixed top-0 right-0 h-full w-4/5 max-w-[300px] bg-white z-40 shadow-xl p-6 overflow-y-auto transition-transform duration-300 ease-in-out',
+          isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full',
         )}
       >
         <div className="flex justify-end mb-6">
-          <button 
-            className="p-2 rounded-full hover:bg-gray-100 transition-colors" 
+          <button
+            className="p-2 rounded-full hover:bg-gray-100 transition-colors"
             onClick={() => setIsMobileMenuOpen(false)}
             aria-label="Close menu"
           >
@@ -136,9 +136,9 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
           </button>
         </div>
         <div className="flex flex-col items-start gap-5">
-          {renderNavLinks('text-lg py-1')}
-          <Link 
-            href="/search" 
+          {renderNavLinks('text-lg py-1', () => setIsMobileMenuOpen(false))}
+          <Link
+            href="/search"
             className="flex items-center gap-2 font-medium text-lg text-gray-600 hover:text-primary transition-colors py-1"
             onClick={() => setIsMobileMenuOpen(false)}
           >
