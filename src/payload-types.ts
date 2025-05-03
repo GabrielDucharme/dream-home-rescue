@@ -1119,7 +1119,7 @@ export interface Dog {
     /**
      * Mois additionnels (0-11)
      */
-    months: number;
+    months?: number | null;
   };
   status: 'available' | 'pending' | 'adopted' | 'foster' | 'medical';
   /**
