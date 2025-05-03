@@ -52,7 +52,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
   }
 
-  const renderNavLinks = (additionalClasses = '', onLinkClick?: () => void) => {
+  const renderNavLinks = (additionalClasses = '') => {
     return navItems.map(({ link }, i) => {
       // Check if this is a hash link (one-page navigation)
       const isHashLink = link.type === 'custom' && link.url?.startsWith('#')
@@ -78,7 +78,6 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
             isActive ? 'text-primary' : 'text-gray-600',
             additionalClasses,
           )}
-          onClick={onLinkClick}
         />
       )
     })
@@ -136,7 +135,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
           </button>
         </div>
         <div className="flex flex-col items-start gap-5">
-          {renderNavLinks('text-lg py-1', () => setIsMobileMenuOpen(false))}
+          {renderNavLinks('text-lg py-1')}
           <Link
             href="/search"
             className="flex items-center gap-2 font-medium text-lg text-gray-600 hover:text-primary transition-colors py-1"
