@@ -14,6 +14,8 @@ import { Newsletter } from '../../blocks/Newsletter/config'
 import { NosServices } from '../../blocks/NosServices/config'
 import { PartnerLogos } from '../../blocks/PartnerLogos/config'
 import { QuiNousSommes } from '../../blocks/QuiNousSommes/config'
+import { HomeDerniereAdoptionBlock } from '../../blocks/HomeDerniereAdoption/config'
+import { RefactorHomeIntroBlock } from '../../blocks/RefactorHomeIntro/config'
 import { RecentAdoptions } from '../../blocks/RecentAdoptions/config'
 import { Testimonials } from '../../blocks/Testimonials/config'
 import { WhereToFindUs } from '../../blocks/WhereToFindUs/config'
@@ -91,7 +93,7 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, AvailableDogs, AboutUs, QuiNousSommes, NosServices, RecentAdoptions, Testimonials, Newsletter, DonationGoalDisplayBlock, WhereToFindUs, PartnerLogos],
+              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, AvailableDogs, AboutUs, QuiNousSommes, NosServices, RecentAdoptions, Testimonials, Newsletter, DonationGoalDisplayBlock, WhereToFindUs, PartnerLogos, RefactorHomeIntroBlock, HomeDerniereAdoptionBlock],
               required: true,
               label: 'Mise en page',
               admin: {

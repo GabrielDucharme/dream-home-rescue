@@ -343,6 +343,33 @@ export interface Page {
       }
     | WhereToFindUsBlock
     | PartnerLogosBlock
+    | {
+        title?: string | null;
+        description?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'refactorHomeIntro';
+      }
+    | {
+        title?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'homeDerniereAdoption';
+      }
   )[];
   meta?: {
     title?: string | null;
@@ -1811,6 +1838,21 @@ export interface PagesSelect<T extends boolean = true> {
             };
         whereToFindUs?: T | WhereToFindUsBlockSelect<T>;
         'partner-logos'?: T | PartnerLogosBlockSelect<T>;
+        refactorHomeIntro?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              id?: T;
+              blockName?: T;
+            };
+        homeDerniereAdoption?:
+          | T
+          | {
+              title?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   meta?:
     | T

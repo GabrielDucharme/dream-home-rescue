@@ -12,11 +12,13 @@ import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { Component as NosServicesBlock } from '@/blocks/NosServices/Component'
 import { PartnerLogosBlock } from '@/blocks/PartnerLogos/Component'
 import { Component as QuiNousSommesBlock } from '@/blocks/QuiNousSommes/Component'
+import { HomeDerniereAdoptionBlock } from '@/blocks/HomeDerniereAdoption/Component'
 import { Component as RecentAdoptionsBlock } from '@/blocks/RecentAdoptions/Component'
 import { TestimonialsBlock } from '@/blocks/Testimonials/Component'
 import { NewsletterBlock } from '@/blocks/Newsletter/Component'
 import { Component as DonationGoalDisplayBlock } from '@/blocks/DonationGoalDisplay/Component'
 import { Component as WhereToFindUsBlock } from '@/blocks/WhereToFindUs/Component'
+import { RefactorHomeIntroBlock } from './RefactorHomeIntro/Component'
 
 const blockComponents = {
   aboutUs: AboutUsBlock,
@@ -30,6 +32,8 @@ const blockComponents = {
   nosServices: NosServicesBlock,
   'partner-logos': PartnerLogosBlock,
   quiNousSommes: QuiNousSommesBlock,
+  refactorHomeIntro: RefactorHomeIntroBlock,
+  homeDerniereAdoption: HomeDerniereAdoptionBlock,
   recentAdoptions: RecentAdoptionsBlock,
   testimonials: TestimonialsBlock,
   newsletter: NewsletterBlock,

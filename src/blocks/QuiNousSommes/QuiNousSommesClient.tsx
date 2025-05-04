@@ -36,6 +36,7 @@ export const QuiNousSommesClient: React.FC<QuiNousSommesClientProps> = ({ adopti
 
   useEffect(() => {
     const fetchAdoptedDogs = async () => {
+      setIsLoading(true)
       try {
         const response = await fetch(
           `/api/dogs?where[status][equals]=adopted&limit=${adoptionLimit}&sort=-updatedAt&depth=1`,
@@ -49,8 +50,7 @@ export const QuiNousSommesClient: React.FC<QuiNousSommesClientProps> = ({ adopti
         setAdoptedDogs(data.docs || [])
       } catch (error) {
         console.error('Error fetching adopted dogs:', error)
-        // Fallback data removed
-        // Ensure adoptedDogs remains empty or handle error state differently if needed
+        setAdoptedDogs([])
       } finally {
         setIsLoading(false)
       }
@@ -59,7 +59,6 @@ export const QuiNousSommesClient: React.FC<QuiNousSommesClientProps> = ({ adopti
     fetchAdoptedDogs()
   }, [adoptionLimit])
 
-  // Rotate through dogs every 5 seconds
   useEffect(() => {
     if (adoptedDogs.length <= 1) return
 
@@ -88,7 +87,6 @@ export const QuiNousSommesClient: React.FC<QuiNousSommesClientProps> = ({ adopti
 
   return (
     <div className="relative rounded-2xl overflow-hidden shadow-lg h-[500px] md:h-[550px] bg-amber-100/20 max-w-[360px] md:max-w-[420px] mx-auto transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:rotate-1 group">
-      {/* Decorative elements */}
       <div className="absolute -top-12 -left-8 w-24 h-24 rounded-full bg-amber-100/40 z-0"></div>
       <div className="absolute -bottom-12 -right-8 w-24 h-24 rounded-full bg-amber-100/40 z-0"></div>
 
@@ -103,7 +101,6 @@ export const QuiNousSommesClient: React.FC<QuiNousSommesClientProps> = ({ adopti
           }}
           transition={{ duration: 0.7 }}
         >
-          {/* Background image with gradient overlay */}
           <div className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
             <div className="h-full w-full flex items-center justify-center overflow-hidden">
               <Image
@@ -116,7 +113,6 @@ export const QuiNousSommesClient: React.FC<QuiNousSommesClientProps> = ({ adopti
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/10"></div>
           </div>
 
-          {/* Dog information overlay */}
           <div className="absolute bottom-0 left-0 right-0 p-6 z-10 text-white">
             <motion.div
               initial={{ y: 20, opacity: 0 }}
@@ -184,7 +180,6 @@ export const QuiNousSommesClient: React.FC<QuiNousSommesClientProps> = ({ adopti
         </motion.div>
       ))}
 
-      {/* Dots indicator */}
       {adoptedDogs.length > 1 && (
         <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-20">
           {adoptedDogs.map((_, index) => (
