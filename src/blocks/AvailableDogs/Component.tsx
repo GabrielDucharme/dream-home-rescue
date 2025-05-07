@@ -91,8 +91,8 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
   }
 
   return (
-    <div id="carousel" className={`relative pt-8 pb-20`}>
-      <div className="container relative mb-36">
+    <div id="carousel" className={`relative pb-24`}>
+      <div className="container mb-36">
         {/* Decorative background images */}
         <div className="absolute inset-0 pointer-events-none z-0">
           <Image
@@ -100,7 +100,7 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
             alt=""
             width={500}
             height={500}
-            className="absolute -right-20 -bottom-20 select-none w-1/2 md:w-1/3"
+            className="absolute -right-20 bottom-36 select-none w-1/2 md:w-1/3 overflow-hidden"
             aria-hidden="true"
           />
           <Image
@@ -108,23 +108,21 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
             alt=""
             width={280}
             height={280}
-            className="absolute -left-10 -bottom-48 select-none w-1/2 md:w-1/4"
+            className="absolute left-10 bottom-0 select-none w-1/2 md:w-1/4"
             aria-hidden="true"
           />
         </div>
 
-        <Separator className="my-6" />
-
-        <div className="relative z-10 mb-6 md:mb-20">
-          <h2 className="md:text-balance mb-0 mt-0 text-3xl font-medium text-center">{title}</h2>
-        </div>
+        <h2 className="md:text-balance text-5xl font-medium text-center max-w-2xl mx-auto mb-24">
+          {title}
+        </h2>
 
         <div className="relative z-10 mb-10">
           <DogsCarousel dogs={dogs} />
         </div>
 
         {displayLink && (
-          <div className="relative z-10 flex justify-center pt-10">
+          <div className="relative z-10 flex justify-center pt-12">
             <Button asChild withArrow className="font-medium bg-[#051436] text-white md:text-lg">
               <Link href="/dogs" className="text-white">
                 {linkText}
