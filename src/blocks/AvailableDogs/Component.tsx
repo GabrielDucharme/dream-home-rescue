@@ -113,7 +113,7 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
           />
         </div>
 
-        <h2 className="md:text-balance text-5xl font-medium text-center max-w-2xl mx-auto mb-24">
+        <h2 className="md:text-balance text-4xl md:text-5xl font-medium text-center max-w-2xl mx-auto mb-24">
           {title}
         </h2>
 
@@ -123,7 +123,7 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
 
         {displayLink && (
           <div className="relative z-10 flex justify-center pt-12">
-            <Button asChild withArrow className="font-medium bg-[#051436] text-white md:text-lg">
+            <Button asChild withArrow size="lg" className="font-medium bg-[#051436] text-white md:text-lg">
               <Link href="/dogs" className="text-white">
                 {linkText}
               </Link>
