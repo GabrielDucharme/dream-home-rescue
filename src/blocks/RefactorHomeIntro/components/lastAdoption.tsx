@@ -36,11 +36,11 @@ export const LastAdoption = ({ latestAdoptedDogs }: { latestAdoptedDogs: Dog[] }
               {/* Overlay Card */}
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[90%] rounded-xl p-4 flex justify-between items-center">
                 <div className="flex flex-col">
-                  <p className="text-[#F3F2E8] m-0 text-3xl font-fraunces">{dog.name}</p>
+                  <p className="text-[#F3F2E8] m-0 text-3xl font-bold font-fraunces">{dog.name}</p>
                   <p className="text-[#F3F2E8] m-0">{dog.breed}</p>
                 </div>
                 <div className="flex flex-col">
-                  <p className="text-[#F3F2E8] m-0 text-sm">Adopté le</p>
+                  <p className="text-[#F3F2E8] m-0 text-sm font-semibold">Adopté le</p>
                   <p className="text-[#F3F2E8] m-0">
                     {new Date(dog.adoptionDate || '').toLocaleDateString('fr-FR', {
                       day: 'numeric',
