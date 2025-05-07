@@ -8,18 +8,19 @@ import { DogsCarousel } from './DogCarousel'
 import Image from 'next/image'
 
 import type { AvailableDogsBlock } from '@/payload-types'
+import { Separator } from '@/components/ui/separator'
 
 // Server component to fetch data
-const DogsData = async ({ 
-  showStatus = 'available', 
-  limit = 6 
-}: { 
+const DogsData = async ({
+  showStatus = 'available',
+  limit = 6,
+}: {
   showStatus: string
   limit: number
 }) => {
   // Get dogs from Payload
   const payload = await getPayload({ config: configPromise })
-  
+
   const query: any = {
     limit,
     depth: 1,
@@ -33,45 +34,47 @@ const DogsData = async ({
       slug: true,
     },
   }
-  
+
   // Always ensure we're only getting published content
   query.where = {
     and: [
       {
         // Filter by status if not showing all
-        ...(showStatus !== 'all' ? {
-          status: {
-            equals: showStatus,
-          }
-        } : {}),
+        ...(showStatus !== 'all'
+          ? {
+              status: {
+                equals: showStatus,
+              },
+            }
+          : {}),
       },
       {
         // Make sure we're not getting draft content
         _status: {
-          equals: 'published'
-        }
-      }
-    ]
+          equals: 'published',
+        },
+      },
+    ],
   }
-  
+
   const dogsResponse = await payload.find({
     collection: 'dogs',
     ...query,
   })
-  
+
   return dogsResponse.docs
 }
 
 // This is a server component now (no "use client" directive)
 export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) => {
-  const { 
-    title, 
+  const {
+    title,
     subtitle,
-    showStatus = 'available', 
-    limit = 6, 
-    displayLink = true, 
+    showStatus = 'available',
+    limit = 6,
+    displayLink = true,
     linkText = 'Voir tous nos chiens',
-    backgroundColor = 'bg-[#F9F9F9]'
+    backgroundColor = 'bg-[#F9F9F9]',
   } = props
 
   const dogs = await DogsData({ showStatus, limit })
@@ -90,52 +93,45 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
   return (
     <div id="carousel" className={`relative bg-[#F9F9F9] pt-8 pb-20`}>
       <div className="container relative mb-36">
-      {/* Decorative background images */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <Image 
-          src="/twistie.png" 
-          alt="" 
-          width={500} 
-          height={500} 
-          className="absolute -right-20 -bottom-20 select-none w-1/2 md:w-1/3"
-          aria-hidden="true"
-        />
-        <Image 
-          src="/love.png" 
-          alt="" 
-          width={280} 
-          height={280} 
-          className="absolute -left-10 -bottom-48 select-none w-1/2 md:w-1/4"
-          aria-hidden="true"
-        />
-      </div>
-      
-      <div className="relative z-10 mb-6 md:mb-20">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-8 h-1 bg-[#26483B]/30 rounded-full"></div>
-          <div className="w-2 h-1 bg-[#26483B]/60 rounded-full"></div>
+        {/* Decorative background images */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <Image
+            src="/twistie.png"
+            alt=""
+            width={500}
+            height={500}
+            className="absolute -right-20 -bottom-20 select-none w-1/2 md:w-1/3"
+            aria-hidden="true"
+          />
+          <Image
+            src="/love.png"
+            alt=""
+            width={280}
+            height={280}
+            className="absolute -left-10 -bottom-48 select-none w-1/2 md:w-1/4"
+            aria-hidden="true"
+          />
         </div>
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2">
-          <h2 className="md:max-w-xl md:text-balance mb-0 mt-0 text-3xl md:text-4xl font-bold text-center md:text-left">{title}</h2>
-          {subtitle && (
-            <p className="text-gray-700 max-w-md text-pretty text-center md:text-left">{subtitle}</p>
-          )}
+
+        <Separator className="my-6" />
+
+        <div className="relative z-10 mb-6 md:mb-20">
+          <h2 className="md:text-balance mb-0 mt-0 text-3xl font-medium text-center">{title}</h2>
         </div>
-      </div>
-      
-      <div className="relative z-10 mb-10">
-        <DogsCarousel dogs={dogs} />
-      </div>
-      
-      {displayLink && (
-        <div className="relative z-10 flex justify-center pt-10">
-          <Button asChild withArrow className="font-medium bg-[#051436] text-white md:text-lg">
-            <Link href="/dogs" className='text-white'>
-              {linkText}
-            </Link>
-          </Button>
+
+        <div className="relative z-10 mb-10">
+          <DogsCarousel dogs={dogs} />
         </div>
-      )}
+
+        {displayLink && (
+          <div className="relative z-10 flex justify-center pt-10">
+            <Button asChild withArrow className="font-medium bg-[#051436] text-white md:text-lg">
+              <Link href="/dogs" className="text-white">
+                {linkText}
+              </Link>
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )

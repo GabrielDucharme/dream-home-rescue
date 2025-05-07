@@ -34,7 +34,7 @@ export const HomeDerniereAdoptionBlock: React.FC<HomeDerniereAdoptionBlockProps>
         ))}
       </div>
       <div className="flex justify-center mt-12">
-        <Link href="/adoption">
+        <Link href="/success-stories">
           <Button
             variant="default"
             size="lg"
