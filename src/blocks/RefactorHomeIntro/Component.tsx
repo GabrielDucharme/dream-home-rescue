@@ -47,43 +47,48 @@ export const RefactorHomeIntroBlock: React.FC<Props> = async (props) => {
   })
 
   return (
-    <div className="container py-20 pb-24">
-      <div className="flex flex-col md:flex-row gap-10">
-        <div>
-          <div className="md:p-12">
-            <LastAdoption latestAdoptedDogs={latestAdoptedDogs} />
-          </div>
-        </div>
-        <div className="w-full flex flex-col gap-4 md:items-end">
-          <h2 className="text-4xl font-semibold text-balance max-w-2xl">{title}</h2>
-          <div className="flex flex-col gap-2 max-w-2xl">
-            <p className="">
-              Chez Dream Home Rescue, situé au cœur des Laurentides à
-              Sainte-Marguerite-du-Lac-Masson, nous sommes un sanctuaire où chaque chien reçoit les
-              soins vétérinaires et l&apos;amour nécessaires pour commencer une nouvelle vie.
-            </p>
-            <p>
-              Nous croyons profondément à l&apos;adoption responsable : nous veillons à ce que chaque
-              foyer corresponde parfaitement aux besoins de nos chiens, que ce soit dans les
-              Laurentides, à Montréal ou ailleurs au Québec.
-            </p>
-            <p>
-              Adopter, devenir bénévole ou faire un don, c&apos;est participer directement au
-              sauvetage de ces chiens en détresse. Ensemble, transformons leur histoire en une belle
-              aventure remplie d&apos;amour.
-            </p>
-            <div className="flex gap-2 w-full mt-8">
-              {CardsData.map(({ button, icon: Icon }, idx) => (
-                <Button
-                  key={idx}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full font-semibold shadow transition"
-                  variant="default"
-                  size="default"
-                >
-                  <Icon className="w-5 h-5" />
-                  {button}
-                </Button>
-              ))}
+    <div className="bg-gradient-to-b from-[#FDEFBB] to-transparent">
+      <div className="container py-20 pb-24">
+        <div className="flex flex-col md:flex-row bg-white/60 rounded-xl shadow-md">
+          <div className="w-full flex flex-col lg:items-center align-middle lg:flex-row gap-4 p-4 md:p-8">
+            <div className="md:w-2/3">
+              <div className="flex flex-col gap-4 max-w-2xl">
+                <h2 className="text-4xl font-semibold text-[#1B373E]">{title}</h2>
+                <div className="flex flex-col gap-2 text-[#051436] text-justify">
+                  <p className="">
+                    Chez Dream Home Rescue, situé au cœur des Laurentides à
+                    Sainte-Marguerite-du-Lac-Masson, nous sommes un sanctuaire où chaque chien
+                    reçoit les soins vétérinaires et l&apos;amour nécessaires pour commencer une
+                    nouvelle vie.
+                  </p>
+                  <p>
+                    Nous croyons profondément à l&apos;adoption responsable : nous veillons à ce que
+                    chaque foyer corresponde parfaitement aux besoins de nos chiens, que ce soit
+                    dans les Laurentides, à Montréal ou ailleurs au Québec.
+                  </p>
+                  <p>
+                    Adopter, devenir bénévole ou faire un don, c&apos;est participer directement au
+                    sauvetage de ces chiens en détresse. Ensemble, transformons leur histoire en une
+                    belle aventure remplie d&apos;amour.
+                  </p>
+                  <div className="flex gap-2 w-full mt-8 flex-wrap">
+                    {CardsData.map(({ button, icon: Icon }, idx) => (
+                      <Button
+                        key={idx}
+                        className="flex items-center gap-2 px-4 py-2 rounded-full font-semibold shadow transition"
+                        variant="default"
+                        size="default"
+                      >
+                        <Icon className="w-5 h-5" />
+                        {button}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="max-w-lg mt-8 md:mt-0">
+              <LastAdoption latestAdoptedDogs={latestAdoptedDogs} />
             </div>
           </div>
         </div>

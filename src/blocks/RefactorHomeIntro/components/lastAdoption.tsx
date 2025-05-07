@@ -22,31 +22,32 @@ export const LastAdoption = ({ latestAdoptedDogs }: { latestAdoptedDogs: Dog[] }
     >
       <CarouselContent>
         {latestAdoptedDogs.map((dog: Dog) => (
-          <CarouselItem key={dog.id} className="group flex justify-center items-center w-full">
-            <div className="relative flex justify-center items-center">
+          <CarouselItem
+            key={dog.id}
+            className="group flex justify-center items-center w-full h-full shadow-sm"
+          >
+            <div className="relative justify-center items-center">
               <Media
                 resource={dog.mainImage}
-                imgClassName="aspect-square object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
+                imgClassName="aspect-[9/12] object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
               />
+              {/* Dark to transparent overlay */}
+              <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-t from-[#1B373E] to-black/0" />
               {/* Overlay Card */}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[90%] bg-white/90 rounded-xl px-6 py-4 flex items-center justify-between gap-4 backdrop-blur-md border border-blue-100">
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[90%] rounded-xl p-4 flex justify-between items-center">
                 <div className="flex flex-col">
-                  <p className="text-3xl font-extrabold font-fraunces text-blue-900 leading-tight">
-                    {dog.name}
-                  </p>
-                  <p className="text-lg text-blue-700 font-medium">{dog.breed}</p>
+                  <p className="text-[#F3F2E8] m-0 text-3xl font-fraunces">{dog.name}</p>
+                  <p className="text-[#F3F2E8] m-0">{dog.breed}</p>
                 </div>
-                <div className="flex flex-col items-center">
-                  <span className="bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-1">
-                    Adopté le
-                  </span>
-                  <span className="text-blue-900 text-sm font-semibold">
+                <div className="flex flex-col">
+                  <p className="text-[#F3F2E8] m-0 text-sm">Adopté le</p>
+                  <p className="text-[#F3F2E8] m-0">
                     {new Date(dog.adoptionDate || '').toLocaleDateString('fr-FR', {
                       day: 'numeric',
                       month: 'long',
                       year: 'numeric',
                     })}
-                  </span>
+                  </p>
                 </div>
               </div>
             </div>

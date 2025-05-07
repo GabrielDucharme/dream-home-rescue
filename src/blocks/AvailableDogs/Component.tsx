@@ -91,7 +91,7 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
   }
 
   return (
-    <div id="carousel" className={`relative bg-[#F9F9F9] pt-8 pb-20`}>
+    <div id="carousel" className={`relative pt-8 pb-20`}>
       <div className="container relative mb-36">
         {/* Decorative background images */}
         <div className="absolute inset-0 pointer-events-none z-0">
