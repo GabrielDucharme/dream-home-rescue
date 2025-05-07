@@ -7,6 +7,7 @@ import RichText from '@/components/RichText'
 import { Button } from '@/components/ui/button'
 import { LastAdoption } from './components/lastAdoption'
 import { PawPrint, HeartHandshake, Users } from 'lucide-react'
+import { DogHouseIcon, PawIcon, DogBoneIcon } from '@/components/icons'
 
 type Props = RefactorHomeIntroBlockProps & {
   breakout?: boolean
@@ -53,6 +54,23 @@ export const RefactorHomeIntroBlock: React.FC<Props> = async (props) => {
           <div className="w-full flex flex-col lg:items-center align-middle lg:flex-row gap-4 p-4 md:p-8">
             <div className="md:w-2/3">
               <div className="flex flex-col gap-4 max-w-2xl">
+                <div className="flex items-center gap-4">
+                  <DogHouseIcon
+                    width={18}
+                    height={18}
+                    className="text-[#26483B] opacity-70 hover:opacity-100 transition-all hover:scale-110 animate-float animation-delay-300"
+                  />
+                  <PawIcon
+                    width={16}
+                    height={16}
+                    className="text-[#26483B] opacity-70 hover:opacity-100 transition-all hover:scale-110 animate-bounce"
+                  />
+                  <DogBoneIcon
+                    width={18}
+                    height={16}
+                    className="text-[#26483B] opacity-70 hover:opacity-100 transition-all hover:scale-110 animate-float animation-delay-600"
+                  />
+                </div>
                 <h2 className="text-4xl font-semibold text-[#1B373E]">{title}</h2>
                 <div className="flex flex-col gap-2 text-[#051436] text-justify">
                   <p className="">
