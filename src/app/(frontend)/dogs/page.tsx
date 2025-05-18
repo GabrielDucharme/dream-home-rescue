@@ -6,6 +6,7 @@ import DogsGrid from './DogsGrid.client'
 import { Dog as PayloadDog } from '@/payload-types'
 import { Dog as ClientDog } from './DogsGrid.client'
 
+export const dynamic = 'force-dynamic'
 export const revalidate = 600
 
 // Convert Payload dog type to client-side dog type
@@ -37,12 +38,65 @@ function convertToClientDog(dog: PayloadDog): ClientDog {
   }
 }
 
-export default async function DogsPage({ searchParams }: { searchParams: { page?: string } }) {
+type DogsPageSearchParams = {
+  page?: string
+  breeds?: string
+  sex?: string
+  goodWithKids?: 'yes' | 'no' | 'unknown'
+  goodWithDogs?: 'yes' | 'no' | 'unknown'
+  goodWithCats?: 'yes' | 'no' | 'unknown'
+}
+
+export default async function DogsPage({
+  searchParams: searchParamsProp,
+}: {
+  searchParams: DogsPageSearchParams
+}) {
   const payload = await getPayload({ config: configPromise })
+
+  // Await searchParams before accessing its properties
+  const searchParams: DogsPageSearchParams = await searchParamsProp
 
   // Parse page number from query params or default to 1
   const currentPage = searchParams.page ? parseInt(searchParams.page) : 1
   const pageSize = 9 // Number of dogs per page
+
+  const whereConditions: any[] = [
+    {
+      status: {
+        equals: 'available',
+      },
+    },
+    {
+      _status: {
+        equals: 'published',
+      },
+    },
+  ]
+
+  if (searchParams.breeds) {
+    const breedArray = searchParams.breeds.split(',').filter((b) => b.trim() !== '')
+    if (breedArray.length > 0) {
+      whereConditions.push({ breed: { in: breedArray } })
+    }
+  }
+
+  if (searchParams.sex) {
+    const sexArray = searchParams.sex.split(',').filter((s) => s.trim() !== '')
+    if (sexArray.length > 0) {
+      whereConditions.push({ sex: { in: sexArray } })
+    }
+  }
+
+  if (searchParams.goodWithKids) {
+    whereConditions.push({ 'goodWith.kids': { equals: searchParams.goodWithKids } })
+  }
+  if (searchParams.goodWithDogs) {
+    whereConditions.push({ 'goodWith.dogs': { equals: searchParams.goodWithDogs } })
+  }
+  if (searchParams.goodWithCats) {
+    whereConditions.push({ 'goodWith.cats': { equals: searchParams.goodWithCats } })
+  }
 
   const dogsResponse = await payload.find({
     collection: 'dogs',
@@ -50,21 +104,8 @@ export default async function DogsPage({ searchParams }: { searchParams: { page?
     limit: pageSize,
     page: currentPage,
     sort: '-createdAt',
-    // Only show dogs that are available for adoption - use explicit filtering to ensure it works in production
     where: {
-      and: [
-        {
-          status: {
-            equals: 'available',
-          },
-        },
-        {
-          // Make sure we're not getting draft content in production
-          _status: {
-            equals: 'published',
-          },
-        },
-      ],
+      and: whereConditions,
     },
     // Include id for the AdoptMeButton and goodWith for filtering
     select: {

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { Check, ChevronDown, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -11,28 +11,73 @@ import { cn } from '@/utilities/ui'
 
 // Interfaces
 export interface DogFilterProps {
-  dogs: any[]
-  onFiltersChange: (filteredDogs: any[]) => void
+  dogs: any[] // This prop might be used for deriving uniqueBreeds, or uniqueBreeds can be fetched/passed differently
+  // onFiltersChange: (filteredDogs: any[]) => void // No longer needed
 }
 
-export default function DogFilters({ dogs, onFiltersChange }: DogFilterProps) {
+export default function DogFilters({ dogs }: DogFilterProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  // Get unique breeds from all dogs
-  const uniqueBreeds = [...new Set(dogs.map((dog) => dog.breed))].sort()
+  // Get unique breeds from all dogs (consider if this is still the best way or if breeds should be a separate prop/fetch)
+  const uniqueBreeds = [...new Set(dogs.map((dog) => dog.breed).filter(Boolean))].sort()
 
-  // State for filters
-  const [filters, setFilters] = useState({
-    breeds: [] as string[],
-    sex: [] as string[],
-    goodWith: {
-      kids: null as string | null,
-      dogs: null as string | null,
-      cats: null as string | null,
-    },
-  })
+  const getInitialFilters = useCallback(() => {
+    return {
+      breeds: searchParams.get('breeds')?.split(',').filter(Boolean) || [],
+      sex: searchParams.get('sex')?.split(',').filter(Boolean) || [],
+      goodWith: {
+        kids: (searchParams.get('goodWithKids') as string | null) || null,
+        dogs: (searchParams.get('goodWithDogs') as string | null) || null,
+        cats: (searchParams.get('goodWithCats') as string | null) || null,
+      },
+    }
+  }, [searchParams])
+
+  // State for filters, initialized from URL
+  const [filters, setFilters] = useState(getInitialFilters())
+
+  // Update internal filter state if URL searchParams change (e.g., browser back/forward)
+  useEffect(() => {
+    setFilters(getInitialFilters())
+  }, [searchParams, getInitialFilters])
+
+  // Function to update URL params
+  const updateURLParams = (newFilters: typeof filters) => {
+    const params = new URLSearchParams(searchParams.toString())
+
+    if (newFilters.breeds.length > 0) {
+      params.set('breeds', newFilters.breeds.join(','))
+    } else {
+      params.delete('breeds')
+    }
+
+    if (newFilters.sex.length > 0) {
+      params.set('sex', newFilters.sex.join(','))
+    } else {
+      params.delete('sex')
+    }
+
+    if (newFilters.goodWith.kids) {
+      params.set('goodWithKids', newFilters.goodWith.kids)
+    } else {
+      params.delete('goodWithKids')
+    }
+    if (newFilters.goodWith.dogs) {
+      params.set('goodWithDogs', newFilters.goodWith.dogs)
+    } else {
+      params.delete('goodWithDogs')
+    }
+    if (newFilters.goodWith.cats) {
+      params.set('goodWithCats', newFilters.goodWith.cats)
+    } else {
+      params.delete('goodWithCats')
+    }
+
+    params.delete('page') // Reset to page 1 when filters change
+    router.push(`${pathname}?${params.toString()}`, { scroll: false })
+  }
 
   // Count active filters
   const activeFilterCount =
@@ -42,49 +87,80 @@ export default function DogFilters({ dogs, onFiltersChange }: DogFilterProps) {
     (filters.goodWith.dogs ? 1 : 0) +
     (filters.goodWith.cats ? 1 : 0)
 
-  // Apply filters whenever filters change
-  useEffect(() => {
-    const filteredDogs = dogs.filter((dog) => {
-      // Filter by breed if any breeds are selected
-      if (filters.breeds.length > 0 && !filters.breeds.includes(dog.breed)) {
-        return false
-      }
-
-      // Filter by sex if any sexes are selected
-      if (filters.sex.length > 0 && !filters.sex.includes(dog.sex)) {
-        return false
-      }
-
-      // Filter by compatibility with kids
-      if (filters.goodWith.kids && dog.goodWith?.kids !== filters.goodWith.kids) {
-        return false
-      }
-
-      // Filter by compatibility with dogs
-      if (filters.goodWith.dogs && dog.goodWith?.dogs !== filters.goodWith.dogs) {
-        return false
-      }
-
-      // Filter by compatibility with cats
-      if (filters.goodWith.cats && dog.goodWith?.cats !== filters.goodWith.cats) {
-        return false
-      }
-
-      return true
+  // Toggle a breed filter
+  const toggleBreed = (breed: string) => {
+    setFilters((prev) => {
+      const newBreeds = prev.breeds.includes(breed)
+        ? prev.breeds.filter((b) => b !== breed)
+        : [...prev.breeds, breed]
+      const newFilters = { ...prev, breeds: newBreeds }
+      updateURLParams(newFilters)
+      return newFilters
     })
+  }
 
-    onFiltersChange(filteredDogs)
+  // Toggle a sex filter
+  const toggleSex = (sex: string) => {
+    setFilters((prev) => {
+      const newSex = prev.sex.includes(sex) ? prev.sex.filter((s) => s !== sex) : [...prev.sex, sex]
+      const newFilters = { ...prev, sex: newSex }
+      updateURLParams(newFilters)
+      return newFilters
+    })
+  }
 
-    // Reset to page 1 when filters change, but only if there are active filters
-    if (activeFilterCount > 0) {
-      // Reset to page 1 when filters are applied
-      const params = new URLSearchParams(searchParams.toString())
-      params.delete('page') // Remove the page parameter to go back to page 1
-      router.push(`${pathname}?${params.toString()}`)
+  // Set compatibility filter
+  const setGoodWith = (type: 'kids' | 'dogs' | 'cats', value: string | null) => {
+    setFilters((prev) => {
+      const newGoodWithValue = prev.goodWith[type] === value ? null : value
+      const newFilters = {
+        ...prev,
+        goodWith: {
+          ...prev.goodWith,
+          [type]: newGoodWithValue,
+        },
+      }
+      updateURLParams(newFilters)
+      return newFilters
+    })
+  }
+
+  // Reset all filters
+  const resetFilters = () => {
+    const clearedFilters = {
+      breeds: [],
+      sex: [],
+      goodWith: {
+        kids: null,
+        dogs: null,
+        cats: null,
+      },
     }
-  }, [filters, dogs, onFiltersChange, activeFilterCount, router, pathname, searchParams])
+    setFilters(clearedFilters)
 
-  // Listen for reset event from parent component
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('breeds')
+    params.delete('sex')
+    params.delete('goodWithKids')
+    params.delete('goodWithDogs')
+    params.delete('goodWithCats')
+    params.delete('page')
+    router.push(`${pathname}?${params.toString()}`, { scroll: false })
+  }
+
+  // Remove a specific filter (this will call the toggle/set functions which update URL)
+  const removeFilter = (type: string, value: string) => {
+    if (type === 'breed') {
+      toggleBreed(value)
+    } else if (type === 'sex') {
+      toggleSex(value)
+    } else if (type === 'kids' || type === 'dogs' || type === 'cats') {
+      // For goodWith, 'value' is the current 'yes', setting to null removes it
+      setGoodWith(type as 'kids' | 'dogs' | 'cats', null)
+    }
+  }
+
+  // Listen for reset event from parent component - This might be removable if reset is handled internally
   useEffect(() => {
     const handleReset = () => {
       resetFilters()
@@ -94,73 +170,7 @@ export default function DogFilters({ dogs, onFiltersChange }: DogFilterProps) {
     return () => {
       window.removeEventListener('reset-dog-filters', handleReset)
     }
-  }, [])
-
-  // Toggle a breed filter
-  const toggleBreed = (breed: string) => {
-    setFilters((prev) => {
-      const newBreeds = prev.breeds.includes(breed)
-        ? prev.breeds.filter((b) => b !== breed)
-        : [...prev.breeds, breed]
-
-      return {
-        ...prev,
-        breeds: newBreeds,
-      }
-    })
-  }
-
-  // Toggle a sex filter
-  const toggleSex = (sex: string) => {
-    setFilters((prev) => {
-      const newSex = prev.sex.includes(sex) ? prev.sex.filter((s) => s !== sex) : [...prev.sex, sex]
-
-      return {
-        ...prev,
-        sex: newSex,
-      }
-    })
-  }
-
-  // Set compatibility filter
-  const setGoodWith = (type: 'kids' | 'dogs' | 'cats', value: string | null) => {
-    setFilters((prev) => ({
-      ...prev,
-      goodWith: {
-        ...prev.goodWith,
-        [type]: prev.goodWith[type] === value ? null : value,
-      },
-    }))
-  }
-
-  // Reset all filters
-  const resetFilters = () => {
-    setFilters({
-      breeds: [],
-      sex: [],
-      goodWith: {
-        kids: null,
-        dogs: null,
-        cats: null,
-      },
-    })
-
-    // Also reset URL to remove pagination params when filters are reset
-    if (searchParams.has('page')) {
-      router.push(pathname)
-    }
-  }
-
-  // Remove a specific filter
-  const removeFilter = (type: string, value: string) => {
-    if (type === 'breed') {
-      toggleBreed(value)
-    } else if (type === 'sex') {
-      toggleSex(value)
-    } else if (type === 'kids' || type === 'dogs' || type === 'cats') {
-      setGoodWith(type as 'kids' | 'dogs' | 'cats', null)
-    }
-  }
+  }, []) // resetFilters dependency might be needed if it's not stable
 
   return (
     <div className="mb-8 space-y-4">
