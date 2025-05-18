@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { Check } from 'lucide-react'
@@ -27,13 +27,13 @@ export interface Dog {
   age?:
     | {
         years: number
-        months: number
+        months?: number
       }
     | string
   goodWith?: {
-    kids: string
-    dogs: string
-    cats: string
+    kids?: string
+    dogs?: string
+    cats?: string
   }
 }
 
@@ -60,6 +60,11 @@ export default function DogsGrid({ dogs, pagination }: DogsGridProps) {
   const [filteredDogs, setFilteredDogs] = useState<Dog[]>(dogs)
   const [filters, setFilters] = useState({})
 
+  // Update filtered dogs when props change
+  useEffect(() => {
+    setFilteredDogs(dogs)
+  }, [dogs])
+
   // Reset filters function for the empty state
   const resetFilters = () => {
     setFilteredDogs(dogs)
@@ -68,9 +73,16 @@ export default function DogsGrid({ dogs, pagination }: DogsGridProps) {
     window.dispatchEvent(event)
   }
 
+  // Handle page navigation
+  const handlePageClick = (pageNumber: number) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('page', pageNumber.toString())
+    router.push(`${pathname}?${params.toString()}`, { scroll: true })
+  }
+
   // Create page navigation links
   const createPageURL = (pageNumber: number | string) => {
-    const params = new URLSearchParams(searchParams)
+    const params = new URLSearchParams(searchParams.toString())
     params.set('page', pageNumber.toString())
     return `${pathname}?${params.toString()}`
   }
@@ -314,7 +326,15 @@ export default function DogsGrid({ dogs, pagination }: DogsGridProps) {
             <PaginationContent>
               {pagination.hasPrevPage && (
                 <PaginationItem>
-                  <PaginationPrevious href={createPageURL(pagination.prevPage || 1)} />
+                  <PaginationPrevious
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      if (pagination.prevPage) {
+                        handlePageClick(pagination.prevPage)
+                      }
+                    }}
+                  />
                 </PaginationItem>
               )}
 
@@ -326,8 +346,12 @@ export default function DogsGrid({ dogs, pagination }: DogsGridProps) {
                 ) : (
                   <PaginationItem key={`page-${pageNum}`}>
                     <PaginationLink
-                      href={createPageURL(pageNum)}
+                      href="#"
                       isActive={pageNum === pagination.page}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        handlePageClick(pageNum)
+                      }}
                     >
                       {pageNum}
                     </PaginationLink>
@@ -338,7 +362,13 @@ export default function DogsGrid({ dogs, pagination }: DogsGridProps) {
               {pagination.hasNextPage && (
                 <PaginationItem>
                   <PaginationNext
-                    href={createPageURL(pagination.nextPage || pagination.totalPages)}
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      if (pagination.nextPage) {
+                        handlePageClick(pagination.nextPage)
+                      }
+                    }}
                   />
                 </PaginationItem>
               )}

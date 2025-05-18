@@ -3,9 +3,39 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 import DogsGrid from './DogsGrid.client'
+import { Dog as PayloadDog } from '@/payload-types'
+import { Dog as ClientDog } from './DogsGrid.client'
 
-export const dynamic = 'force-static'
 export const revalidate = 600
+
+// Convert Payload dog type to client-side dog type
+function convertToClientDog(dog: PayloadDog): ClientDog {
+  return {
+    id: dog.id,
+    name: dog.name,
+    breed: dog.breed || '',
+    sex: dog.sex || '',
+    status: dog.status || 'available',
+    mainImage: dog.mainImage,
+    slug: dog.slug || undefined,
+    age:
+      typeof dog.age === 'string'
+        ? dog.age
+        : dog.age
+          ? {
+              years: dog.age.years || 0,
+              months: dog.age.months || 0,
+            }
+          : undefined,
+    goodWith: dog.goodWith
+      ? {
+          kids: dog.goodWith.kids || undefined,
+          dogs: dog.goodWith.dogs || undefined,
+          cats: dog.goodWith.cats || undefined,
+        }
+      : undefined,
+  }
+}
 
 export default async function DogsPage({ searchParams }: { searchParams: { page?: string } }) {
   const payload = await getPayload({ config: configPromise })
@@ -50,18 +80,19 @@ export default async function DogsPage({ searchParams }: { searchParams: { page?
     },
   })
 
-  const dogs = dogsResponse.docs || []
+  // Convert dogs to client-side format
+  const dogs = dogsResponse.docs.map(convertToClientDog) || []
 
   // Extract pagination metadata from the response
   const pagination = {
-    totalDocs: dogsResponse.totalDocs,
-    limit: dogsResponse.limit,
-    totalPages: dogsResponse.totalPages,
-    page: dogsResponse.page,
-    hasPrevPage: dogsResponse.hasPrevPage,
-    hasNextPage: dogsResponse.hasNextPage,
-    prevPage: dogsResponse.prevPage,
-    nextPage: dogsResponse.nextPage,
+    totalDocs: dogsResponse.totalDocs || 0,
+    limit: dogsResponse.limit || pageSize,
+    totalPages: dogsResponse.totalPages || 1,
+    page: dogsResponse.page || currentPage,
+    hasPrevPage: !!dogsResponse.hasPrevPage,
+    hasNextPage: !!dogsResponse.hasNextPage,
+    prevPage: dogsResponse.prevPage || null,
+    nextPage: dogsResponse.nextPage || null,
   }
 
   return (
@@ -76,7 +107,7 @@ export default async function DogsPage({ searchParams }: { searchParams: { page?
         </div>
       </div>
 
-      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <DogsGrid dogs={dogs} pagination={pagination} />
       </div>
     </div>
