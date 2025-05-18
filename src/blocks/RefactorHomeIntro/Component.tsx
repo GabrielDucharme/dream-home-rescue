@@ -97,8 +97,8 @@ export const RefactorHomeIntroBlock: React.FC<Props> = async (props) => {
                     {CardsData.map(({ button, icon: Icon, link }, idx) => (
                       <Button
                         key={idx}
-                        className="flex items-center gap-2 px-4 py-2 rounded-full font-semibold shadow transition"
-                        variant="default"
+                        className="flex items-center gap-2 px-4 py-2 rounded-full font-semibold shadow transition hover:underline"
+                        variant="arrow"
                         size="default"
                         asChild
                       >
