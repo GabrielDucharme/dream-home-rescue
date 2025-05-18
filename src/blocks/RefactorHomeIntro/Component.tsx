@@ -75,7 +75,7 @@ export const RefactorHomeIntroBlock: React.FC<Props> = async (props) => {
                     className="text-[#26483B] opacity-70 hover:opacity-100 transition-all hover:scale-110 animate-float animation-delay-600"
                   />
                 </div>
-                <h2 className="text-4xl md:text-5xl font-semibold text-[#1B373E]">{title}</h2>
+                <h2 className="text-4xl md:text-5xl font-semibold text-[#1B373E] mt-8">{title}</h2>
                 <div className="flex flex-col gap-2 text-[#051436] text-justify">
                   <p className="">
                     Chez Dream Home Rescue, situé au cœur des Laurentides à
