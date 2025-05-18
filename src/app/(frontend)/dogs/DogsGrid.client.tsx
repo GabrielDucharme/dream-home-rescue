@@ -183,7 +183,7 @@ export default function DogsGrid({ dogs, pagination }: DogsGridProps) {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {filteredDogs.map((dog) => (
             <Link
               key={dog.id || `dog-${dog.slug}`}
