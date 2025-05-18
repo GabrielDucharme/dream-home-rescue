@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { LastAdoption } from './components/lastAdoption'
 import { PawPrint, HeartHandshake, Users } from 'lucide-react'
 import { DogHouseIcon, PawIcon, DogBoneIcon } from '@/components/icons'
+import Link from 'next/link'
 
 type Props = RefactorHomeIntroBlockProps & {
   breakout?: boolean
@@ -20,14 +21,17 @@ const CardsData = [
   {
     button: 'Découvrez nos chiens à adopter',
     icon: PawPrint,
+    link: '/dogs',
   },
   {
     button: 'Faites un don',
     icon: HeartHandshake,
+    link: '/donate',
   },
   {
     button: 'Devenez bénévole',
     icon: Users,
+    link: '/contact',
   },
 ]
 export const RefactorHomeIntroBlock: React.FC<Props> = async (props) => {
@@ -90,15 +94,18 @@ export const RefactorHomeIntroBlock: React.FC<Props> = async (props) => {
                     belle aventure remplie d&apos;amour.
                   </p>
                   <div className="flex gap-2 w-full mt-8 flex-wrap">
-                    {CardsData.map(({ button, icon: Icon }, idx) => (
+                    {CardsData.map(({ button, icon: Icon, link }, idx) => (
                       <Button
                         key={idx}
                         className="flex items-center gap-2 px-4 py-2 rounded-full font-semibold shadow transition"
                         variant="default"
                         size="default"
+                        asChild
                       >
-                        <Icon className="w-5 h-5" />
-                        {button}
+                        <Link href={link}>
+                          <Icon className="w-5 h-5" />
+                          {button}
+                        </Link>
                       </Button>
                     ))}
                   </div>
