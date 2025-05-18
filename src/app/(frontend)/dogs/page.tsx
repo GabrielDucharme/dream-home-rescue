@@ -53,9 +53,33 @@ export default async function DogsPage({
   searchParams: DogsPageSearchParams
 }) {
   const payload = await getPayload({ config: configPromise })
-
-  // Await searchParams before accessing its properties
   const searchParams: DogsPageSearchParams = await searchParamsProp
+
+  // Fetch all unique breeds
+  const allDogsForBreeds = await payload.find({
+    collection: 'dogs',
+    depth: 0, // No need to populate relationships
+    limit: 0, // No limit, effectively all dogs with pagination: false
+    pagination: false, // Get all documents
+    select: {
+      breed: true, // Only select the breed field
+    },
+    where: {
+      // Optionally, you might want to filter by status: 'published' here too
+      // if you only want breeds from published dogs to appear in filters.
+      _status: {
+        equals: 'published',
+      },
+    },
+  })
+
+  const uniqueBreeds = [
+    ...new Set(
+      (allDogsForBreeds.docs || []) // Ensure docs is treated as an array
+        .map((dog) => dog.breed)
+        .filter((breed): breed is string => typeof breed === 'string' && breed.trim() !== ''),
+    ),
+  ].sort()
 
   // Parse page number from query params or default to 1
   const currentPage = searchParams.page ? parseInt(searchParams.page) : 1
@@ -149,7 +173,7 @@ export default async function DogsPage({
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <DogsGrid dogs={dogs} pagination={pagination} />
+        <DogsGrid dogs={dogs} pagination={pagination} allBreeds={uniqueBreeds} />
       </div>
     </div>
   )

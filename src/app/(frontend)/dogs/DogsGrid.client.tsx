@@ -51,9 +51,10 @@ interface PaginationData {
 interface DogsGridProps {
   dogs: Dog[]
   pagination?: PaginationData
+  allBreeds: string[]
 }
 
-export default function DogsGrid({ dogs, pagination }: DogsGridProps) {
+export default function DogsGrid({ dogs, pagination, allBreeds }: DogsGridProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -127,7 +128,7 @@ export default function DogsGrid({ dogs, pagination }: DogsGridProps) {
 
   return (
     <>
-      <DogFilters dogs={dogs} onFiltersChange={setFilteredDogs} />
+      <DogFilters allBreeds={allBreeds} />
 
       {dogs.length === 0 ? (
         <div className="text-center py-16 px-6 border border-dashed border-muted-foreground/20 rounded-xl bg-muted/30">

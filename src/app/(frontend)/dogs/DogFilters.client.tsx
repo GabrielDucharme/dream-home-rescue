@@ -11,17 +11,15 @@ import { cn } from '@/utilities/ui'
 
 // Interfaces
 export interface DogFilterProps {
-  dogs: any[] // This prop might be used for deriving uniqueBreeds, or uniqueBreeds can be fetched/passed differently
-  // onFiltersChange: (filteredDogs: any[]) => void // No longer needed
+  allBreeds: string[]
 }
 
-export default function DogFilters({ dogs }: DogFilterProps) {
+export default function DogFilters({ allBreeds = [] }: DogFilterProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  // Get unique breeds from all dogs (consider if this is still the best way or if breeds should be a separate prop/fetch)
-  const uniqueBreeds = [...new Set(dogs.map((dog) => dog.breed).filter(Boolean))].sort()
+  const uniqueBreeds = allBreeds
 
   const getInitialFilters = useCallback(() => {
     return {
