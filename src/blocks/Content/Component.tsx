@@ -17,7 +17,7 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
   }
 
   return (
-    <div className="container">
+    <div className="container pb-16">
       <div className="content-spacing grid grid-cols-4 lg:grid-cols-12 gap-y-8 gap-x-8 md:gap-x-16">
         {columns &&
           columns.length > 0 &&
@@ -31,9 +31,17 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
                 })}
                 key={index}
               >
-                <div className="content-spacing-small">
+                <div
+                  className={cn('content-spacing-small', {
+                    'mx-auto max-w-2xl': size === 'full',
+                  })}
+                >
                   {richText && <RichText data={richText} enableGutter={false} />}
-                  {enableLink && <div className="mt-4"><CMSLink {...link} /></div>}
+                  {enableLink && (
+                    <div className="mt-4">
+                      <CMSLink {...link} />
+                    </div>
+                  )}
                 </div>
               </div>
             )
