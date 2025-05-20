@@ -25,12 +25,29 @@ export const generateMeta = async (args: {
   const { doc } = args
 
   const serverUrl = getServerSideURL()
+  let path: string
+
+  if (!doc || !doc.slug || typeof doc.slug !== 'string') {
+    // Fallback for documents without a slug or if slug is not a string
+    path = '/'
+  } else if ('publishedAt' in doc && 'authors' in doc) {
+    // Heuristic for Post
+    path = `/posts/${doc.slug}`
+  } else if ('layout' in doc) {
+    // Heuristic for Page
+    path = doc.slug === 'home' ? '/' : `/${doc.slug}`
+  } else {
+    // Default fallback if type is unknown but slug is present
+    path = `/${doc.slug}`
+  }
+  const canonicalUrl = `${serverUrl}${path.startsWith('/') ? path : '/' + path}`
   
   // Create dynamic OG image URL for better social sharing
   const ogImageUrl = new URL(`${serverUrl}/api/og`)
   
   // Set title and type based on document type
   let pageType = 'default'
+  let ogType = 'website' // Default og:type
   
   if (doc) {
     // Set the title for the OG image
@@ -38,8 +55,9 @@ export const generateMeta = async (args: {
     ogImageUrl.searchParams.set('title', docTitle)
     
     // Determine the type of content and add appropriate additional data
-    if ('layout' in doc) {
+    if ('layout' in doc) { // Heuristic for Page
       pageType = 'page'
+      ogType = 'website' // Or 'article' if pages are very content-heavy
       ogImageUrl.searchParams.set('type', pageType)
       
       // For pages, add a potential subtitle from meta description
@@ -50,8 +68,9 @@ export const generateMeta = async (args: {
         ogImageUrl.searchParams.set('subtitle', shortDesc)
       }
       
-    } else if ('publishedAt' in doc) {
+    } else if ('publishedAt' in doc && 'authors' in doc) { // Heuristic for Post
       pageType = 'post'
+      ogType = 'article'
       ogImageUrl.searchParams.set('type', pageType)
       
       // For posts, add publication date and author info
@@ -99,6 +118,9 @@ export const generateMeta = async (args: {
 
   return {
     description: doc?.meta?.description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: mergeOpenGraph({
       description: doc?.meta?.description || '',
       images: [
@@ -110,7 +132,8 @@ export const generateMeta = async (args: {
         }
       ],
       title,
-      url: Array.isArray(doc?.slug) ? doc?.slug.join('/') : '/',
+      url: canonicalUrl,
+      type: ogType, // Add this line
     }),
     twitter: {
       card: 'summary_large_image',

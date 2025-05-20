@@ -13,7 +13,7 @@ module.exports = {
     '/dogs-sitemap.xml', 
     '/events-sitemap.xml',
     '/success-stories-sitemap.xml',
-    '/*', '/posts/*', '/dogs/*', '/evenements/*', '/success-stories/*'
+    '/posts/*', '/dogs/*', '/evenements/*', '/success-stories/*'
   ],
   robotsTxtOptions: {
     policies: [
