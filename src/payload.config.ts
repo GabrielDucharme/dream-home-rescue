@@ -13,6 +13,7 @@ import { DonationGoals } from './collections/DonationGoals'
 import { Donations } from './collections/Donations'
 import { FundingEvents } from './collections/FundingEvents'
 import { Media } from './collections/Media'
+import { NewsletterSubscriptions } from './collections/NewsletterSubscriptions'
 import { Pages } from './collections/Pages'
 import { Partners } from './collections/Partners'
 import { Posts } from './collections/Posts'
@@ -49,7 +50,7 @@ export default buildConfig({
   }),
   i18n: {
     fallbackLanguage: 'fr',
-    supportedLanguages: {fr},
+    supportedLanguages: { fr },
   },
   admin: {
     importMap: {
@@ -84,7 +85,23 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
   }),
-  collections: [Pages, Posts, Dogs, SuccessStories, Media, Categories, TeamMembers, Users, Services, DonationGoals, Donations, Customers, FundingEvents, Partners],
+  collections: [
+    Pages,
+    Posts,
+    Dogs,
+    SuccessStories,
+    Media,
+    Categories,
+    TeamMembers,
+    Users,
+    Services,
+    DonationGoals,
+    Donations,
+    Customers,
+    FundingEvents,
+    Partners,
+    NewsletterSubscriptions,
+  ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [
@@ -110,11 +127,11 @@ export default buildConfig({
       webhooks: {
         'checkout.session.completed': async ({ event, stripe, payload }) => {
           // Process completed checkout session
-          const session = event.data.object;
-          
+          const session = event.data.object
+
           try {
-            console.log('Checkout session completed webhook received:', session.id);
-            
+            console.log('Checkout session completed webhook received:', session.id)
+
             // Find the donation record by customer or session metadata
             const donations = await payload.find({
               collection: 'donations',
@@ -123,11 +140,11 @@ export default buildConfig({
               },
               sort: '-createdAt',
               limit: 1,
-            });
-            
+            })
+
             if (donations.docs.length > 0) {
-              const donation = donations.docs[0];
-              
+              const donation = donations.docs[0]
+
               // Update donation status
               await payload.update({
                 collection: 'donations',
@@ -137,30 +154,30 @@ export default buildConfig({
                   // If subscription, store subscription ID
                   ...(session.subscription ? { stripeSubscriptionID: session.subscription } : {}),
                 },
-              });
-              
-              console.log(`Donation ${donation.id} marked as completed`);
-              
+              })
+
+              console.log(`Donation ${donation.id} marked as completed`)
+
               // Update customer donation totals and statistics
               if (donation.customer) {
-                console.log(`Customer ${donation.customer} has a completed donation`);
-                
+                console.log(`Customer ${donation.customer} has a completed donation`)
+
                 // Get the full donation data to ensure we have the amount
                 const fullDonation = await payload.findByID({
                   collection: 'donations',
                   id: donation.id,
-                });
-                
-                console.log('Full donation data:', fullDonation);
-                
+                })
+
+                console.log('Full donation data:', fullDonation)
+
                 // Get current customer data
                 const customer = await payload.findByID({
                   collection: 'customers',
                   id: donation.customer,
-                });
-                
-                const donationAmount = fullDonation.amount || 0;
-                
+                })
+
+                const donationAmount = fullDonation.amount || 0
+
                 // Update donation statistics
                 await payload.update({
                   collection: 'customers',
@@ -169,25 +186,27 @@ export default buildConfig({
                     totalDonated: (customer.totalDonated || 0) + donationAmount,
                     donationCount: (customer.donationCount || 0) + 1,
                   },
-                });
-                
-                console.log(`Updated stats for customer ${donation.customer}: total=${(customer.totalDonated || 0) + donationAmount}, count=${(customer.donationCount || 0) + 1}`);
+                })
+
+                console.log(
+                  `Updated stats for customer ${donation.customer}: total=${(customer.totalDonated || 0) + donationAmount}, count=${(customer.donationCount || 0) + 1}`,
+                )
               }
             } else {
-              console.warn('No matching donation found for checkout session:', session.id);
+              console.warn('No matching donation found for checkout session:', session.id)
             }
           } catch (error) {
-            console.error('Error processing checkout.session.completed webhook:', error);
+            console.error('Error processing checkout.session.completed webhook:', error)
           }
         },
         'payment_intent.payment_failed': async ({ event, stripe, payload }) => {
           // Handle failed payments
-          const paymentIntent = event.data.object;
-          console.log('Payment failed webhook received:', paymentIntent.id);
-          
+          const paymentIntent = event.data.object
+          console.log('Payment failed webhook received:', paymentIntent.id)
+
           try {
             // Find donations with this customer ID
-            const customerID = paymentIntent.customer;
+            const customerID = paymentIntent.customer
             if (customerID) {
               const donations = await payload.find({
                 collection: 'donations',
@@ -196,29 +215,29 @@ export default buildConfig({
                 },
                 sort: '-createdAt',
                 limit: 1,
-              });
-              
+              })
+
               if (donations.docs.length > 0) {
-                const donation = donations.docs[0];
+                const donation = donations.docs[0]
                 await payload.update({
                   collection: 'donations',
                   id: donation.id,
                   data: {
                     stripePaymentStatus: 'failed',
                   },
-                });
-                console.log(`Donation ${donation.id} marked as failed`);
+                })
+                console.log(`Donation ${donation.id} marked as failed`)
               }
             }
           } catch (error) {
-            console.error('Error processing payment_intent.payment_failed webhook:', error);
+            console.error('Error processing payment_intent.payment_failed webhook:', error)
           }
         },
         'customer.subscription.deleted': async ({ event, stripe, payload }) => {
           // Handle subscription cancellations
-          const subscription = event.data.object;
-          console.log('Subscription deleted webhook received:', subscription.id);
-          
+          const subscription = event.data.object
+          console.log('Subscription deleted webhook received:', subscription.id)
+
           try {
             // Find donations with this subscription ID
             const donations = await payload.find({
@@ -226,8 +245,8 @@ export default buildConfig({
               where: {
                 stripeSubscriptionID: { equals: subscription.id },
               },
-            });
-            
+            })
+
             if (donations.docs.length > 0) {
               for (const donation of donations.docs) {
                 await payload.update({
@@ -236,15 +255,15 @@ export default buildConfig({
                   data: {
                     stripePaymentStatus: 'cancelled',
                   },
-                });
-                console.log(`Donation ${donation.id} with subscription marked as cancelled`);
+                })
+                console.log(`Donation ${donation.id} with subscription marked as cancelled`)
               }
             }
           } catch (error) {
-            console.error('Error processing customer.subscription.deleted webhook:', error);
+            console.error('Error processing customer.subscription.deleted webhook:', error)
           }
-        }
-      }
+        },
+      },
     }),
   ],
   secret: process.env.PAYLOAD_SECRET,

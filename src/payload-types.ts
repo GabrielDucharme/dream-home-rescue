@@ -81,6 +81,7 @@ export interface Config {
     customers: Customer;
     'funding-events': FundingEvent;
     partners: Partner;
+    'newsletter-subscriptions': NewsletterSubscription;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -106,6 +107,7 @@ export interface Config {
     customers: CustomersSelect<false> | CustomersSelect<true>;
     'funding-events': FundingEventsSelect<false> | FundingEventsSelect<true>;
     partners: PartnersSelect<false> | PartnersSelect<true>;
+    'newsletter-subscriptions': NewsletterSubscriptionsSelect<false> | NewsletterSubscriptionsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1435,6 +1437,27 @@ export interface FundingEvent {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletter-subscriptions".
+ */
+export interface NewsletterSubscription {
+  id: string;
+  email: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  status?: ('active' | 'unsubscribed' | 'bounced') | null;
+  /**
+   * Where the subscription came from
+   */
+  source?: string | null;
+  subscribedAt?: string | null;
+  unsubscribedAt?: string | null;
+  ipAddress?: string | null;
+  userAgent?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1660,6 +1683,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'partners';
         value: string | Partner;
+      } | null)
+    | ({
+        relationTo: 'newsletter-subscriptions';
+        value: string | NewsletterSubscription;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2450,6 +2477,23 @@ export interface PartnersSelect<T extends boolean = true> {
   name?: T;
   url?: T;
   logo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletter-subscriptions_select".
+ */
+export interface NewsletterSubscriptionsSelect<T extends boolean = true> {
+  email?: T;
+  firstName?: T;
+  lastName?: T;
+  status?: T;
+  source?: T;
+  subscribedAt?: T;
+  unsubscribedAt?: T;
+  ipAddress?: T;
+  userAgent?: T;
   updatedAt?: T;
   createdAt?: T;
 }
