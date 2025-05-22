@@ -32,6 +32,11 @@ const DogsData = async ({
       status: true,
       mainImage: true,
       slug: true,
+      age: true,
+      size: true,
+      weight: true,
+      goodWith: true,
+      adoptionDate: true,
     },
   }
 
@@ -123,7 +128,12 @@ export const AvailableDogsBlock: React.FC<AvailableDogsBlock> = async (props) =>
 
         {displayLink && (
           <div className="relative z-10 flex justify-center pt-12">
-            <Button asChild withArrow size="lg" className="font-medium bg-[#051436] text-white md:text-lg">
+            <Button
+              asChild
+              withArrow
+              size="lg"
+              className="font-medium bg-[#051436] text-white md:text-lg"
+            >
               <Link href="/dogs" className="text-white">
                 {linkText}
               </Link>
