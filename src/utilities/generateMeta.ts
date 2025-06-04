@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-import type { Media, Page, Post, Config } from '../payload-types'
+import type { Media, Page, Post, Config, User } from '../payload-types'
 
 import { mergeOpenGraph } from './mergeOpenGraph'
 import { getServerSideURL } from './getURL'
@@ -64,9 +64,9 @@ export const generateMeta = async (args: {
         
         // Add author information if available
         let extraData = pubDate
-        if (doc.authors && Array.isArray(doc.authors) && doc.authors.length > 0) {
+        if ('authors' in doc && Array.isArray(doc.authors) && doc.authors.length > 0) {
           const authorNames = doc.authors
-            .filter(author => author && typeof author === 'object' && 'name' in author)
+            .filter((author): author is User => !!author && typeof author === 'object' && 'name' in author)
             .map(author => author.name)
             .join(', ')
             

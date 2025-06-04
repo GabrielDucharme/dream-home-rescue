@@ -2,6 +2,8 @@
 
 import { track } from '@vercel/analytics'
 
+type TrackProperties = Parameters<typeof track>[1]
+
 /**
  * Tracks a custom event with Vercel Analytics
  * 
@@ -23,13 +25,13 @@ import { track } from '@vercel/analytics'
  */
 export function trackEvent(
   eventName: string,
-  properties?: Record<string, unknown>,
-  options?: { attribution?: boolean }
+  properties?: TrackProperties,
 ) {
   try {
-    track(eventName, properties, options)
+    track(eventName, properties)
   } catch (error) {
     // Silently fail in case analytics is blocked or fails
     console.error('Analytics tracking error:', error)
   }
 }
+
