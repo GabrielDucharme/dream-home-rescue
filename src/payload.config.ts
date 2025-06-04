@@ -143,7 +143,7 @@ export default buildConfig({
             })
 
             if (donations.docs.length > 0) {
-              const donation = donations.docs[0]
+              const donation = donations.docs[0]!
 
               // Update donation status
               await payload.update({
@@ -173,7 +173,7 @@ export default buildConfig({
                 // Get current customer data
                 const customer = await payload.findByID({
                   collection: 'customers',
-                  id: donation.customer,
+                  id: donation.customer as string,
                 })
 
                 const donationAmount = fullDonation.amount || 0
@@ -181,7 +181,7 @@ export default buildConfig({
                 // Update donation statistics
                 await payload.update({
                   collection: 'customers',
-                  id: donation.customer,
+                  id: donation.customer as string,
                   data: {
                     totalDonated: (customer.totalDonated || 0) + donationAmount,
                     donationCount: (customer.donationCount || 0) + 1,
@@ -218,7 +218,7 @@ export default buildConfig({
               })
 
               if (donations.docs.length > 0) {
-                const donation = donations.docs[0]
+                const donation = donations.docs[0]!
                 await payload.update({
                   collection: 'donations',
                   id: donation.id,

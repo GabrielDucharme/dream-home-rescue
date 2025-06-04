@@ -1282,7 +1282,7 @@ export interface Donation {
    * Données supplémentaires en JSON (contient infos parrainage, etc.)
    */
   metadata?: string | null;
-  stripePaymentStatus?: ('pending' | 'completed' | 'failed' | 'refunded') | null;
+  stripePaymentStatus?: ('pending' | 'completed' | 'failed' | 'refunded' | 'cancelled') | null;
   stripeCustomerID?: string | null;
   stripeSubscriptionID?: string | null;
   createdAt: string;

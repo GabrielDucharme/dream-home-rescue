@@ -114,24 +114,28 @@ export const Donations: CollectionConfig = {
         readOnly: true,
       },
       label: 'État du paiement',
-      options: [
-        {
-          label: 'En attente',
-          value: 'pending',
-        },
-        {
-          label: 'Complété',
-          value: 'completed',
-        },
-        {
-          label: 'Échoué',
-          value: 'failed',
-        },
-        {
-          label: 'Remboursé',
-          value: 'refunded',
-        },
-      ],
+        options: [
+          {
+            label: 'En attente',
+            value: 'pending',
+          },
+          {
+            label: 'Complété',
+            value: 'completed',
+          },
+          {
+            label: 'Échoué',
+            value: 'failed',
+          },
+          {
+            label: 'Remboursé',
+            value: 'refunded',
+          },
+          {
+            label: 'Annulé',
+            value: 'cancelled',
+          },
+        ],
       defaultValue: 'pending',
       access: {
         read: isAdmin,
